@@ -5,6 +5,9 @@
 // Keywords
 static std::unordered_map<std::string, TokenKind> keywords =
 {
+    { "export", TokenKind::Export },
+    { "import", TokenKind::Import },
+
     { "return", TokenKind::Return },
 };
 
@@ -182,6 +185,9 @@ TokenKind Scanner::scan(void)
 
         case ';':
             return make_token(TokenKind::Semicolon);
+
+        case '.':
+            return make_token(TokenKind::Dot);
 
         case '"':
             return make_string_token();

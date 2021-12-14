@@ -63,6 +63,16 @@ std::string NodePrimitive::to_string(void)
 }
 
 // Generate C++ code
+void NodeImport::generate(Input *input)
+{
+    // Get path
+    std::string module_path = "user/" + path.substr(0, path.length() - 3) + ".hpp";
+
+    // Generate include
+    input->includes += "#include <" + module_path + ">\n";
+}
+
+// Generate C++ code
 void NodeFunction::generate(Input *input)
 {
     int index = 0;

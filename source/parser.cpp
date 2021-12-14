@@ -168,6 +168,52 @@ void Parser::parse_function_declaration(Node *type)
     current_input->nodes.push_back(node);
 }
 
+// Parse module name
+std::string Parser::parse_module_name(void)
+{
+    std::string name = "";
+
+    for (;;)
+    {
+        if (match(TokenKind::Identifier))
+            name += scanner.previous.to_string();
+        else
+        {
+            scanner.current.data = name;
+            error(scanner.current, "Invalid module name.");
+        }
+
+        if (!match(TokenKind::Dot))
+            break;
+
+        name += '.';
+    }
+
+    return name;
+}
+
+// Parse export
+void Parser::parse_export(void)
+{
+    std::string module_name = parse_module_name();
+    consume(TokenKind::Semicolon, "Expected ';' after module name.");
+
+    // Set input module name
+    current_input->module_name = module_name;
+}
+
+// Parse import
+void Parser::parse_import(void)
+{
+    NodeImport *node = new NodeImport();
+    node->start      = scanner.current;
+    node->name       = parse_module_name();
+    node->start.data = node->name;
+    
+    consume(TokenKind::Semicolon, "Expected ';' after module name.");
+    current_input->nodes.push_back(node);
+}
+
 // Parse declaration
 void Parser::parse_declaration(void)
 {
@@ -182,6 +228,18 @@ void Parser::parse_declaration(void)
             if (type)
                 parse_function_declaration(type);
 
+            break;
+        }
+
+        case TokenKind::Export:
+        {
+            parse_export();
+            break;
+        }
+
+        case TokenKind::Import:
+        {
+            parse_import();
             break;
         }
 

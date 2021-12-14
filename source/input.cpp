@@ -7,6 +7,7 @@ Input::Input(std::string _path)
     tabs        = 0;
     path        = _path;
     source      = read_file(_path);
+    module_name = "";
     logger.path = _path;
 }
 

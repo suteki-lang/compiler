@@ -28,6 +28,18 @@ static bool compare(ExpressionKind destination, ExpressionKind source)
     return (source == destination);
 }
 
+// Find module
+static Input *find_module(std::string name)
+{
+    for (Input &input : g_inputs)
+    {
+        if (input.module_name == name)
+            return &input;
+    }
+
+    return nullptr;
+}
+
 // Analyze
 ExpressionKind Node::analyze(Input *input)
 {
@@ -59,6 +71,24 @@ ExpressionKind NodeNumber::analyze(Input *input)
 ExpressionKind NodePrimitive::analyze(Input *input)
 {
     return primitive_as_kind[kind];
+}
+
+// Analyze
+ExpressionKind NodeImport::analyze(Input *input)
+{
+    Input *module_input = find_module(name);
+
+    if (!module_input)
+        input->logger.error(start, "This module does not exists.");
+    else
+    {
+        path = module_input->path;
+
+        if (name == input->module_name)
+            input->logger.error(start, "You can't import this module here.");
+    }
+
+    return ExpressionKind::Void;
 }
 
 // Analyze

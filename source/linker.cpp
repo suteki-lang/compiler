@@ -71,8 +71,10 @@ bool link(void)
         // Write source file
         std::ofstream source(output_path + ".cpp");
 
-        // Source: Add include
-        source << "#include <" + path + ".hpp>\n\n";
+        // Source: Add includes
+        source << "#include <" + path + ".hpp>\n";
+        source << input.includes;
+        source << '\n';
 
         // Source: Add namespace
         source << "namespace User\n{\n";

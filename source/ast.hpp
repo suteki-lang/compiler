@@ -77,6 +77,19 @@ struct NodePrimitive : Node
     std::string to_string(void);
 };
 
+struct NodeImport : Node
+{
+    std::string name;
+    std::string path;
+    Token       start;
+
+    // Analyze
+    ExpressionKind analyze(Input *input);
+
+    // Generate C++ code
+    void generate(Input *input);
+};
+
 struct NodeFunction : Node
 {
     Node                *type;

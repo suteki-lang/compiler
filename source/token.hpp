@@ -20,6 +20,10 @@ enum class TokenKind : unsigned int
     RightBrace,
     Comma,
     Semicolon,
+    Dot,
+
+    Export,
+    Import,
 
     Return,
 };

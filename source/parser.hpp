@@ -47,6 +47,15 @@ struct Parser
     // Parse function declaration
     void parse_function_declaration(Node *type);
 
+    // Parse module name
+    std::string parse_module_name(void);
+
+    // Parse export
+    void parse_export(void);
+
+    // Parse import
+    void parse_import(void);
+
     // Parse declaration
     void parse_declaration(void);
 

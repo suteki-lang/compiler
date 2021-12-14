@@ -9,15 +9,17 @@
 
 struct Input
 {
-    uint32_t             tabs;
-    Logger               logger;
-    NodeFunction        *current_function;
-    std::string          path;
-    std::string          source;
-    std::string          header_output;
-    std::string          source_output;
-    std::vector<Node *>  nodes;
-
+    uint32_t                  tabs;
+    Logger                    logger;
+    NodeFunction             *current_function;
+    std::string               path;
+    std::string               source;
+    std::string               header_output;
+    std::string               source_output;
+    std::string               includes;
+    std::string               module_name;
+    std::vector<Node *>       nodes;
+    
     // Constructor
     Input(std::string _path);
 
