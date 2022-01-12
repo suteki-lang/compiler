@@ -1,6 +1,6 @@
-import a;
+export a;
 
-int main()
+bool main(void a)
 {
-    return 0;
+    return "true";
 }

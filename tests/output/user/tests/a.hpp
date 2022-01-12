@@ -3,6 +3,7 @@
 
 namespace User
 {
+	extern void l();
 }
 
 #endif

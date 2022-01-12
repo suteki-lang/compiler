@@ -2,4 +2,7 @@
 
 namespace User
 {
+	void l()	
+	{
+	}
 }

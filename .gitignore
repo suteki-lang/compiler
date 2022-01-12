@@ -1,5 +1,6 @@
-# Executables
-out
+# Binary
+obj
+bin
 
 # Visual Studio Code
 .vscode
