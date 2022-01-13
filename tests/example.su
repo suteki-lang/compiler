@@ -1,6 +1,7 @@
-export a;
+import a;
+import b;
 
-bool main(void a)
+bool main()
 {
-    return "true";
+    return false;
 }

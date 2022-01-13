@@ -43,6 +43,7 @@ namespace Suteki
     partial class NodeImport : Node
     {
         public string ModuleName;
+        public Token  Start;
     }
 
     partial class NodePrimitive : Node

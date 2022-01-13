@@ -157,6 +157,7 @@ namespace Suteki
         {
             // Make node
             NodeImport node            = new NodeImport();
+                       node.Start      = Current;
                        node.ModuleName = ParseModuleName();
 
             Nodes.Add(node);
@@ -370,11 +371,15 @@ namespace Suteki
             {
                 foreach (Node node in input.Nodes)
                 {
-                    node.RegisterSymbols(input);
+                    if (!input.SymbolsAreRegistered)
+                        node.RegisterSymbols(input);
+                    
                     node.CheckSymbols(input);
                     node.TypeCheck(input);
                     node.Optimize(input);
                 }
+
+                input.SymbolsAreRegistered = true;
             }
         }
     }

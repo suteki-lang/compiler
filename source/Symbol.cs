@@ -9,5 +9,11 @@ namespace Suteki
     class Symbol
     {
         public SymbolKind Kind;
+
+        // Symbol Constructor
+        public Symbol(SymbolKind kind)
+        {
+            Kind = kind;
+        }
     }
 }

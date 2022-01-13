@@ -1,13 +1,5 @@
 namespace Suteki
 {
-    partial class NodeImport : Node
-    {
-        public override void CheckSymbols(Input input)
-        {
-            
-        }
-    }
-
     partial class NodeFunction : Node
     {
         public override void CheckSymbols(Input input)

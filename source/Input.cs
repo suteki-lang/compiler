@@ -14,6 +14,8 @@ namespace Suteki
         public List<Node>   Nodes                = new List<Node>();
         public bool         SymbolsAreRegistered = false;
 
+        public Dictionary<string, Symbol> Globals = new Dictionary<string, Symbol>();
+
         // Input Constructor
         public Input(string path, string source)
         {
