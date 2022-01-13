@@ -40,11 +40,6 @@ namespace Suteki
         }
     }
 
-    partial class NodeExport : Node
-    {
-        public string ModuleName;
-    }
-
     partial class NodeImport : Node
     {
         public string ModuleName;

@@ -137,19 +137,16 @@ namespace Suteki
         // Parse export
         private void ParseExport()
         {
-            // Make node
-            NodeExport node            = new NodeExport();
-                       node.ModuleName = ParseModuleName();
-
-            Nodes.Add(node);
-
-            // Set input module name
-            Previous.Data = node.ModuleName;
+            // Set input module
+            string moduleName = ParseModuleName();
 
             if (CurrentInput.Module != "")
+            {
+                Previous.Data = moduleName;
                 Logger.Error(Previous, "This file was already exported.");
+            }
 
-            CurrentInput.Module = node.ModuleName;
+            CurrentInput.Module = moduleName;
 
             // Optional semicolon
             Match(TokenKind.Semicolon);

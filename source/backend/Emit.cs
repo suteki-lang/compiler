@@ -1,13 +1,5 @@
 namespace Suteki
 {
-    partial class NodeExport : Node
-    {
-        public override void Emit(Input input)
-        {
-            
-        }
-    }
-
     partial class NodeImport : Node
     {
         public override void Emit(Input input)
