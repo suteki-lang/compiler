@@ -1,6 +1,6 @@
 import a;
 
-int main()
+bool main()
 {
-    return 0;
+    return false;
 }
