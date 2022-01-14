@@ -13,6 +13,7 @@ namespace Suteki
                 Config.Inputs.Add(new Input(arguments[1], File.ReadAllText(arguments[1])));
 
             Compiler.Start();
+            Linker.Start();
         }
     }
 }

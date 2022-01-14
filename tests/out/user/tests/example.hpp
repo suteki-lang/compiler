@@ -3,8 +3,7 @@
 
 namespace User
 {
-	extern int test();
-	extern int main();
+	extern bool main();
 }
 
 #endif

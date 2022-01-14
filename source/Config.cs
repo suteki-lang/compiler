@@ -10,7 +10,7 @@ namespace Suteki
     class Config
     {
         public static OptimizationKind OptimizationLevel = OptimizationKind.None;
-        public static string           OutputPath        = "";
+        public static string           OutputPath        = "tests/out/";
         public static List<Input>      Inputs            = new List<Input>();
     }
 }
