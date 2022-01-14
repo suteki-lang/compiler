@@ -364,7 +364,9 @@ namespace Suteki
                     ParseDeclaration();
             }
 
-            // TODO (ryaangu): don't analyze if error
+            // Don't analyze the nodes if there's an error
+            if (Config.HadError)
+                return;
 
             // Analyze the AST nodes
             foreach (Input input in Config.Inputs)

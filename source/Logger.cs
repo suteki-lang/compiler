@@ -5,19 +5,18 @@ namespace Suteki
     class Logger
     {
         public string Path     = "";
-        public bool   HadError = false;
 
         // Show error
         public void Error(string message)
         {
-            HadError = true;
+            Config.HadError = true;
             Console.Error.WriteLine($"[{Path}] Error: {message}");
         }
 
         // Show error at token
         public void Error(Token token, string message)
         {
-            HadError = true;
+            Config.HadError = true;
             Console.Error.Write($"[{Path}:{token.Line}:{token.Column}] Error");
 
             switch (token.Kind)
