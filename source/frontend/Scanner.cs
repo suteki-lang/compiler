@@ -18,8 +18,10 @@ namespace Suteki
             { "export", TokenKind.Export },
             { "import", TokenKind.Import },
 
-            { "true", TokenKind.True     },
-            { "false", TokenKind.False   },
+            { "extern", TokenKind.Extern },
+
+            { "true",  TokenKind.Bool    },
+            { "false", TokenKind.Bool    },
 
             { "return", TokenKind.Return },
         };

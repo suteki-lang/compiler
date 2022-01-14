@@ -61,9 +61,12 @@ namespace Suteki
     {
         public override ExpressionKind TypeCheck(Input input)
         {
-            input.CurrentFunction = this;
-
-            Block.TypeCheck(input);
+            if (Property != PropertyKind.Extern)
+            {
+                input.CurrentFunction = this;
+                Block.TypeCheck(input);
+            }
+            
             return ExpressionKind.Void;
         }
     }

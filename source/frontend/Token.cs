@@ -9,6 +9,7 @@ namespace Suteki
         Integer,
         Float,
         String,
+        Bool,
 
         LeftParenthesis,
         RightParenthesis,
@@ -20,9 +21,8 @@ namespace Suteki
 
         Export,
         Import,
-
-        True,
-        False,
+        
+        Extern,
 
         Return,
     }

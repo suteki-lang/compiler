@@ -1,5 +1,5 @@
-import a;
-
+import std.c;
+void m(){}
 bool main()
 {
     return false;

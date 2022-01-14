@@ -97,10 +97,11 @@ namespace Suteki
 
     partial class NodeFunction : Node
     {
-        public Node       Type;
-        public Token      Name;
-        public List<Node> Parameters = new List<Node>();
-        public Node       Block;
+        public PropertyKind Property;
+        public Node         Type;
+        public Token        Name;
+        public List<Node>   Parameters = new List<Node>();
+        public Node         Block;
     }
 
     partial class NodeParameter : Node

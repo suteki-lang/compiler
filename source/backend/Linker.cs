@@ -41,7 +41,12 @@ namespace Suteki
 
                 // Header: Write namespace
                 header += "namespace User\n{\n";
-                header += input.Output.Header;
+
+                if (input.Output.Header.Length != 0)
+                    header += input.Output.Header;
+                else
+                    header += "\t\n";
+
                 header += "}\n";
 
                 // Header: End guard
@@ -54,7 +59,12 @@ namespace Suteki
 
                 // Source: Add namespace
                 source += "namespace User\n{\n";
-                source += input.Output.Source;
+
+                if (input.Output.Source.Length != 0)
+                    source += input.Output.Source;
+                else
+                    source += "\t\n";
+
                 source += "}\n";
 
                 // Write files

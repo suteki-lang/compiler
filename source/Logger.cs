@@ -4,7 +4,7 @@ namespace Suteki
 {
     class Logger
     {
-        public string Path     = "";
+        public string Path = "";
 
         // Show error
         public void Error(string message)

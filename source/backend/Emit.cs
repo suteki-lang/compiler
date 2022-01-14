@@ -82,7 +82,7 @@ namespace Suteki
             {
                 head += Parameters[index].ToString();
 
-                if (index < Parameters.Count)
+                if (index < (Parameters.Count - 1))
                     head += ", ";
             }
 
@@ -92,10 +92,13 @@ namespace Suteki
             input.Output.Header += $"\textern {head};\n";
 
             // Emit source
-            input.Output.Source += $"\t{head}\t\n\t";
-            input.Output.Source += "{\n";
-            Block.Emit(input);
-            input.Output.Source += "\t}\n";
+            if (Property != PropertyKind.Extern)
+            {
+                input.Output.Source += $"\t{head}\t\n\t";
+                input.Output.Source += "{\n";
+                Block.Emit(input);
+                input.Output.Source += "\t}\n";
+            }
         }
     }
 
@@ -113,7 +116,7 @@ namespace Suteki
         {
             if (Statements.Count == 0)
             {
-                input.Output.Source += '\n';
+                input.Output.Source += "\t\t\n";
                 return;
             }
 

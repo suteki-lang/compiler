@@ -3,6 +3,7 @@
 
 namespace User
 {
+	extern void m();
 	extern bool main();
 }
 

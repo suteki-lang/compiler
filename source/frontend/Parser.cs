@@ -5,7 +5,8 @@ namespace Suteki
 {
     class Parser
     {
-        private Input CurrentInput;
+        private Input        CurrentInput;
+        private PropertyKind CurrentProperty;
 
         private Dictionary<string, Type> Types = new Dictionary<string, Type>
         {
@@ -194,7 +195,7 @@ namespace Suteki
             if (Match(TokenKind.String))
                 return new NodeString(Previous);
 
-            if (Match(TokenKind.True) || Match(TokenKind.False))
+            if (Match(TokenKind.Bool))
                 return new NodeBool(Previous);
 
             Logger.Error(Current, "Unexpected token.");
@@ -265,9 +266,10 @@ namespace Suteki
         private void ParseFunction(Node type, Token name)
         {
             // Make node
-            NodeFunction node      = new NodeFunction();
-                         node.Type = type;
-                         node.Name = name;
+            NodeFunction node          = new NodeFunction();
+                         node.Property = CurrentProperty;
+                         node.Type     = type;
+                         node.Name     = name;
 
             // Parse function parameters
             if (!Match(TokenKind.RightParenthesis))
@@ -297,10 +299,23 @@ namespace Suteki
             }
 
             // Parse function block
-            Consume(TokenKind.LeftBrace, "Expected '{'.");
-            node.Block = ParseBlock();
+            if (CurrentProperty != PropertyKind.Extern)
+            {
+                Consume(TokenKind.LeftBrace, "Expected '{'.");
+                node.Block = ParseBlock();
+            }
+            else
+            {
+                node.Block = null;
+
+                // Optional semicolon
+                Match(TokenKind.Semicolon);
+            }
 
             Nodes.Add(node);
+
+            // Reset property
+            CurrentProperty = PropertyKind.None;
         }
 
         // Parse identifier
@@ -322,6 +337,12 @@ namespace Suteki
 
             switch (Previous.Kind)
             {
+                case TokenKind.Extern:
+                {
+                    CurrentProperty = PropertyKind.Extern;
+                    break;
+                }
+
                 case TokenKind.Export:
                 {
                     ParseExport();

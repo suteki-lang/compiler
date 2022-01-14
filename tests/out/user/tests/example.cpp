@@ -2,6 +2,10 @@
 
 namespace User
 {
+	void m()	
+	{
+		
+	}
 	bool main()	
 	{
 		return false;
