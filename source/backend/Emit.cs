@@ -4,7 +4,12 @@ namespace Suteki
     {
         public override void Emit(Input input)
         {
-            
+            // Get module path
+            Input  module = Config.Inputs.Find((m) => m.Module == ModuleName);
+            string path   = $"user/{module.Path.Replace(".su", "")}.hpp";
+
+            // Emit include
+            input.Output.Includes += $"#include <{path}>\n";
         }
     }
 
