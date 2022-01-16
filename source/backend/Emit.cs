@@ -80,7 +80,7 @@ namespace Suteki
         {
             // Generate function head
             string head  = $"{Type.ToString()} ";
-                   head += Name.Data.ToString();
+                   head += $"{Name.Data.ToString()}";
                    head += '(';
 
             for (int index = 0; index < Parameters.Count; ++index)
@@ -94,15 +94,18 @@ namespace Suteki
             head += ')';
 
             // Emit header
-            input.Output.Header += $"\textern {head};\n";
+            string cExtern = (Property == PropertyKind.Extern) ? "\"C\" "
+                                                               : "";
+
+            input.Output.Header += $"extern {cExtern}{head};\n";
 
             // Emit source
             if (Property != PropertyKind.Extern)
             {
-                input.Output.Source += $"\t{head}\t\n\t";
+                input.Output.Source += $"{head}\t\n";
                 input.Output.Source += "{\n";
                 Block.Emit(input);
-                input.Output.Source += "\t}\n";
+                input.Output.Source += "}\n";
             }
         }
     }
@@ -121,7 +124,7 @@ namespace Suteki
         {
             if (Statements.Count == 0)
             {
-                input.Output.Source += "\t\t\n";
+                input.Output.Source += "\t\n";
                 return;
             }
 
@@ -138,11 +141,30 @@ namespace Suteki
         }
     }
 
+    partial class NodeCall : Node
+    {
+        public override void Emit(Input input)
+        {
+            input.Output.Source += $"{Name.Data.ToString()}";
+            input.Output.Source += '(';
+
+            for (int index = 0; index < Parameters.Count; ++index)
+            {
+                Parameters[index].Emit(input);
+
+                if (index < (Parameters.Count - 1))
+                    input.Output.Source += ", ";
+            }
+
+            input.Output.Source += ");\n";
+        }
+    }
+
     partial class NodeReturn : Node
     {
         public override void Emit(Input input)
         {
-            input.Output.Source += "\treturn";
+            input.Output.Source += "return";
 
             if (Expression != null)
             {

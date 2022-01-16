@@ -53,7 +53,7 @@ namespace Suteki
             }
 
             // Add symbol
-            input.Globals.Add(Name.Data.ToString(), new Symbol(SymbolKind.Function));
+            input.Globals.Add(Name.Data.ToString(), new Symbol(SymbolKind.Function, this));
         }
     }
 }

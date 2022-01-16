@@ -223,6 +223,43 @@ namespace Suteki
             return node;
         }
 
+        // Parse call
+        private Node ParseCall(Token name)
+        {
+            // Make node
+            NodeCall node      = new NodeCall();
+                     node.Name = name;
+
+            // Parse function parameters
+            if (!Match(TokenKind.RightParenthesis))
+            {
+                do
+                {
+                    node.Parameters.Add(ParseExpression());
+                }
+                while (Match(TokenKind.Comma));
+
+                Consume(TokenKind.RightParenthesis, "Expected ')' after function call parameter(s).");
+            }
+
+            // Optional semicolon
+            Match(TokenKind.Semicolon);
+
+            return node;
+        }
+
+        // Parse identifier statement
+        private Node ParseIdentifierStatement()
+        {
+            Token name = Previous;
+            
+            if (Match(TokenKind.LeftParenthesis))
+                return ParseCall(name);
+            
+            Logger.Error(Current, "Unexpected token.");
+            return null;
+        }
+
         // Parse statement
         private Node ParseStatement()
         {
@@ -232,6 +269,9 @@ namespace Suteki
             {
                 case TokenKind.Return:
                     return ParseReturn();
+
+                case TokenKind.Identifier:
+                    return ParseIdentifierStatement();
 
                 default:
                 {

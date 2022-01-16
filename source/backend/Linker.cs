@@ -39,15 +39,7 @@ namespace Suteki
                 header += $"#ifndef {guardName}\n";
                 header += $"#define {guardName}\n\n";
 
-                // Header: Write namespace
-                header += "namespace User\n{\n";
-
-                if (input.Output.Header.Length != 0)
-                    header += input.Output.Header;
-                else
-                    header += "\t\n";
-
-                header += "}\n";
+                header += input.Output.Header;
 
                 // Header: End guard
                 header += "\n#endif";
@@ -56,16 +48,7 @@ namespace Suteki
                 source += $"#include <{path}.hpp>\n";
                 source += input.Output.Includes;
                 source += "\n";
-
-                // Source: Add namespace
-                source += "namespace User\n{\n";
-
-                if (input.Output.Source.Length != 0)
-                    source += input.Output.Source;
-                else
-                    source += "\t\n";
-
-                source += "}\n";
+                source += input.Output.Source;
 
                 // Write files
                 File.WriteAllText($"{outputPath}.hpp", header);

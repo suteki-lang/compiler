@@ -1,6 +1,7 @@
 import std.c;
 
-bool main()
+int main()
 {
-    return false;
+    exit(10);
+    return 0;
 }

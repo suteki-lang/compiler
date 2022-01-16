@@ -1,3 +1,5 @@
+using System;
+
 namespace Suteki
 {
     partial class NodePrimitive : Node
@@ -85,6 +87,32 @@ namespace Suteki
         {
             foreach (Node node in Statements)
                 node.TypeCheck(input);
+
+            return ExpressionKind.Void;
+        }
+    }
+
+    partial class NodeCall : Node
+    {
+        public override ExpressionKind TypeCheck(Input input)
+        {
+            // TODO: make this shorter
+            NodeFunction node = (NodeFunction)input.Globals[Name.Data.ToString()].Node;
+
+            if (Parameters.Count != node.Parameters.Count)
+            {
+                input.Logger.Error(Name, "Function call parameter(s) count does not match function parameter(s) count.");
+                return ExpressionKind.Void;
+            }
+
+            for (int index = 0; index < node.Parameters.Count; ++index)
+            {
+                ExpressionKind parameter  = node.Parameters[index].TypeCheck(input);
+                ExpressionKind expression = Parameters[index].TypeCheck(input);
+
+                if (!Type.Compare(parameter, expression))
+                    input.Logger.Error(Name, $"Function call parameter ({index}) type does not match function parameter type.");
+            }
 
             return ExpressionKind.Void;
         }

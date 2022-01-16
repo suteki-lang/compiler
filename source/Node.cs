@@ -115,6 +115,12 @@ namespace Suteki
         public List<Node> Statements = new List<Node>();
     }
 
+    partial class NodeCall : Node
+    {
+        public Token      Name;
+        public List<Node> Parameters = new List<Node>();
+    }
+
     partial class NodeReturn : Node
     {
         public Node  Expression;
