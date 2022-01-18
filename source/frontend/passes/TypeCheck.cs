@@ -63,7 +63,7 @@ namespace Suteki
     {
         public override ExpressionKind TypeCheck(Input input)
         {
-            if (Property != PropertyKind.Extern)
+            if (Block != null)
             {
                 input.CurrentFunction = this;
                 Block.TypeCheck(input);
@@ -96,15 +96,16 @@ namespace Suteki
     {
         public override ExpressionKind TypeCheck(Input input)
         {
-            // TODO: make this shorter
-            NodeFunction node = (NodeFunction)input.Globals[Name.Data.ToString()].Node;
+            NodeFunction node = input.GetSymbol(Name).GetNodeFunction();
 
+            // Check for parameter count
             if (Parameters.Count != node.Parameters.Count)
             {
                 input.Logger.Error(Name, "Function call parameter(s) count does not match function parameter(s) count.");
                 return ExpressionKind.Void;
             }
 
+            // Compare parameter types
             for (int index = 0; index < node.Parameters.Count; ++index)
             {
                 ExpressionKind parameter  = node.Parameters[index].TypeCheck(input);

@@ -46,14 +46,14 @@ namespace Suteki
         public override void RegisterSymbols(Input input)
         {
             // Check for existing symbol
-            if (input.Globals.ContainsKey(Name.Data.ToString()))
+            if (input.Globals.ContainsKey(Name.Content))
             {
                 input.Logger.Error(Name, "This symbol was already declared.");
                 return;
             }
 
             // Add symbol
-            input.Globals.Add(Name.Data.ToString(), new Symbol(SymbolKind.Function, this));
+            input.Globals.Add(Name.Content, new Symbol(Property, SymbolKind.Function, this));
         }
     }
 }

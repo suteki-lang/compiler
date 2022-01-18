@@ -81,7 +81,7 @@ namespace Suteki
                 if (Scanner.Next() != TokenKind.Error)
                     break;
 
-                Logger.Error(Current, Current.Data.ToString());
+                Logger.Error(Current, Current.Content);
             }
         }
 
@@ -114,12 +114,12 @@ namespace Suteki
             for (;;)
             {
                 if (Match(TokenKind.Identifier))
-                    result += Previous.Data.ToString();
+                    result += Previous.Content;
                 else
                 {
                     if (result != "")
                     {
-                        Current.Data = result;
+                        Current.Content = result;
                         Logger.Error(Current, "Invalid module name.");
                     }
                     else
@@ -143,7 +143,7 @@ namespace Suteki
 
             if (CurrentInput.Module != "")
             {
-                Previous.Data = moduleName;
+                Previous.Content = moduleName;
                 Logger.Error(Previous, "This file was already exported.");
             }
 
@@ -170,7 +170,7 @@ namespace Suteki
         // Parse type
         private Node ParseType()
         {
-            string typeName = Previous.Data.ToString();
+            string typeName = Previous.Content;
 
             if (Types.ContainsKey(typeName))
             {
@@ -339,11 +339,8 @@ namespace Suteki
             }
 
             // Parse function block
-            if (CurrentProperty != PropertyKind.Extern)
-            {
-                Consume(TokenKind.LeftBrace, "Expected '{'.");
+            if (Match(TokenKind.LeftBrace))
                 node.Block = ParseBlock();
-            }
             else
             {
                 node.Block = null;
@@ -435,14 +432,17 @@ namespace Suteki
                 foreach (Node node in input.Nodes)
                 {
                     if (!input.SymbolsAreRegistered)
-                        node.RegisterSymbols(input);
-                    
+                        node.RegisterSymbols(input);    
+                }
+
+                input.SymbolsAreRegistered = true;
+
+                foreach (Node node in input.Nodes)
+                {
                     node.CheckSymbols(input);
                     node.TypeCheck(input);
                     node.Optimize(input);
                 }
-
-                input.SymbolsAreRegistered = true;
             }
         }
     }

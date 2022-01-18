@@ -113,24 +113,24 @@ namespace Suteki
         {
             Current = new Token
             { 
-                Kind   = kind,
-                Data   = Source.Substring(Start, (End - Start)),
-                Line   = Line,
-                Column = Column,
+                Kind    = kind,
+                Content = Source.Substring(Start, (End - Start)),
+                Line    = Line,
+                Column  = Column,
             };
 
             return kind;
         }
 
         // Make token
-        private TokenKind MakeToken(TokenKind kind, object data)
+        private TokenKind MakeToken(TokenKind kind, string content)
         {
             Current = new Token
             { 
-                Kind   = kind,
-                Data   = data,
-                Line   = Line,
-                Column = Column,
+                Kind    = kind,
+                Content = content,
+                Line    = Line,
+                Column  = Column,
             };
 
             return kind;
@@ -141,10 +141,10 @@ namespace Suteki
         {
             Current = new Token
             { 
-                Kind   = TokenKind.Error,
-                Data   = message,
-                Line   = Line,
-                Column = Column,
+                Kind    = TokenKind.Error,
+                Content = message,
+                Line    = Line,
+                Column  = Column,
             };
 
             return TokenKind.Error;
@@ -166,8 +166,7 @@ namespace Suteki
                     Advance();
             }
 
-            string numberString = Source.Substring(Start, (End - Start));
-            return MakeToken((isFloat) ? TokenKind.Float : TokenKind.Integer, double.Parse(numberString));
+            return MakeToken((isFloat) ? TokenKind.Float : TokenKind.Integer);
         }
 
         // Make identifier token

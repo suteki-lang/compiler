@@ -4,7 +4,7 @@ namespace Suteki
     {
         public override void CheckSymbols(Input input)
         {
-            if (Property != PropertyKind.Extern)
+            if (Block != null)
                 Block.CheckSymbols(input);
         }
     }
@@ -31,7 +31,7 @@ namespace Suteki
         public override void CheckSymbols(Input input)
         {
             // Check for symbol
-            if (!input.Globals.ContainsKey(Name.Data.ToString()))
+            if (!input.Globals.ContainsKey(Name.Content))
                 input.Logger.Error(Name, "This symbol does not exists.");
         }
     }

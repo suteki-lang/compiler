@@ -4,7 +4,7 @@ namespace Suteki
 {
     class Logger
     {
-        public string Path = "";
+        public string Path;
 
         // Show error
         public void Error(string message)
@@ -35,7 +35,7 @@ namespace Suteki
 
                 default:
                 {
-                    Console.Error.Write($" at '{token.Data.ToString()}': ");
+                    Console.Error.Write($" at '{token.Content}': ");
                     break;
                 }
             }
@@ -71,7 +71,7 @@ namespace Suteki
 
                 default:
                 {
-                    Console.Error.Write($" at '{token.Data.ToString()}': ");
+                    Console.Error.Write($" at '{token.Content}': ");
                     break;
                 }
             }

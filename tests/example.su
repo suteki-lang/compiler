@@ -1,7 +1,12 @@
-import std.c;
-
-int main()
+extern int main()
 {
-    exit(10);
+    print_hello();
     return 0;
+}
+
+extern int puts(string str);
+
+void print_hello()
+{
+    puts("hello");
 }

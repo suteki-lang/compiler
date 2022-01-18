@@ -4,9 +4,9 @@ namespace Suteki
 {
     class Input
     {
-        public string       Path                 = "";
+        public string       Path;
+        public string       Source;
         public string       Module               = "";
-        public string       Source               = "";
         public NodeFunction CurrentFunction      = null;
         public Output       Output               = new Output();
         public Logger       Logger               = new Logger();
@@ -24,6 +24,18 @@ namespace Suteki
             Source      = source;
 
             Scanner.Set(source);
+        }
+
+        // Get symbol 
+        public Symbol GetSymbol(string name)
+        {
+            return Globals[name];
+        }
+
+        // Get symbol
+        public Symbol GetSymbol(Token name)
+        {
+            return Globals[name.Content];
         }
     }
 }

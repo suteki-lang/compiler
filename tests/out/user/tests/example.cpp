@@ -1,8 +1,11 @@
 #include <user/tests/example.hpp>
-#include <user/tests/library/c.hpp>
 
 int main()	
 {
-	exit(10);
+	su_print_hello();
 	return 0;
+}
+void su_print_hello()	
+{
+	puts("hello");
 }

@@ -30,7 +30,7 @@ namespace Suteki
     class Token
     {
         public TokenKind Kind;
-        public object    Data;
+        public string    Content;
         public int       Line;
         public int       Column;
     }

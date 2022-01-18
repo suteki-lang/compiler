@@ -20,22 +20,22 @@ namespace Suteki
             // NOTE (ryaangu): do this better?
             string[] cTypes =
             {
-                "void", 
-                "bool", 
-                "std::string",
+                "void ", 
+                "bool ", 
+                "const char *",
 
-                "unsigned char",
-                "unsigned short",
-                "unsigned int", 
-                "unsigned long",
+                "unsigned char ",
+                "unsigned short ",
+                "unsigned int ", 
+                "unsigned long ",
 
-                "char",  
-                "short", 
-                "int",   
-                "long",  
+                "char ",  
+                "short ", 
+                "int ",   
+                "long ",  
 
-                "float",
-                "double",
+                "float ",
+                "double ",
             };
             
             return cTypes[(int)Kind];
@@ -46,7 +46,7 @@ namespace Suteki
     {
         public override void Emit(Input input)
         {
-            input.Output.Source += Value.Data.ToString();
+            input.Output.Source += Value.Content;
         }
     }
 
@@ -54,7 +54,7 @@ namespace Suteki
     {
         public override void Emit(Input input)
         {
-            input.Output.Source += Value.Data.ToString();
+            input.Output.Source += Value.Content;
         }
     }
 
@@ -62,7 +62,7 @@ namespace Suteki
     {
         public override void Emit(Input input)
         {
-            input.Output.Source += Value.Data.ToString();
+            input.Output.Source += Value.Content;
         }
     }
 
@@ -70,7 +70,7 @@ namespace Suteki
     {
         public override void Emit(Input input)
         {
-            input.Output.Source += Value.Data.ToString();
+            input.Output.Source += Value.Content;
         }
     }
 
@@ -78,9 +78,13 @@ namespace Suteki
     {
         public override void Emit(Input input)
         {
+            // Mangle name
+            string mangle = (Property != PropertyKind.Extern) ? "su_"
+                                                              : ""; 
+
             // Generate function head
-            string head  = $"{Type.ToString()} ";
-                   head += $"{Name.Data.ToString()}";
+            string head  = $"{Type.ToString()}";
+                   head += $"{mangle}{Name.Content}";
                    head += '(';
 
             for (int index = 0; index < Parameters.Count; ++index)
@@ -100,7 +104,7 @@ namespace Suteki
             input.Output.Header += $"extern {cExtern}{head};\n";
 
             // Emit source
-            if (Property != PropertyKind.Extern)
+            if (Block != null)
             {
                 input.Output.Source += $"{head}\t\n";
                 input.Output.Source += "{\n";
@@ -114,7 +118,7 @@ namespace Suteki
     {
         public override string ToString()
         {
-            return $"{Type.ToString()} {Name.Data.ToString()}";
+            return $"{Type.ToString()}{Name.Content}";
         }
     }
 
@@ -145,7 +149,12 @@ namespace Suteki
     {
         public override void Emit(Input input)
         {
-            input.Output.Source += $"{Name.Data.ToString()}";
+            // Mangle name
+            Symbol symbol = input.GetSymbol(Name);
+            string mangle = (symbol.Property != PropertyKind.Extern) ? "su_"
+                                                                     : ""; 
+                                                                     
+            input.Output.Source += $"{mangle}{Name.Content}";
             input.Output.Source += '(';
 
             for (int index = 0; index < Parameters.Count; ++index)
