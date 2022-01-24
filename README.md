@@ -1,5 +1,5 @@
 ## Suteki
-**suteki (素敵)** is a simple statically typed systems programming language like [**C**](https://en.wikipedia.org/wiki/C_(programming_language)), it have features like:
+**suteki (素敵)** is a simple statically typed systems programming language like [**C**](https://en.wikipedia.org/wiki/C_(programming_language)), it has features like:
 
 * Modules
 * Macros
