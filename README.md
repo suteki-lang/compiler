@@ -28,4 +28,4 @@ See more examples [**here**](https://github.com/suteki-lang/examples).
 TODO
 
 ## License
-This compiler is distributed under the [**MIT License**](https://opensource.org/licenses/MIT). See [**LICENSE**](https://github.com/suteki-lang/compiler/blob/main/LICENSE) for more details.
+This compiler is distributed under the [**Zlib License**](https://opensource.org/licenses/Zlib). See [**LICENSE**](https://github.com/suteki-lang/compiler/blob/main/LICENSE) for more details.
