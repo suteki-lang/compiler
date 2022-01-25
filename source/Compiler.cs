@@ -9,6 +9,10 @@ namespace Suteki
             Parser parser = new Parser();
             parser.Start();
 
+            // Only emit if no error
+            if (Config.HadError)
+                return;
+
             // Emit C++ code
             foreach (Input input in Config.Inputs)
             {

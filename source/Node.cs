@@ -14,7 +14,7 @@ namespace Suteki
 
         }
 
-        public virtual void CheckSymbols(Input input)
+        public virtual void ResolveSymbols(Input input)
         {
             
         }
@@ -29,7 +29,7 @@ namespace Suteki
             
         }
 
-        public virtual string ToString()
+        public virtual string AsString()
         {
             return null;
         }
@@ -42,7 +42,7 @@ namespace Suteki
 
     partial class NodeImport : Node
     {
-        public string ModuleName;
+        public Node   ModuleName;
         public Token  Start;
     }
 
@@ -92,6 +92,42 @@ namespace Suteki
         public NodeString(Token value)
         {
             Value = value;
+        }
+    }
+
+    partial class NodeIdentifierName : Node
+    {
+        public Token Value;
+
+        // NodeIdentifierName Constructor
+        public NodeIdentifierName(Token value)
+        {
+            Value = value;
+        }
+
+        // To string
+        public override string AsString()
+        {
+            return Value.Content;
+        }
+    }
+
+    partial class NodeQualifiedName : Node
+    {
+        public Node Left;
+        public Node Right;
+
+        // NodeQualifiedName Constructor
+        public NodeQualifiedName(Node left, Node right)
+        {
+            Left  = left;
+            Right = right;
+        }
+
+        // To string
+        public override string AsString()
+        {
+            return $"{Left.AsString()}.{Right.AsString()}";
         }
     }
 

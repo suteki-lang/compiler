@@ -106,8 +106,36 @@ namespace Suteki
             Logger.Error(Current, message);
         }
 
+        // Parse qualified name
+        private Node ParseQualifiedName(Node left)
+        {
+            Node name;
+
+            Consume(TokenKind.Identifier, "Expected identifier.");
+            name = new NodeQualifiedName(left, new NodeIdentifierName(Previous));
+
+            if (Match(TokenKind.Dot))
+                return ParseQualifiedName(name);
+
+            return name;
+        }
+
+        // Parse name
+        private Node ParseName()
+        {
+            Node left;
+
+            Consume(TokenKind.Identifier, "Expected identifier.");
+            left = new NodeIdentifierName(Previous);
+
+            if (Match(TokenKind.Dot))
+                return ParseQualifiedName(left);
+
+            return left;
+        }
+
         // Parse module name
-        private string ParseModuleName()
+        private string ParseModuleNameStr()
         {
             string result = "";
 
@@ -138,16 +166,20 @@ namespace Suteki
         // Parse export
         private void ParseExport()
         {
-            // Set input module
-            string moduleName = ParseModuleName();
+            string moduleName = ParseModuleNameStr();
 
-            if (CurrentInput.Module != "")
+            // Add module
+            if (!Config.Modules.ContainsKey(moduleName))
+                Config.Modules.Add(moduleName, new Module(moduleName));
+
+            // Set input module
+            if (CurrentInput.Module != null)
             {
                 Previous.Content = moduleName;
                 Logger.Error(Previous, "This file was already exported.");
             }
 
-            CurrentInput.Module = moduleName;
+            CurrentInput.Module = Config.Modules[moduleName];
 
             // Optional semicolon
             Match(TokenKind.Semicolon);
@@ -159,7 +191,7 @@ namespace Suteki
             // Make node
             NodeImport node            = new NodeImport();
                        node.Start      = Current;
-                       node.ModuleName = ParseModuleName();
+                       node.ModuleName = ParseName();
 
             Nodes.Add(node);
 
@@ -429,19 +461,27 @@ namespace Suteki
             // Analyze the AST nodes
             foreach (Input input in Config.Inputs)
             {
+                // Make a module
+                if (input.Module == null)
+                    input.Module = new Module("");
+
                 foreach (Node node in input.Nodes)
                 {
-                    if (!input.SymbolsAreRegistered)
-                        node.RegisterSymbols(input);    
+                    node.RegisterSymbols(input);
                 }
+            }
 
-                input.SymbolsAreRegistered = true;
-
+            foreach (Input input in Config.Inputs)
+            {
                 foreach (Node node in input.Nodes)
                 {
-                    node.CheckSymbols(input);
-                    node.TypeCheck(input);
-                    node.Optimize(input);
+                    node.ResolveSymbols(input);
+
+                    if (!Config.HadError)
+                    {
+                        node.TypeCheck(input);
+                        node.Optimize(input);
+                    }
                 }
             }
         }

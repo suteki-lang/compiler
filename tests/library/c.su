@@ -1,5 +1,0 @@
-export std.c;
-
-extern int puts(string str);
-
-extern void exit(int status);

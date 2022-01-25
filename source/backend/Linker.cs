@@ -1,4 +1,5 @@
 using System.IO;
+using System.Collections.Generic;
 
 namespace Suteki
 {
@@ -11,7 +12,7 @@ namespace Suteki
 
             // Format the path
             path = path.Replace(".su", "").Replace("../", "").Replace(name, "");
-            path = ("user/" + path);
+            path = ("files/" + path);
 
             // Make the directory
             string directory = (Config.OutputPath + path);
@@ -25,12 +26,41 @@ namespace Suteki
         // Start linking
         public static void Start()
         {
+            // Make sure modules directory exists
+            string moduleDirectory = $"{Config.OutputPath}modules";
+
+            if (!Directory.Exists(moduleDirectory))
+                Directory.CreateDirectory(moduleDirectory);
+
+            // Write modules
+            foreach (KeyValuePair<string, Module> module in Config.Modules)
+            {
+                string output          = "";
+                string moduleGuardName = $"{module.Key.ToUpper().Replace(".", "__")}_HPP";
+
+                // Write guard
+                output += $"#ifndef {moduleGuardName}\n";
+                output += $"#define {moduleGuardName}\n\n";
+
+                foreach (Input input in Config.Inputs)
+                {
+                    if (input.Module.Name == module.Key)
+                        output += $"#include <{GetPath(input.Path)}.hpp>\n";
+                }
+
+                // End guard
+                output += "\n#endif";
+
+                // Write
+                File.WriteAllText($"{moduleDirectory}/{module.Key}.hpp", output);
+            }
+
             // Write files
             foreach (Input input in Config.Inputs)
             {
                 string path       = GetPath(input.Path);
                 string outputPath = Config.OutputPath + path;
-                string guardName  = path.Replace("/", "_").Replace(".", "_").ToUpper();
+                string guardName  = $"{path.Replace("/", "_").Replace(".", "__").ToUpper()}_HPP";
 
                 string header = "";
                 string source = "";
@@ -45,7 +75,7 @@ namespace Suteki
                 header += "\n#endif";
 
                 // Source: Add includes
-                source += $"#include <{path}.hpp>\n";
+                source += $"#include <modules/{input.Module.Name}.hpp>\n";
                 source += input.Output.Includes;
                 source += "\n";
                 source += input.Output.Source;

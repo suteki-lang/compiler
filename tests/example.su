@@ -1,12 +1,10 @@
+export main;
+
+import std.c.stdio;
+import std.c.stdlib;
+
 extern int main()
 {
-    print_hello();
-    return 0;
-}
-
-extern int puts(string str);
-
-void print_hello()
-{
-    puts("hello");
+    puts("Hello World!");
+    exit(0);
 }

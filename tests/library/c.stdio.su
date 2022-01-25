@@ -1,0 +1,3 @@
+export std.c.stdio;
+
+extern int puts(string str);

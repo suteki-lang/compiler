@@ -4,18 +4,14 @@ namespace Suteki
     {
         public override void Emit(Input input)
         {
-            // Get module path
-            Input  module = Config.Inputs.Find((m) => m.Module == ModuleName);
-            string path   = $"user/{module.Path.Replace(".su", "")}.hpp";
-
             // Emit include
-            input.Output.Includes += $"#include <{path}>\n";
+            input.Output.Includes += $"#include <modules/{ModuleName.AsString()}.hpp>\n";
         }
     }
 
     partial class NodePrimitive : Node
     {
-        public override string ToString()
+        public override string AsString()
         {
             // NOTE (ryaangu): do this better?
             string[] cTypes =
@@ -83,13 +79,13 @@ namespace Suteki
                                                               : ""; 
 
             // Generate function head
-            string head  = $"{Type.ToString()}";
+            string head  = $"{Type.AsString()}";
                    head += $"{mangle}{Name.Content}";
                    head += '(';
 
             for (int index = 0; index < Parameters.Count; ++index)
             {
-                head += Parameters[index].ToString();
+                head += Parameters[index].AsString();
 
                 if (index < (Parameters.Count - 1))
                     head += ", ";
@@ -116,9 +112,9 @@ namespace Suteki
 
     partial class NodeParameter : Node
     {
-        public override string ToString()
+        public override string AsString()
         {
-            return $"{Type.ToString()}{Name.Content}";
+            return $"{Type.AsString()}{Name.Content}";
         }
     }
 

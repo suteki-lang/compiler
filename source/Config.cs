@@ -13,5 +13,7 @@ namespace Suteki
         public static OptimizationKind OptimizationLevel = OptimizationKind.None;
         public static string           OutputPath        = "tests/out/";
         public static List<Input>      Inputs            = new List<Input>();
+        
+        public static Dictionary<string, Module> Modules = new Dictionary<string, Module>();
     }
 }

@@ -1,0 +1,3 @@
+export std.c.stdlib;
+
+extern void exit(int status);
