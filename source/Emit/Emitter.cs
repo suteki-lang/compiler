@@ -3,10 +3,13 @@ namespace Suteki
     class Emitter
     {
         // Emit C++ code
-        public static void Start(Input input)
+        public static void Start()
         {
-            foreach (Node node in input.Nodes)
-                node.Emit(input);
+            foreach (Input input in Config.Inputs)
+            {
+                foreach (Node node in input.Nodes)
+                    node.Emit(input);
+            }
         }
     }
 }

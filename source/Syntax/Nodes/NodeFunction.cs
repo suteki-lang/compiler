@@ -53,6 +53,9 @@ namespace Suteki
             // Emit function block
             if (Block != null)
                 Block.Emit(input);
+
+            // Emit new line
+            input.Output.FunctionDefinitions += '\n';
         }
     }
 }

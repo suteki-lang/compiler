@@ -201,7 +201,6 @@ namespace Suteki
         {
             // Make node
             NodeImport node            = new NodeImport();
-                       node.Start      = Current;
                        node.ModuleName = ParseName();
 
             Nodes.Add(node);
@@ -217,10 +216,10 @@ namespace Suteki
 
             if (Types.ContainsKey(typeName))
             {
-                NodePrimitive node      = new NodePrimitive();
-                              node.Kind = Types[typeName].Kind;
-
-                return node;
+                return new NodePrimitive()
+                {
+                    PrimitiveKind = Types[typeName].Kind
+                };
             }
 
             return null;
@@ -249,8 +248,10 @@ namespace Suteki
         private Node ParseReturn()
         {
             // Make node
-            NodeReturn node       = new NodeReturn();
-                       node.Start = Previous;
+            NodeReturn node = new NodeReturn()
+            {
+                Token = Previous
+            };
 
             // Parse expression
             if (Match(TokenKind.Semicolon))
@@ -330,7 +331,10 @@ namespace Suteki
             Token start = Current;
 
             // Make node
-            NodeBlock node = new NodeBlock();
+            NodeBlock node = new NodeBlock()
+            {
+                Token = start
+            };
 
             // Parse statements
             if (!Match(TokenKind.RightBrace))
@@ -470,31 +474,31 @@ namespace Suteki
                 return;
 
             // Analyze the AST nodes
-            foreach (Input input in Config.Inputs)
-            {
-                // Make a module
-                if (input.Module == null)
-                    input.Module = new Module("");
+            // foreach (Input input in Config.Inputs)
+            // {
+            //     // Make a module
+            //     if (input.Module == null)
+            //         input.Module = new Module("");
 
-                foreach (Node node in input.Nodes)
-                {
-                    node.RegisterSymbols(input);
-                }
-            }
+            //     foreach (Node node in input.Nodes)
+            //     {
+            //         node.RegisterSymbols(input);
+            //     }
+            // }
 
-            foreach (Input input in Config.Inputs)
-            {
-                foreach (Node node in input.Nodes)
-                {
-                    node.ResolveSymbols(input);
+            // foreach (Input input in Config.Inputs)
+            // {
+            //     foreach (Node node in input.Nodes)
+            //     {
+            //         node.ResolveSymbols(input);
 
-                    if (!Config.HadError)
-                    {
-                        node.TypeCheck(input);
-                        node.Optimize(input);
-                    }
-                }
-            }
+            //         if (!Config.HadError)
+            //         {
+            //             node.TypeCheck(input);
+            //             node.Optimize(input);
+            //         }
+            //     }
+            // }
         }
     }
 }

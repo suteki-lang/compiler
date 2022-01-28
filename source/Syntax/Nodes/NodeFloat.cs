@@ -4,6 +4,12 @@ namespace Suteki
     {
         public Token Value;
 
+        // Constructor
+        public NodeFloat(Token value)
+        {
+            Value = value;
+        }
+
         public override string GetString => Value.Content;
         public override Token  GetToken  => Value;
 

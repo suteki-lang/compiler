@@ -7,6 +7,5 @@ int a()
 
 extern int main()
 {
-    a();
-    test.a();
+    return 0;
 }

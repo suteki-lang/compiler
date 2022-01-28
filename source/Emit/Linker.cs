@@ -90,7 +90,7 @@ namespace Suteki
                     source += '\n';
                 }
 
-                source += input.Output.FunctionDefinitions.Substring(0, input.Output.FunctionDefinitions.Length - 1);
+                source += input.Output.FunctionDefinitions.Substring(0, input.Output.FunctionDefinitions.Length - 2);
 
                 // Write files
                 File.WriteAllText($"{outputPath}.hpp", header);
