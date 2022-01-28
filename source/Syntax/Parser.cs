@@ -473,18 +473,31 @@ namespace Suteki
             if (Config.HadError)
                 return;
 
-            // Analyze the AST nodes
-            // foreach (Input input in Config.Inputs)
-            // {
-            //     // Make a module
-            //     if (input.Module == null)
-            //         input.Module = new Module("");
+            /*
+                SEMANTIC ANALYSIS
+            */
 
-            //     foreach (Node node in input.Nodes)
-            //     {
-            //         node.RegisterSymbols(input);
-            //     }
-            // }
+            // Make global module
+            Module globalModule = new Module("global");
+            Config.Modules.Add("global", globalModule);
+
+            // Register all global symbols from inputs
+            foreach (Input input in Config.Inputs)
+            {
+                // Use global module?
+                if (input.Module == null)
+                    input.Module = globalModule;
+
+                foreach (Node node in input.Nodes)
+                    node.RegisterSymbols(input);
+            }
+
+            // Resolve symbols
+            foreach (Input input in Config.Inputs)
+            {
+                foreach (Node node in input.Nodes)
+                    node.ResolveSymbols(input);
+            }
 
             // foreach (Input input in Config.Inputs)
             // {

@@ -6,8 +6,7 @@ namespace Suteki
         public string FunctionDeclarations;
         public string FunctionDefinitions;
 
-        public string GlobalIncludes;
-        public string LocalIncludes;
+        public string Includes;
 
         public int Tabs;
 
@@ -18,8 +17,7 @@ namespace Suteki
             FunctionDeclarations         = "";
             FunctionDefinitions          = "";
 
-            GlobalIncludes = "";
-            LocalIncludes  = "";
+            Includes = "";
 
             Tabs = 0;
         }

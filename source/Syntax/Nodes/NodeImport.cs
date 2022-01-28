@@ -7,10 +7,18 @@ namespace Suteki
         public override string GetString => ModuleName.GetString;
         public override Token  GetToken  => ModuleName.GetToken;
 
-        // Emit C++ code
-        public override void Emit(Input input)
+        // Register symbols
+        public override void RegisterSymbols(Input input)
         {
-            input.Output.LocalIncludes += $"#include <modules/{ModuleName.GetString}.hpp>\n";
+            // Find module
+            if (!Config.Modules.ContainsKey(ModuleName.GetString))
+            {
+                input.Logger.Error(GetToken, "This module was not found.");
+                return;
+            }
+
+            // Add module
+            input.Imports.Add(Config.Modules[ModuleName.GetString]);
         }
     }
 }

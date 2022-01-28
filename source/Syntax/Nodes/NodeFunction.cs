@@ -12,6 +12,27 @@ namespace Suteki
 
         public override Token GetToken => Name;
 
+        // Register symbols
+        public override void RegisterSymbols(Input input)
+        {
+            // Check for existing symbol
+            if (input.GetSymbol(Name.Content) != null)
+            {
+                input.Logger.Error(Name, "This symbol was already declared.");
+                return;
+            }
+
+            // Add symbol
+            input.Module.Symbols.Add(Name.Content, new Symbol(SymbolKind.Function, input.Module, this));
+        }
+
+        // Resolve symbols
+        public override void ResolveSymbols(Input input)
+        {
+            if (Block != null)
+                Block.ResolveSymbols(input);
+        }
+
         // Emit C++ code
         public override void Emit(Input input)
         {
@@ -22,8 +43,8 @@ namespace Suteki
             // Mangle name and get property
             if (Property != PropertyKind.Extern) 
             {
-                mangle   = "su_"; 
-                property = "static ";
+                mangle   = $"su_{input.Module.Name.Replace('.', '_')}_"; 
+                property = "extern \"C\" "; //"static ";
             }
             else
                 property = "extern \"C\" ";
@@ -42,20 +63,22 @@ namespace Suteki
             head += ')';
 
             // Emit function declaration
-            if (Property == PropertyKind.Extern)
+            // if (Property == PropertyKind.Extern)
                 input.Output.ExternalFunctionDeclarations += $"{property}{head};\n";
-            else
-                input.Output.FunctionDeclarations += $"{property}{head};\n";
+            // else
+                // input.Output.FunctionDeclarations += $"{property}{head};\n";
 
-            // Emit function definition
-            input.Output.FunctionDefinitions += head;
-
-            // Emit function block
             if (Block != null)
+            {
+                // Emit function definition
+                input.Output.FunctionDefinitions += head;
+
+                // Emit function block
                 Block.Emit(input);
 
-            // Emit new line
-            input.Output.FunctionDefinitions += '\n';
+                // Emit new line
+                input.Output.FunctionDefinitions += '\n';
+            }
         }
     }
 }

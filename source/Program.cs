@@ -13,8 +13,12 @@ namespace Suteki
 
             Parser parser = new Parser();
             parser.Start();
-            Emitter.Start();
-            Linker.Start();
+
+            if (!Config.HadError)
+            {
+                Emitter.Start();
+                Linker.Start();
+            }
         }
     }
 }

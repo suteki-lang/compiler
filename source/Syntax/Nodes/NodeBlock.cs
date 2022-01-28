@@ -8,6 +8,13 @@ namespace Suteki
         public List<Node> Statements = new List<Node>();
 
         public override Token GetToken => Token;
+
+        // Resolve symbols
+        public override void ResolveSymbols(Input input)
+        {
+            foreach (Node node in Statements)
+                node.ResolveSymbols(input);
+        }
         
         // Emit C++ code
         public override void Emit(Input input)

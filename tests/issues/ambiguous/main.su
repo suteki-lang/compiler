@@ -1,0 +1,12 @@
+export main;
+
+void test()
+{
+
+}
+
+extern int main()
+{
+    test();
+    return 0;
+}
