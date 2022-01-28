@@ -1,10 +1,12 @@
 export main;
 
-import std.c.stdio;
-import std.c.stdlib;
+int a()
+{
+
+}
 
 extern int main()
 {
-    puts("Hello World!");
-    exit(0);
+    a();
+    test.a();
 }
