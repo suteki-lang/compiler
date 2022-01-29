@@ -44,6 +44,10 @@ namespace Suteki
             if (source == ExpressionKind.Integer && destination == ExpressionKind.Float)
                 return true;
 
+            if (source == ExpressionKind.Bool && (destination != ExpressionKind.Void &&
+                                                  destination != ExpressionKind.String))
+                return true;
+
             return (source == destination);
         }
     }

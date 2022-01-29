@@ -33,6 +33,17 @@ namespace Suteki
                 Block.ResolveSymbols(input);
         }
 
+        // Type checking
+        public override ExpressionKind TypeCheck(Input input)
+        {
+            input.CurrentFunction = this;
+
+            if (Block != null)
+                Block.TypeCheck(input);
+
+            return ExpressionKind.Void;
+        }
+
         // Emit C++ code
         public override void Emit(Input input)
         {

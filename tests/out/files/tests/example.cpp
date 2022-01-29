@@ -5,9 +5,9 @@
 
 int main()
 {
-	su_example_write("?");
+	su_example_write();
 	exit(123);
-	return 0;
+	return false;
 }
 
 void su_example_write()

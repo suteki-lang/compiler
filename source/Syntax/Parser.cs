@@ -492,26 +492,24 @@ namespace Suteki
                     node.RegisterSymbols(input);
             }
 
-            // Resolve symbols
+            // Don't do the other passes if an error happened.
+            if (Config.HadError)
+                return;
+
             foreach (Input input in Config.Inputs)
             {
+                // Resolve symbols
                 foreach (Node node in input.Nodes)
                     node.ResolveSymbols(input);
+
+                // Don't do the other pass if an error happened.
+                if (Config.HadError)
+                    return;
+
+                // Type checking
+                foreach (Node node in input.Nodes)
+                    node.TypeCheck(input);
             }
-
-            // foreach (Input input in Config.Inputs)
-            // {
-            //     foreach (Node node in input.Nodes)
-            //     {
-            //         node.ResolveSymbols(input);
-
-            //         if (!Config.HadError)
-            //         {
-            //             node.TypeCheck(input);
-            //             node.Optimize(input);
-            //         }
-            //     }
-            // }
         }
     }
 }

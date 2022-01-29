@@ -16,6 +16,31 @@ namespace Suteki
                 input.Logger.Error(GetToken, "This symbol does not exists.");
         }
 
+        // Type checking
+        public override ExpressionKind TypeCheck(Input input)
+        {
+            NodeFunction node = (NodeFunction)input.GetSymbol(Name.GetString).Node;
+
+            // Check for parameter count
+            if (Parameters.Count != node.Parameters.Count)
+            {
+                input.Logger.Error(Name.GetToken, "Function call parameter(s) count does not match function parameter(s) count.");
+                return ExpressionKind.Void;
+            }
+
+            // Compare parameter types
+            for (int index = 0; index < node.Parameters.Count; ++index)
+            {
+                ExpressionKind parameter  = node.Parameters[index].TypeCheck(input);
+                ExpressionKind expression = Parameters     [index].TypeCheck(input);
+
+                if (!Type.Compare(parameter, expression))
+                    input.Logger.Error(Name.GetToken, $"Function call parameter ({index}) type does not match function parameter ({index}) type.");
+            }
+
+            return ExpressionKind.Void;
+        }
+
         // Emit C++ code
         public override void Emit(Input input)
         {

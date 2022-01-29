@@ -7,6 +7,21 @@ namespace Suteki
 
         public override Token GetToken => Token;
 
+        // Type checking
+        public override ExpressionKind TypeCheck(Input input)
+        {
+            ExpressionKind expressionType = (Expression == null) ?
+                                             ExpressionKind.Void :
+                                             Expression.TypeCheck(input);
+            ExpressionKind functionType   = input.CurrentFunction.Type.TypeCheck(input);
+
+            // Compare types
+            if (!Type.Compare(functionType, expressionType))
+                input.Logger.Error(GetToken, "Return value type does not match function return type.");
+    
+            return ExpressionKind.Void;
+        }
+
         // Emit C++ code
         public override void Emit(Input input)
         {

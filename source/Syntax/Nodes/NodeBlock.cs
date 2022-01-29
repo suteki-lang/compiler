@@ -15,6 +15,15 @@ namespace Suteki
             foreach (Node node in Statements)
                 node.ResolveSymbols(input);
         }
+
+        // Type checking
+        public override ExpressionKind TypeCheck(Input input)
+        {
+            foreach (Node node in Statements)
+                node.TypeCheck(input);
+
+            return ExpressionKind.Void;
+        }
         
         // Emit C++ code
         public override void Emit(Input input)

@@ -9,5 +9,11 @@ namespace Suteki
 
         public override string GetString => $"{Type.GetString}{Name.Content}";
         public override Token  GetToken  => Name;
+
+        // Type checking
+        public override ExpressionKind TypeCheck(Input input)
+        {
+            return Type.TypeCheck(input);
+        }
     }
 }

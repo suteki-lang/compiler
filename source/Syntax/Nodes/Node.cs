@@ -14,6 +14,12 @@ namespace Suteki
             
         }
 
+        // Type checking
+        public virtual ExpressionKind TypeCheck(Input input)
+        {
+            return ExpressionKind.Void;
+        }
+
         // Emit C++ code
         public virtual void Emit(Input input)
         {

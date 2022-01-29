@@ -2,9 +2,9 @@ export example;
 
 extern int main()
 {
-    example.write("?");
+    example.write();
     std.exit(123);
-    return 0;
+    return false;
 }
 
 void write()
