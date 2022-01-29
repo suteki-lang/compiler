@@ -1,6 +1,3 @@
 #include <modules/global.hpp>
+#include <modules/std.hpp>
 
-void su_global_write(const char *idk)
-{
-	exit(10);
-}

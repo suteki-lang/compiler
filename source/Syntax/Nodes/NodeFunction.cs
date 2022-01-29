@@ -56,7 +56,7 @@ namespace Suteki
             {
                 head += Parameters[index].GetString;
 
-                if (index < (Parameters.Count - 1))
+                if (index != (Parameters.Count - 1))
                     head += ", ";
             }
 

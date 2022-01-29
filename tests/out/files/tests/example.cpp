@@ -1,5 +1,7 @@
 #include <modules/global.hpp>
 #include <modules/example.hpp>
+#include <modules/example.hpp>
+#include <modules/std.hpp>
 
 int main()
 {

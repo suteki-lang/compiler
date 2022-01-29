@@ -26,6 +26,10 @@ namespace Suteki
         // Start linking
         public static void Start()
         {
+            // Clear output path
+            Directory.Delete(Config.OutputPath, true);
+            Directory.CreateDirectory(Config.OutputPath);
+
             // Write modules
             string modulesDirectory = $"{Config.OutputPath}modules";
 

@@ -25,9 +25,16 @@ namespace Suteki
             NodeFunction node   = (NodeFunction)symbol.Node;
 
             // Mangle name
-            // NOTE: This doesn't look right
             if (node.Property != PropertyKind.Extern)
             {
+                /*
+                    Since the symbol property is not extern,
+                    we need to add su_ and the module name if there is none.
+                    Example:
+
+                        symbol name: hello();
+                        new    name: su_someModuleName_hello();
+                */
                 mangle = "su_"; 
 
                 if (!name.Contains(symbol.Module.Name))
@@ -35,18 +42,16 @@ namespace Suteki
             }
             else
             {
-                System.Console.WriteLine(name);
+                /*
+                    Since the symbol property is extern,
+                    we need to remove the module name if there is one.
+                    Example:
 
-                System.Console.WriteLine(symbol.Module.Name);
-                System.Console.WriteLine(input.Module.Name);
-                if (name.Contains(input.Module.Name))
-                    name = name.Replace(input.Module.Name + '.', "");
-
-                System.Console.WriteLine(name);
-
+                        symbol name: someModuleName.hello();
+                        new    name: hello();
+                */
                 if (name.Contains(symbol.Module.Name))
-                    name = name.Replace(symbol.Module.Name + '.', "");
-                System.Console.WriteLine(name);
+                    name = name.Replace($"{symbol.Module.Name}.", "");
             }
 
             input.Output.FunctionDefinitions += $"{mangle}{name.Replace('.', '_')}(";
@@ -55,7 +60,7 @@ namespace Suteki
             {
                 Parameters[index].Emit(input);
 
-                if (index < (Parameters.Count - 1))
+                if (index != (Parameters.Count - 1))
                     input.Output.FunctionDefinitions += ", ";
             }
 

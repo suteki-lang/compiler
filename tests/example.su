@@ -2,8 +2,8 @@ export example;
 
 extern int main()
 {
-    write("?");
-    exit(123);
+    example.write("?");
+    std.exit(123);
     return 0;
 }
 
