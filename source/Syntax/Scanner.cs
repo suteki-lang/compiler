@@ -40,8 +40,8 @@ namespace Suteki
         // Advance character
         private char Advance()
         {
-            ++End;
-            ++Column;
+            Column += 1;
+            End     = System.Math.Clamp(End, End + 1, Source.Length);
 
             return Source[End - 1];
         }
@@ -73,13 +73,13 @@ namespace Suteki
         }
 
         // Skip whitespace
-        private void SkipWhitespace()
+        private TokenKind SkipWhitespace()
         {
             for (;;)
             {
                 // Is source end?
                 if (End >= Source.Length)
-                    return;
+                    return TokenKind.End;
 
                 switch (Source[End])
                 {
@@ -101,8 +101,26 @@ namespace Suteki
                         break;
                     }
 
+                    case '/':
+                    {
+                        if ((End + 1) >= Source.Length)
+                            break;
+
+                        // Single line comment
+                        if (Source[End + 1] == '/')
+                        {
+                            while (End < Source.Length && Source[End] != '\n')
+                                Advance();
+
+                            Line   += 1;
+                            Column  = 0;
+                        }
+
+                        break;
+                    }
+
                     default:
-                        return;
+                        return TokenKind.End;
                 }
             }
         }
@@ -196,7 +214,10 @@ namespace Suteki
         // Scan token
         public TokenKind Next()
         {
-            SkipWhitespace();
+            TokenKind token = SkipWhitespace();
+
+            if (token != TokenKind.End)
+                return TokenKind.Error;
 
             Previous = Current;
             Start    = End;

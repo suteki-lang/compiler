@@ -1,13 +1,8 @@
-export example;
-
 extern int main()
 {
-    example.write();
+    // Exit with code: 123
     std.exit(123);
+
+    // This code will not run because I'm already exiting above.
     return false;
-}
-
-void write()
-{
-
 }
