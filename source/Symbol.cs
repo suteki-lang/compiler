@@ -8,35 +8,16 @@ namespace Suteki
 
     class Symbol
     {
-        public PropertyKind Property;
         public SymbolKind   Kind;
+        public Module       Module;
         public Node         Node;
 
-        // Symbol Constructor
-        public Symbol(PropertyKind property, SymbolKind kind, Node node)
+        // Constructor
+        public Symbol(SymbolKind kind, Module module, Node node)
         {
-            Property = property;
             Kind     = kind;
+            Module   = module;
             Node     = node;
-        }
-
-        // Get function node
-        public NodeFunction GetNodeFunction()
-        {
-            return Node as NodeFunction;
-        }
-
-        // Get expression kind
-        public ExpressionKind GetExpressionKind(Input input)
-        {
-            switch (Kind)
-            {
-                case SymbolKind.Function:
-                    return GetNodeFunction().Type.TypeCheck(input);
-
-                default:
-                    return ExpressionKind.Void;
-            }
         }
     }
 }

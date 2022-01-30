@@ -7,7 +7,7 @@ namespace Suteki
         public string                     Name;
         public Dictionary<string, Symbol> Symbols;
 
-        // Default Constructor
+        // Constructor
         public Module(string name)
         {
             Name    = name;

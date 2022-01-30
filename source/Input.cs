@@ -7,72 +7,80 @@ namespace Suteki
         public string       Path;
         public string       Source;
         public Module       Module;
-        public NodeFunction CurrentFunction;
         public Output       Output;
+        public NodeFunction CurrentFunction;
         public Logger       Logger;
         public Scanner      Scanner;
         public List<Node>   Nodes;
         public List<Module> Imports;
-        public bool         SymbolsRegistered;
 
-        // Input Constructor
+        // Constructor
         public Input(string path, string source)
         {
-            Output            = new Output();
-            Logger            = new Logger();
-            Scanner           = new Scanner();
-            Nodes             = new List<Node>();
-            Imports           = new List<Module>();
-            
-            Path              = path;
-            Logger.Path       = path;
-            Source            = source;
-            Module            = null;
-            SymbolsRegistered = false;
+            Path            = path;
+            Source          = source;
+            Module          = null;
+            Output          = new Output();
+            CurrentFunction = null;
+            Logger          = new Logger() { Path = path };
+            Scanner         = new Scanner();
+            Nodes           = new List<Node>();
+            Imports         = new List<Module>();
 
+            // Set scanner source
             Scanner.Set(source);
         }
 
-        // Find symbol
-        public bool Find(string name)
+        // Check for symbol
+        private Symbol CheckName(string name)
         {
-            if (Module.Symbols.ContainsKey(name))
-                return true;
-
-            foreach (Module module in Imports)
+            foreach (KeyValuePair<string, Module> module in Config.Modules)
             {
-                if (module.Symbols.ContainsKey(name))
-                    return true;
+                if (module.Value.Symbols.ContainsKey(name))
+                {
+                    // Add import
+                    if (!Imports.Contains(module.Value))
+                        Imports.Add(module.Value);
+
+                    return module.Value.Symbols[name];
+                }
             }
-
-            return false;
-        }
-
-        // Find symbol
-        public bool Find(Token name)
-        {
-            return Find(name.Content);
+            
+            return null;
         }
 
         // Get symbol 
         public Symbol GetSymbol(string name)
         {
+            // Try finding symbol in current module
             if (Module.Symbols.ContainsKey(name))
                 return Module.Symbols[name];
 
+            // Try finding symbol in imported modules
             foreach (Module module in Imports)
             {
                 if (module.Symbols.ContainsKey(name))
                     return module.Symbols[name];
             }
 
-            return null;
-        }
+            // Try finding symbol in global module
+            if (Config.Modules.ContainsKey("global") && 
+                Config.Modules["global"].Symbols.ContainsKey(name))
+                return Config.Modules["global"].Symbols[name];
 
-        // Get symbol
-        public Symbol GetSymbol(Token name)
-        {
-            return GetSymbol(name.Content);
+            // Try finding symbol from a module that is not imported
+            if (name.Contains('.'))
+            {
+                Symbol   lastSymbol = null;
+                string[] names      = name.Split('.');
+
+                foreach (string checkName in names)
+                    lastSymbol = CheckName(checkName);
+
+                return lastSymbol;
+            }
+
+            return null;
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 
 namespace Suteki
 {
@@ -10,9 +10,15 @@ namespace Suteki
             {
                 Config.Inputs.Add(new Input(argument, File.ReadAllText(argument)));
             }
-            
-            Compiler.Start();
-            Linker.Start();
+
+            Parser parser = new Parser();
+            parser.Start();
+
+            if (!Config.HadError)
+            {
+                Emitter.Start();
+                Linker.Start();
+            }
         }
     }
 }
