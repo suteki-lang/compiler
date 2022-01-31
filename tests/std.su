@@ -1,3 +1,3 @@
 export std;
 
-extern void exit(int status);
+extern void c(int status);

@@ -23,7 +23,7 @@ namespace Suteki
             }
 
             // Add symbol
-            input.Module.Symbols.Add(Name.Content, new Symbol(SymbolKind.Function, input.Module, this));
+            input.Module.AddSymbol(Name.Content, new Symbol(SymbolKind.Function, input.Module, Name.Content, this));
         }
 
         // Resolve symbols

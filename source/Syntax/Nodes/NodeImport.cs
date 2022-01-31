@@ -11,7 +11,7 @@ namespace Suteki
         public override void RegisterSymbols(Input input)
         {
             // Find module
-            if (!Config.Modules.ContainsKey(ModuleName.GetString))
+            if (!Config.HasModule(ModuleName.GetString))
             {
                 input.Logger.Error(GetToken, "This module was not found.");
                 return;

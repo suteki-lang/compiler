@@ -31,56 +31,96 @@ namespace Suteki
             Scanner.Set(source);
         }
 
-        // Check for symbol
-        private Symbol CheckName(string name)
-        {
-            foreach (KeyValuePair<string, Module> module in Config.Modules)
-            {
-                if (module.Value.Symbols.ContainsKey(name))
-                {
-                    // Add import
-                    if (!Imports.Contains(module.Value))
-                        Imports.Add(module.Value);
-
-                    return module.Value.Symbols[name];
-                }
-            }
-            
-            return null;
-        }
-
         // Get symbol 
-        public Symbol GetSymbol(string name)
+        public Symbol GetSymbol(string name, Token token = null)
         {
+            Symbol foundSymbol = null;
+
             // Try finding symbol in current module
-            if (Module.Symbols.ContainsKey(name))
-                return Module.Symbols[name];
+            if (Module.HasSymbol(name))
+                foundSymbol = Module.GetSymbol(name);
 
             // Try finding symbol in imported modules
             foreach (Module module in Imports)
             {
-                if (module.Symbols.ContainsKey(name))
-                    return module.Symbols[name];
+                if (module.HasSymbol(name))
+                {
+                    // Check for ambiguity
+                    if (foundSymbol != null && token != null)
+                        Logger.Error(token, $"Ambiguous reference between '{foundSymbol.Module.Name}.{foundSymbol.Name}' and '{module.Name}.{name}'.");
+
+                    foundSymbol = module.GetSymbol(name);
+                }
             }
 
             // Try finding symbol in global module
-            if (Config.Modules.ContainsKey("global") && 
-                Config.Modules["global"].Symbols.ContainsKey(name))
-                return Config.Modules["global"].Symbols[name];
+            if (Config.HasSymbol("global", name))
+            {
+                // Check for ambiguity
+                if (foundSymbol != null && token != null)
+                    Logger.Error(token, $"Ambiguous reference between '{foundSymbol.Module.Name}.{foundSymbol.Name}' and 'global.{name}'.");
+
+                foundSymbol = Config.GetSymbol("global", name);
+            }
 
             // Try finding symbol from a module that is not imported
             if (name.Contains('.'))
             {
-                Symbol   lastSymbol = null;
                 string[] names      = name.Split('.');
+                string   moduleName = "";
+                Symbol   lastSymbol = null;
 
-                foreach (string checkName in names)
-                    lastSymbol = CheckName(checkName);
+                for (int index = 0; index < names.Length; ++index)
+                {
+                    string nameSplitted = names[index];
 
-                return lastSymbol;
+                    // Add splitted name to module name
+                    if (moduleName != "")
+                        moduleName += '.'; 
+                        
+                    moduleName += nameSplitted;
+
+                    // Check if splitted name is a module
+                    if (Config.HasModule(nameSplitted))
+                    {
+                        Module module     = Config.GetModule(nameSplitted);
+                        string symbolName = names[index + 1];
+
+                        if (module.HasSymbol(symbolName))
+                            lastSymbol = module.GetSymbol(symbolName);
+                    }
+                    
+                    // Check if module name is a module
+                    else if (Config.HasModule(moduleName))
+                    {
+                        Module module = Config.GetModule(moduleName);
+                        
+                        if ((index + 1) < names.Length)
+                        {
+                            string symbolName = names[index + 1];
+
+                            if (module.HasSymbol(symbolName))
+                                lastSymbol = module.GetSymbol(symbolName);
+                        }
+                    }
+                     
+                    // Check if splitted name is a global symbol
+                    else if (Config.HasSymbol("global", nameSplitted))
+                        lastSymbol = Config.GetSymbol("global", nameSplitted);
+                }
+
+                // Check for ambiguity
+                if (foundSymbol != null && token != null)
+                    Logger.Error(token, $"Ambiguous reference between '{foundSymbol.Module.Name}.{foundSymbol.Name}' and '{lastSymbol.Module.Name}.{lastSymbol.Name}'.");
+
+                // Add import
+                if (!Imports.Contains(lastSymbol.Module))
+                    Imports.Add(lastSymbol.Module);
+
+                foundSymbol = lastSymbol;
             }
 
-            return null;
+            return foundSymbol;
         }
     }
 }

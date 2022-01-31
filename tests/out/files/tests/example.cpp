@@ -3,6 +3,6 @@
 
 int main()
 {
-	exit(123);
+	c(1);
 	return false;
 }

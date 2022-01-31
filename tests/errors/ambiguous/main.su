@@ -1,5 +1,7 @@
 export main;
 
+import other;
+
 void test()
 {
 

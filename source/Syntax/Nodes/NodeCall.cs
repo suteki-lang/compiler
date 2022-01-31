@@ -12,7 +12,7 @@ namespace Suteki
         // Resolve symbols
         public override void ResolveSymbols(Input input)
         {
-            if (input.GetSymbol(Name.GetString) == null)
+            if (input.GetSymbol(Name.GetString, GetToken) == null)
                 input.Logger.Error(GetToken, "This symbol does not exists.");
         }
 
