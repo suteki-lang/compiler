@@ -28,8 +28,8 @@ namespace Suteki
         // Set scanner input
         public void Set(string source)
         {
-            Line     = 0;
-            Column   = 0;
+            Line     = 1;
+            Column   = 1;
             Start    = 0;
             End      = 0;
             Source   = source;
