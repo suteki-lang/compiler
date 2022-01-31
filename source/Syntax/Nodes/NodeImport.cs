@@ -17,6 +17,13 @@ namespace Suteki
                 return;
             }
 
+            // Make sure that module isn't the global one
+            if (ModuleName.GetString == "global")
+            {
+                input.Logger.Error(GetToken, "You can't import the global module.");
+                return;
+            }
+
             // Add module
             input.Imports.Add(Config.Modules[ModuleName.GetString]);
         }
