@@ -1,3 +1,0 @@
-export test;
-
-extern void a();
