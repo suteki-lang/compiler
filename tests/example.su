@@ -1,9 +1,12 @@
 extern int main()
 {
     std.puts("hi");
+    f(1);
 }
 
 string test()
 {
     return "hello";
 }
+
+void f(bool value) {}

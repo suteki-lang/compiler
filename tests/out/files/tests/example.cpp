@@ -4,9 +4,15 @@
 int main()
 {
 	puts("hi");
+	su_global_f(1);
 }
 
 string su_global_test()
 {
 	return "hello";
+}
+
+void su_global_f(bool value)
+{
+	
 }

@@ -75,10 +75,19 @@ namespace Suteki
             if (IsFloat() && other.IsFloat())
                 return true;
 
+            if (IsFloat() && other.IsInteger())
+                return true;
+
             if (IsBool() && other.IsBool())
                 return true;
 
+            if (IsBool() && other.IsInteger())
+                return true;
+
             if (IsString() && other.IsString())
+                return true;
+                
+            if (other.IsBool() && !IsVoid() && !IsPointer() && !IsString())
                 return true;
 
             // string == const byte *
