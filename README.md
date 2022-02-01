@@ -1,4 +1,4 @@
-## Suteki
+## The Suteki Programming Language
 **suteki (素敵)** is a simple statically typed systems programming language like [**C**](https://en.wikipedia.org/wiki/C_(programming_language)), it has features like:
 
 * Modules
@@ -6,23 +6,17 @@
 
 and many more.
 
-## Hello, World! example
-(using [**D**](https://en.wikipedia.org/wiki/D_(programming_language)) syntax highlighting)
+## Hello, World!
 ```d
-// Export this file as 'hello_world' module
-export hello_world;
+import std.io;
 
-// Import all public stuff from IO module
-import standard.io;
-
-// This is the entry point function where everything begins
-void main()
+extern int main()
 {
-    // This writes 'Hello, World!\n' to the console output
-    console_writeln("Hello, World!");
+    writeln("Hello, World!");
+    return 0;
 }
 ```
-See more examples [**here**](https://github.com/suteki-lang/examples).
+See detailed examples [**here**](https://github.com/suteki-lang/examples).
 
 ## Building from source
 TODO
