@@ -4,6 +4,7 @@ namespace Suteki
     {
         public Type Base;
 
+        public override bool IsNull   () => Base.IsNull();
         public override bool IsBasic  () => true;
         public override bool IsPointer() => true;
 
@@ -20,6 +21,9 @@ namespace Suteki
             // const byte * == string
             if (Base.IsConst() && Base.GetDeconstedType().Kind == PrimitiveKind.Byte &&
                 other.IsString())
+                return true;
+
+            if (other.IsNull())
                 return true;
 
             return other.IsPointer() && Base.IsIdentical(other.GetDerefedType());

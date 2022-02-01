@@ -1,12 +1,6 @@
 extern int main()
 {
     std.puts("hi");
-    f(1);
+    std.malloc(1);
+    std.free(null);
 }
-
-string test()
-{
-    return "hello";
-}
-
-void f(bool value) {}

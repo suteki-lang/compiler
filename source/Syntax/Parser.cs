@@ -258,6 +258,9 @@ namespace Suteki
             if (Match(TokenKind.Bool))
                 return new NodeBool(Previous);
 
+            if (Match(TokenKind.Null))
+                return new NodeNull(Previous);
+
             Logger.Error(Current, "Unexpected token.");
             return null;
         }

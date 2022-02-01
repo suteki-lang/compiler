@@ -23,6 +23,7 @@ namespace Suteki
 
             { "true",  TokenKind.Bool    },
             { "false", TokenKind.Bool    },
+            { "null",  TokenKind.Null    },
 
             { "return", TokenKind.Return },
         };

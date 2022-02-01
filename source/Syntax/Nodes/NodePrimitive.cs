@@ -14,6 +14,7 @@ namespace Suteki
             {
                 string[] cTypes =
                 {
+                    "",
                     "void ", 
                     "bool ", 
                     "string ",

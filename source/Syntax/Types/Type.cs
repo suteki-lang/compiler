@@ -4,6 +4,7 @@ namespace Suteki
     {
         public PrimitiveKind Kind;
 
+        public virtual bool IsNull    () => false;
         public virtual bool IsVoid    () => false;
         public virtual bool IsBasic   () => false;
         public virtual bool IsInteger () => false;

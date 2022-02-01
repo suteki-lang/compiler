@@ -10,6 +10,7 @@ namespace Suteki
         Float,
         String,
         Bool,
+        Null,
 
         LeftParenthesis,
         RightParenthesis,

@@ -2,3 +2,7 @@ module std;
 
 extern int  puts(const byte *msg);
 extern void exit(int status);
+
+extern void *malloc(ulong size);
+extern void *realloc(void *ptr, ulong size);
+extern void  free(void *ptr);

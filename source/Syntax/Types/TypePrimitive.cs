@@ -2,6 +2,7 @@ namespace Suteki
 {
     enum PrimitiveKind
     {
+        Null,
         Void,
         Bool,
         String,
@@ -21,6 +22,11 @@ namespace Suteki
 
     class TypePrimitive : Type
     {
+        public override bool IsNull()
+        {
+            return (Kind == PrimitiveKind.Null);
+        }
+
         public override bool IsVoid()
         {
             return (Kind == PrimitiveKind.Void);
@@ -66,6 +72,9 @@ namespace Suteki
 
         public override bool IsIdentical(Type other)
         {
+            if (IsNull() && other.IsNull())
+                return true;
+
             if (IsVoid() && other.IsVoid())
                 return true;
 
@@ -86,7 +95,7 @@ namespace Suteki
 
             if (IsString() && other.IsString())
                 return true;
-                
+
             if (other.IsBool() && !IsVoid() && !IsPointer() && !IsString())
                 return true;
 
@@ -114,19 +123,14 @@ namespace Suteki
 
                 case PrimitiveKind.UInt:
                 case PrimitiveKind.Int:
+                case PrimitiveKind.Single:
                     return 4;
 
                 case PrimitiveKind.ULong:
                 case PrimitiveKind.Long:
-                    return 8;
-
                 case PrimitiveKind.String:
-                    return 8;
-
-                case PrimitiveKind.Single:
-                    return 4;
-
                 case PrimitiveKind.Double:
+                case PrimitiveKind.Null:
                     return 8;
 
                 default:
