@@ -14,9 +14,17 @@ namespace Suteki
         public override Token  GetToken  => Value;
 
         // Type checking
-        public override ExpressionKind TypeCheck(Input input)
+        public override Type TypeCheck(Input input)
         {
-            return ExpressionKind.Integer;
+            PrimitiveKind kind = PrimitiveKind.Int;
+
+            if (long.Parse(Value.Content) >= int.MaxValue)
+                kind = PrimitiveKind.Long;
+
+            return new TypePrimitive() 
+            {
+                Kind = kind
+            };
         }
 
         // Emit C++ code

@@ -1,6 +1,9 @@
-extern int main(int argc, const byte **argv)
+extern int main()
 {
-    std.puts("hello");
-    std.exit(1);
-    return false;
+    std.puts("hi");
+}
+
+string test()
+{
+    return "hello";
 }

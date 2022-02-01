@@ -16,7 +16,7 @@ namespace Suteki
                 {
                     "void ", 
                     "bool ", 
-                    "const char *",
+                    "string ",
 
                     "unsigned char ",
                     "unsigned short ",
@@ -32,7 +32,7 @@ namespace Suteki
                     "double ",
                 };
                 
-                if (PrimitiveKind != PrimitiveKind.String && IsConst)
+                if (IsConst)
                     return $"const {cTypes[(int)PrimitiveKind]}";
 
                 return cTypes[(int)PrimitiveKind];
@@ -40,25 +40,24 @@ namespace Suteki
         }
 
         // Type checking
-        public override ExpressionKind TypeCheck(Input input)
+        public override Type TypeCheck(Input input)
         {
-            switch (PrimitiveKind)
+            if (IsConst)
             {
-                case PrimitiveKind.Void:
-                    return ExpressionKind.Void;
-
-                case PrimitiveKind.Bool:
-                    return ExpressionKind.Bool;
-
-                case PrimitiveKind.String:
-                    return ExpressionKind.String;
-
-                case PrimitiveKind.Single:
-                case PrimitiveKind.Double:
-                    return ExpressionKind.Float;
-
-                default:
-                    return ExpressionKind.Integer;
+                return new TypeConst()
+                {
+                    Type = new TypePrimitive()
+                    {
+                        Kind = PrimitiveKind
+                    }
+                };
+            }
+            else
+            {
+                return new TypePrimitive() 
+                { 
+                    Kind = PrimitiveKind
+                };
             }
         }
     }

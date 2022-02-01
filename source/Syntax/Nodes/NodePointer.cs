@@ -16,9 +16,12 @@ namespace Suteki
         }
 
         // Type checking
-        public override ExpressionKind TypeCheck(Input input)
+        public override Type TypeCheck(Input input)
         {
-            return PointsTo.TypeCheck(input);
+            return new TypePointer() 
+            {
+                Base = PointsTo.TypeCheck(input)
+            };
         }
     }
 }

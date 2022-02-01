@@ -34,14 +34,14 @@ namespace Suteki
         }
 
         // Type checking
-        public override ExpressionKind TypeCheck(Input input)
+        public override Type TypeCheck(Input input)
         {
             input.CurrentFunction = this;
 
             if (Block != null)
                 Block.TypeCheck(input);
 
-            return ExpressionKind.Void;
+            return null;
         }
 
         // Emit C++ code

@@ -1,6 +1,7 @@
 #ifndef FILES_TESTS_EXAMPLE_HPP
 #define FILES_TESTS_EXAMPLE_HPP
 
-extern "C" int main(int argc, const char **argv);
+extern "C" int main();
+extern "C" string su_global_test();
 
 #endif

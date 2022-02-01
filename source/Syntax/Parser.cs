@@ -8,24 +8,24 @@ namespace Suteki
         private Input        CurrentInput;
         private PropertyKind CurrentProperty;
 
-        private Dictionary<string, Type> Types = new Dictionary<string, Type>
+        private Dictionary<string, UserType> Types = new Dictionary<string, UserType>
         {
-            { "void",   new Type(PrimitiveKind.Void)   },
-            { "bool",   new Type(PrimitiveKind.Bool)   },
-            { "string", new Type(PrimitiveKind.String) },
+            { "void",    new UserType(PrimitiveKind.Void)    },
+            { "bool",    new UserType(PrimitiveKind.Bool)    },
+            { "string",  new UserType(PrimitiveKind.String)  },
 
-            { "ubyte",  new Type(PrimitiveKind.UByte)  },
-            { "ushort", new Type(PrimitiveKind.UShort) },
-            { "uint",   new Type(PrimitiveKind.UInt)   },
-            { "ulong",  new Type(PrimitiveKind.ULong)  },
+            { "ubyte",   new UserType(PrimitiveKind.UByte)   },
+            { "ushort",  new UserType(PrimitiveKind.UShort)  },
+            { "uint",    new UserType(PrimitiveKind.UInt)    },
+            { "ulong",   new UserType(PrimitiveKind.ULong)   },
 
-            { "byte",  new Type(PrimitiveKind.Byte)    },
-            { "short", new Type(PrimitiveKind.Short)   },
-            { "int",   new Type(PrimitiveKind.Int)     },
-            { "long",  new Type(PrimitiveKind.Long)    },
+            { "byte",    new UserType(PrimitiveKind.Byte)    },
+            { "short",   new UserType(PrimitiveKind.Short)   },
+            { "int",     new UserType(PrimitiveKind.Int)     },
+            { "long",    new UserType(PrimitiveKind.Long)    },
 
-            { "single", new Type(PrimitiveKind.Single) },
-            { "double", new Type(PrimitiveKind.Double) },
+            { "single",  new UserType(PrimitiveKind.Single)  },
+            { "double",  new UserType(PrimitiveKind.Double)  },
         };
 
         // Get scanner

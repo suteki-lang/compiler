@@ -1,9 +1,12 @@
 #include <modules/global.hpp>
 #include <modules/std.hpp>
 
-int main(int argc, const char **argv)
+int main()
 {
-	puts("hello");
-	exit(1);
-	return false;
+	puts("hi");
+}
+
+string su_global_test()
+{
+	return "hello";
 }

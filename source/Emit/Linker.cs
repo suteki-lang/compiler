@@ -45,6 +45,13 @@ namespace Suteki
                 output += $"#ifndef {moduleGuardName}\n";
                 output += $"#define {moduleGuardName}\n\n";
 
+                // Add string type to global module
+                // TODO: do a better way, like suteki folder with some runtime cpp files
+                if (module.Key == "global")
+                {
+                    output += "struct string\n{\n\tstring(const char *) {}\n};\n\n";
+                }
+
                 foreach (Input input in Config.Inputs)
                 {
                     if (input.Module.Name == module.Key)

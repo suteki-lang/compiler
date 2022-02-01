@@ -17,7 +17,7 @@ namespace Suteki
         }
 
         // Type checking
-        public override ExpressionKind TypeCheck(Input input)
+        public override Type TypeCheck(Input input)
         {
             NodeFunction node = (NodeFunction)input.GetSymbol(Name.GetString).Node;
 
@@ -25,20 +25,20 @@ namespace Suteki
             if (Parameters.Count != node.Parameters.Count)
             {
                 input.Logger.Error(Name.GetToken, "Function call parameter(s) count does not match function parameter(s) count.");
-                return ExpressionKind.Void;
+                return null;
             }
 
             // Compare parameter types
             for (int index = 0; index < node.Parameters.Count; ++index)
             {
-                ExpressionKind parameter  = node.Parameters[index].TypeCheck(input);
-                ExpressionKind expression = Parameters     [index].TypeCheck(input);
+                Type parameter  = node.Parameters[index].TypeCheck(input);
+                Type expression = Parameters     [index].TypeCheck(input);
 
-                if (!Type.Compare(parameter, expression, ((NodeParameter)node.Parameters[index]).Type.IsPointer))
+                if (!parameter.IsIdentical(expression))
                     input.Logger.Error(Parameters[index].GetToken, $"Function call parameter ({index}) type does not match expression type.");
             }
 
-            return ExpressionKind.Void;
+            return null;
         }
 
         // Emit C++ code

@@ -17,12 +17,12 @@ namespace Suteki
         }
 
         // Type checking
-        public override ExpressionKind TypeCheck(Input input)
+        public override Type TypeCheck(Input input)
         {
             foreach (Node node in Statements)
                 node.TypeCheck(input);
 
-            return ExpressionKind.Void;
+            return null;
         }
         
         // Emit C++ code

@@ -11,7 +11,7 @@ namespace Suteki
         public override Token  GetToken  => Name;
 
         // Type checking
-        public override ExpressionKind TypeCheck(Input input)
+        public override Type TypeCheck(Input input)
         {
             return Type.TypeCheck(input);
         }

@@ -8,18 +8,20 @@ namespace Suteki
         public override Token GetToken => Token;
 
         // Type checking
-        public override ExpressionKind TypeCheck(Input input)
+        public override Type TypeCheck(Input input)
         {
-            ExpressionKind expressionType = (Expression == null) ?
-                                             ExpressionKind.Void :
-                                             Expression.TypeCheck(input);
-            ExpressionKind functionType   = input.CurrentFunction.Type.TypeCheck(input);
+            Type expression;
+            Type function = input.CurrentFunction.Type.TypeCheck(input);
 
-            // Compare types
-            if (!Type.Compare(functionType, expressionType))
-                input.Logger.Error(GetToken, "Return value type does not match function return type.");
+            if (Expression == null)
+                expression = new TypePrimitive() { Kind = PrimitiveKind.Void };
+            else
+                expression = Expression.TypeCheck(input);
+
+            if (!function.IsIdentical(expression))
+                input.Logger.Error(Expression.GetToken, "Return value type does not match function return type.");
     
-            return ExpressionKind.Void;
+            return null;
         }
 
         // Emit C++ code
