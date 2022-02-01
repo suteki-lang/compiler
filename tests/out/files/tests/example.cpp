@@ -1,8 +1,7 @@
 #include <modules/global.hpp>
-#include <modules/std.hpp>
 
-int main()
+int main(int argc, const char **argv)
 {
-	c(1);
+	puts("hello");
 	return false;
 }

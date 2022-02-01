@@ -212,17 +212,35 @@ namespace Suteki
         // Parse type
         private Node ParseType()
         {
+            bool   isConst  = false;
+            Node   node     = null;
+
+            if (Previous.Kind == TokenKind.Const)
+            {
+                isConst = true;
+                Advance();
+            }
+
             string typeName = Previous.Content;
 
             if (Types.ContainsKey(typeName))
             {
-                return new NodePrimitive()
+                node = new NodePrimitive()
                 {
+                    IsConst       = isConst,
                     PrimitiveKind = Types[typeName].Kind
                 };
             }
 
-            return null;
+            while (Match(TokenKind.Star))
+            {
+                node = new NodePointer()
+                {
+                    PointsTo = node
+                };
+            }
+
+            return node;
         }
 
         // Parse expression
@@ -439,6 +457,7 @@ namespace Suteki
                     break;
                 }
 
+                case TokenKind.Const:
                 case TokenKind.Identifier:
                 {
                     Node type = ParseType();
@@ -487,6 +506,11 @@ namespace Suteki
                 // Use global module?
                 if (input.Module == null)
                     input.Module = globalModule;
+                else
+                {
+                    // Always import the global module
+                    input.Imports.Add(globalModule);
+                }
 
                 foreach (Node node in input.Nodes)
                     node.RegisterSymbols(input);

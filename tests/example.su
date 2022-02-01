@@ -1,10 +1,5 @@
-import global;
-
-extern int main()
+extern int main(int argc, const byte **argv)
 {
-    // Exit with code: 123
-    std.c(1);
-
-    // This code will not run because I'm already exiting above.
+    puts("hello");
     return false;
 }

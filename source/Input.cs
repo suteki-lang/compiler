@@ -53,16 +53,6 @@ namespace Suteki
                 }
             }
 
-            // Try finding symbol in global module
-            if (Config.HasSymbol("global", name))
-            {
-                // Check for ambiguity
-                if (foundSymbol != null && token != null)
-                    Logger.Error(token, $"Ambiguous reference between '{foundSymbol.Module.Name}.{foundSymbol.Name}' and 'global.{name}'.");
-
-                foundSymbol = Config.GetSymbol("global", name);
-            }
-
             // Try finding symbol from a module that is not imported
             if (name.Contains('.'))
             {
@@ -103,10 +93,6 @@ namespace Suteki
                                 lastSymbol = module.GetSymbol(symbolName);
                         }
                     }
-                     
-                    // Check if splitted name is a global symbol
-                    else if (Config.HasSymbol("global", nameSplitted))
-                        lastSymbol = Config.GetSymbol("global", nameSplitted);
                 }
 
                 // Check for ambiguity

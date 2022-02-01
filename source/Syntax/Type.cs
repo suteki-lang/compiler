@@ -50,5 +50,22 @@ namespace Suteki
 
             return (source == destination);
         }
+
+        // Compare types
+        public static bool Compare(ExpressionKind destination, ExpressionKind source, bool isPointer)
+        {
+            if (source == ExpressionKind.Integer && destination == ExpressionKind.Float)
+                return true;
+
+            if (source == ExpressionKind.Bool && (destination != ExpressionKind.Void &&
+                                                  destination != ExpressionKind.String))
+                return true;
+
+            // NOTE: does this make sense?
+            if (destination == ExpressionKind.Integer && isPointer && source == ExpressionKind.String)
+                return true;
+
+            return (source == destination);
+        }
     }
 }

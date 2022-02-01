@@ -82,10 +82,7 @@ namespace Suteki
                 header += "\n#endif";
 
                 // Source: Add includes
-                source += "#include <modules/global.hpp>\n";
-
-                if (input.Module.Name != "global")
-                    source += $"#include <modules/{input.Module.Name}.hpp>\n";
+                source += $"#include <modules/{input.Module.Name}.hpp>\n";
 
                 foreach (Module module in input.Imports)
                     source += $"#include <modules/{module.Name}.hpp>\n";
@@ -103,9 +100,7 @@ namespace Suteki
 
                 // Write files
                 File.WriteAllText($"{outputPath}.hpp", header);
-
-                if (source != "#include <modules/global.hpp>\n\n")
-                    File.WriteAllText($"{outputPath}.cpp", source);
+                File.WriteAllText($"{outputPath}.cpp", source);
             }
         }
     }

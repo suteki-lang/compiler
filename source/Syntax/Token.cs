@@ -18,11 +18,14 @@ namespace Suteki
         Comma,
         Semicolon,
         Dot,
+        Star,
 
         Export,
         Import,
         
         Extern,
+
+        Const,
 
         Return,
     }

@@ -19,6 +19,8 @@ namespace Suteki
 
             { "extern", TokenKind.Extern },
 
+            { "const", TokenKind.Const   },
+
             { "true",  TokenKind.Bool    },
             { "false", TokenKind.Bool    },
 
@@ -256,6 +258,9 @@ namespace Suteki
 
                 case '.':
                     return MakeToken(TokenKind.Dot);
+
+                case '*':
+                    return MakeToken(TokenKind.Star);
 
                 case '"':
                     return MakeStringToken();

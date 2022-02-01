@@ -3,6 +3,7 @@ namespace Suteki
     class NodePrimitive : Node
     {
         public Token         Token;
+        public bool          IsConst;
         public PrimitiveKind PrimitiveKind;
 
         public override Token GetToken => Token;
@@ -31,6 +32,9 @@ namespace Suteki
                     "double ",
                 };
                 
+                if (PrimitiveKind != PrimitiveKind.String && IsConst)
+                    return $"const {cTypes[(int)PrimitiveKind]}";
+
                 return cTypes[(int)PrimitiveKind];
             }
         }

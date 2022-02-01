@@ -34,8 +34,8 @@ namespace Suteki
                 ExpressionKind parameter  = node.Parameters[index].TypeCheck(input);
                 ExpressionKind expression = Parameters     [index].TypeCheck(input);
 
-                if (!Type.Compare(parameter, expression))
-                    input.Logger.Error(Name.GetToken, $"Function call parameter ({index}) type does not match function parameter ({index}) type.");
+                if (!Type.Compare(parameter, expression, ((NodeParameter)node.Parameters[index]).Type.IsPointer))
+                    input.Logger.Error(Parameters[index].GetToken, $"Function call parameter ({index}) type does not match expression type.");
             }
 
             return ExpressionKind.Void;
