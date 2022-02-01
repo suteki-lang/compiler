@@ -20,7 +20,7 @@ namespace Suteki
         Dot,
         Star,
 
-        Export,
+        Module,
         Import,
         
         Extern,

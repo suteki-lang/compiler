@@ -1,1 +1,4 @@
-extern int puts(const byte *msg);
+module std;
+
+extern int  puts(const byte *msg);
+extern void exit(int status);

@@ -1,5 +1,6 @@
 extern int main(int argc, const byte **argv)
 {
-    puts("hello");
+    std.puts("hello");
+    std.exit(1);
     return false;
 }

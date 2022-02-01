@@ -146,7 +146,7 @@ namespace Suteki
         }
 
         // Parse module name
-        private string ParseModuleNameStr()
+        private string ParseModuleName()
         {
             string result = "";
 
@@ -174,10 +174,10 @@ namespace Suteki
             return result;
         }
 
-        // Parse export
-        private void ParseExport()
+        // Parse module
+        private void ParseModule()
         {
-            string moduleName = ParseModuleNameStr();
+            string moduleName = ParseModuleName();
 
             // Add module
             if (!Config.Modules.ContainsKey(moduleName))
@@ -445,9 +445,9 @@ namespace Suteki
                     break;
                 }
 
-                case TokenKind.Export:
+                case TokenKind.Module:
                 {
-                    ParseExport();
+                    ParseModule();
                     break;
                 }
 

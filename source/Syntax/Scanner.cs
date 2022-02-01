@@ -14,7 +14,7 @@ namespace Suteki
 
         private Dictionary<string, TokenKind> Keywords = new Dictionary<string, TokenKind>
         {
-            { "export", TokenKind.Export },
+            { "module", TokenKind.Module },
             { "import", TokenKind.Import },
 
             { "extern", TokenKind.Extern },
