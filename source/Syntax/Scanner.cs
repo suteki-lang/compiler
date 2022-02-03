@@ -211,7 +211,12 @@ namespace Suteki
                 return MakeToken("Unterminated string.");
 
             Advance();
-            return MakeToken(TokenKind.String);
+
+            // Replace newlines
+            string source = Source.Substring(Start, (End - Start));
+                   source = source.Replace("\n", "\\n");
+
+            return MakeToken(TokenKind.String, source);
         }
 
         // Scan token

@@ -19,7 +19,8 @@ namespace Suteki
         public override bool IsIdentical(Type other)
         {
             // const byte * == string
-            if (Base.IsConst() && Base.GetDeconstedType().Kind == PrimitiveKind.SByte &&
+            if (Base.IsConst() && (Base.GetDeconstedType().Kind == PrimitiveKind.SByte ||
+                Base.GetDeconstedType().Kind == PrimitiveKind.UByte) &&
                 other.IsString())
                 return true;
 

@@ -104,7 +104,8 @@ namespace Suteki
             // string == const byte *
             if (IsString() && other.IsPointer() &&
                 other.GetDerefedType().IsConst() && 
-                other.GetDerefedType().GetDeconstedType().Kind == PrimitiveKind.SByte)
+                (other.GetDerefedType().GetDeconstedType().Kind == PrimitiveKind.SByte || 
+                other.GetDerefedType().GetDeconstedType().Kind == PrimitiveKind.UByte))
                 return true;
 
             return false;

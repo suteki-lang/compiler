@@ -1,11 +1,7 @@
+import std;
+
 extern int main()
 {
-    std.puts("hi");
-    std.malloc(1);
-    std.free(null);
-}
-
-word get_ptr_size()
-{
-    return 8;
+    puts("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    ?");
 }
