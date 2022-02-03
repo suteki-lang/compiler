@@ -75,6 +75,8 @@ namespace Suteki
                 string header = "";
                 string source = "";
 
+                bool sourceIsEmpty = true;
+
                 // Header: Write guard
                 header += $"#ifndef {guardName}\n";
                 header += $"#define {guardName}\n\n";
@@ -100,14 +102,22 @@ namespace Suteki
                 {
                     source += input.Output.FunctionDeclarations;
                     source += '\n';
+
+                    sourceIsEmpty = false;
                 }
 
                 if (input.Output.FunctionDefinitions != "")
+                {
                     source += input.Output.FunctionDefinitions.Substring(0, input.Output.FunctionDefinitions.Length - 2);
+
+                    sourceIsEmpty = false;
+                }
 
                 // Write files
                 File.WriteAllText($"{outputPath}.hpp", header);
-                File.WriteAllText($"{outputPath}.cpp", source);
+
+                if (!sourceIsEmpty)
+                    File.WriteAllText($"{outputPath}.cpp", source);
             }
         }
     }
