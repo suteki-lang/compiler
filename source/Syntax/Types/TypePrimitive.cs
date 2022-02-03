@@ -11,10 +11,12 @@ namespace Suteki
         UShort,
         UInt,
         ULong,
-        Byte,
-        Short,
-        Int,
-        Long,
+        UWord,
+        SByte,
+        SShort,
+        SInt,
+        SLong,
+        SWord,
 
         Single,
         Double,
@@ -34,17 +36,17 @@ namespace Suteki
 
         public override bool IsBasic()
         {
-            return (Kind != PrimitiveKind.Void);
+            return (Kind != PrimitiveKind.Void && Kind != PrimitiveKind.Null);
         }
 
         public override bool IsInteger()
         {
-            return (Kind >= PrimitiveKind.UByte && Kind <= PrimitiveKind.Long);
+            return (Kind >= PrimitiveKind.UByte && Kind <= PrimitiveKind.SWord);
         }
 
         public override bool IsUnsigned()
         {
-            return (Kind >= PrimitiveKind.UByte && Kind <= PrimitiveKind.ULong);
+            return (Kind >= PrimitiveKind.UByte && Kind <= PrimitiveKind.UWord);
         }
 
         public override bool IsFloat()
@@ -102,7 +104,7 @@ namespace Suteki
             // string == const byte *
             if (IsString() && other.IsPointer() &&
                 other.GetDerefedType().IsConst() && 
-                other.GetDerefedType().GetDeconstedType().Kind == PrimitiveKind.Byte)
+                other.GetDerefedType().GetDeconstedType().Kind == PrimitiveKind.SByte)
                 return true;
 
             return false;
@@ -113,23 +115,25 @@ namespace Suteki
             switch (Kind)
             {
                 case PrimitiveKind.UByte:
-                case PrimitiveKind.Byte:
+                case PrimitiveKind.SByte:
                 case PrimitiveKind.Bool:
                     return 1;
 
                 case PrimitiveKind.UShort:
-                case PrimitiveKind.Short:
+                case PrimitiveKind.SShort:
                     return 2;
 
                 case PrimitiveKind.UInt:
-                case PrimitiveKind.Int:
+                case PrimitiveKind.SInt:
                 case PrimitiveKind.Single:
                     return 4;
 
                 case PrimitiveKind.ULong:
-                case PrimitiveKind.Long:
+                case PrimitiveKind.SLong:
                 case PrimitiveKind.String:
                 case PrimitiveKind.Double:
+                case PrimitiveKind.UWord:
+                case PrimitiveKind.SWord:
                 case PrimitiveKind.Null:
                     return 8;
 

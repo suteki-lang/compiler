@@ -16,10 +16,11 @@ namespace Suteki
         // Type checking
         public override Type TypeCheck(Input input)
         {
-            PrimitiveKind kind = PrimitiveKind.Int;
+            long          value = long.Parse(Value.Content);
+            PrimitiveKind kind  = ((value < 0) ? PrimitiveKind.SInt : PrimitiveKind.UInt);
 
-            if (long.Parse(Value.Content) >= int.MaxValue)
-                kind = PrimitiveKind.Long;
+            if (value >= int.MaxValue)
+                kind = ((value < 0) ? PrimitiveKind.SLong : PrimitiveKind.ULong);
 
             return new TypePrimitive() 
             {

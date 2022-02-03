@@ -23,11 +23,13 @@ namespace Suteki
                     "unsigned short ",
                     "unsigned int ", 
                     "unsigned long ",
+                    "unsigned long ",
 
-                    "char ",  
-                    "short ", 
-                    "int ",   
-                    "long ",  
+                    "signed char ",  
+                    "signed short ", 
+                    "signed int ",   
+                    "signed long ",  
+                    "signed long ",  
 
                     "float ",
                     "double ",

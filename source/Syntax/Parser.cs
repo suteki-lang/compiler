@@ -18,11 +18,19 @@ namespace Suteki
             { "ushort",  new UserType(PrimitiveKind.UShort)  },
             { "uint",    new UserType(PrimitiveKind.UInt)    },
             { "ulong",   new UserType(PrimitiveKind.ULong)   },
+            { "uword",   new UserType(PrimitiveKind.UWord)   },
 
-            { "byte",    new UserType(PrimitiveKind.Byte)    },
-            { "short",   new UserType(PrimitiveKind.Short)   },
-            { "int",     new UserType(PrimitiveKind.Int)     },
-            { "long",    new UserType(PrimitiveKind.Long)    },
+            { "sbyte",   new UserType(PrimitiveKind.SByte)   },
+            { "sshort",  new UserType(PrimitiveKind.SShort)  },
+            { "sint",    new UserType(PrimitiveKind.SInt)    },
+            { "slong",   new UserType(PrimitiveKind.SLong)   },
+            { "sword",   new UserType(PrimitiveKind.SWord)   },
+
+            { "byte",    new UserType(PrimitiveKind.SByte)   },
+            { "short",   new UserType(PrimitiveKind.SShort)  },
+            { "int",     new UserType(PrimitiveKind.SInt)    },
+            { "long",    new UserType(PrimitiveKind.SLong)   },
+            { "word",    new UserType(PrimitiveKind.SWord)   },
 
             { "single",  new UserType(PrimitiveKind.Single)  },
             { "double",  new UserType(PrimitiveKind.Double)  },
