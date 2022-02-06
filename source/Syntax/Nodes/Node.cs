@@ -26,7 +26,6 @@ namespace Suteki
 
         }
 
-        public virtual bool     IsPointer => false;
         public virtual string   GetString => "";
         public virtual Token    GetToken  => null;
     }
