@@ -6,8 +6,6 @@ namespace Suteki
         public string FunctionDeclarations;
         public string FunctionDefinitions;
 
-        public string Includes;
-
         public int Tabs;
 
         // Default Constructor
@@ -16,10 +14,7 @@ namespace Suteki
             ExternalFunctionDeclarations = "";
             FunctionDeclarations         = "";
             FunctionDefinitions          = "";
-
-            Includes = "";
-
-            Tabs = 0;
+            Tabs                         = 0;
         }
 
         // Get tabs
