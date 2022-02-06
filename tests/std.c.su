@@ -1,3 +1,0 @@
-export std.c;
-
-extern void exit(int status);
