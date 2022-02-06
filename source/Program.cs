@@ -8,7 +8,7 @@ namespace Suteki
         {
             foreach (string argument in arguments)
             {
-                Config.Inputs.Add(new Input(argument, File.ReadAllText(argument)));
+                Config.Inputs.Add(new Input(argument, File.ReadAllText(argument) + '\0'));
             }
 
             Parser parser = new Parser();

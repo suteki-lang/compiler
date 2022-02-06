@@ -43,8 +43,8 @@ namespace Suteki
         // Advance character
         private char Advance()
         {
-            Column += 1;
-            End     = System.Math.Clamp(End, End + 1, Source.Length);
+            ++End;
+            ++Column;
 
             return Source[End - 1];
         }
@@ -52,7 +52,7 @@ namespace Suteki
         // Match current character?
         private bool Match(char expected)
         {
-            if (End < Source.Length && Source[End] == expected)
+            if (Source[End] == expected)
             {
                 Advance();
                 return true;
@@ -76,14 +76,10 @@ namespace Suteki
         }
 
         // Skip whitespace
-        private TokenKind SkipWhitespace()
+        private void SkipWhitespace()
         {
             for (;;)
             {
-                // Is source end?
-                if (End >= Source.Length)
-                    return TokenKind.End;
-
                 switch (Source[End])
                 {
                     case '\n':
@@ -91,8 +87,7 @@ namespace Suteki
                         Advance();
 
                         Line   += 1;
-                        Column  = 0;
-
+                        Column  = 1;
                         break;
                     }
 
@@ -106,24 +101,26 @@ namespace Suteki
 
                     case '/':
                     {
-                        if ((End + 1) >= Source.Length)
-                            break;
-
                         // Single line comment
                         if (Source[End + 1] == '/')
                         {
-                            while (End < Source.Length && Source[End] != '\n')
+                            while (Source[End] != '\n' && Source[End] != '\0')
                                 Advance();
 
                             Line   += 1;
                             Column  = 0;
+                        }
+                        else
+                        {
+                            // It's probably a token.
+                            return;
                         }
 
                         break;
                     }
 
                     default:
-                        return TokenKind.End;
+                        return;
                 }
             }
         }
@@ -173,12 +170,12 @@ namespace Suteki
         // Make number token
         private TokenKind MakeNumberToken()
         {
-            while (End < Source.Length && IsNumber(Source[End]))
+            while (IsNumber(Source[End]))
                 Advance();
 
             if (Match('.'))
             {
-                while (End < Source.Length && IsNumber(Source[End]))
+                while (IsNumber(Source[End]))
                     Advance();
 
                 return MakeToken(TokenKind.Float);
@@ -190,7 +187,7 @@ namespace Suteki
         // Make identifier token
         private TokenKind MakeIdentifierToken()
         {
-            while (End < Source.Length && IsIdentifier(Source[End]))
+            while (IsIdentifier(Source[End]))
                 Advance();
 
             string identifierString = Source.Substring(Start, (End - Start));
@@ -204,10 +201,10 @@ namespace Suteki
         // Make string token
         private TokenKind MakeStringToken()
         {
-            while (End < Source.Length && Source[End] != '"')
+            while (Source[End] != '"' && Source[End] != '\0')
                 Advance();
 
-            if (End >= Source.Length)
+            if (Source[End] == '\0')
                 return MakeToken("Unterminated string.");
 
             Advance();
@@ -222,16 +219,13 @@ namespace Suteki
         // Scan token
         public TokenKind Next()
         {
-            TokenKind token = SkipWhitespace();
-
-            if (token != TokenKind.End)
-                return TokenKind.Error;
+            SkipWhitespace();
 
             Previous = Current;
             Start    = End;
 
             // Is source end?
-            if (End >= Source.Length)
+            if (Source[End] == '\0')
                 return MakeToken(TokenKind.End, "<EOF>");
 
             char character = Advance();
