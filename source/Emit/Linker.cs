@@ -80,7 +80,6 @@ namespace Suteki
                 // Header: Write guard
                 header += $"#ifndef {guardName}\n";
                 header += $"#define {guardName}\n\n";
-                header += input.Output.Includes;
                 
                 if (input.Output.ExternalFunctionDeclarations == "")
                     header += '\n';
