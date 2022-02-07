@@ -6,6 +6,7 @@ namespace Suteki
     {
         public static bool        HadError               = false;
         public static string      OutputPath             = "../tests/out/";
+        public static string      RuntimePath            = "../runtime/";
         public static List<Input> Inputs                 = new List<Input>();
         public static Dictionary<string, Module> Modules = new Dictionary<string, Module>();
     

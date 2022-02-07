@@ -1,8 +1,7 @@
 module std;
 
-extern int  puts(const byte *msg);
+extern int   puts(const byte *msg);
 extern void  exit(int status);
-
 extern void *malloc(uword size);
 extern void *realloc(void *ptr, uword size);
 extern void  free(void *ptr);

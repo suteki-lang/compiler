@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Collections.Generic;
 
@@ -26,11 +27,36 @@ namespace Suteki
         // Start linking
         public static void Start()
         {
+            // Check for paths
+            if (!Directory.Exists(Config.OutputPath))
+            {
+                Console.Error.WriteLine($"The output path '{Config.OutputPath}' does not exists.");
+                return;
+            }
+
+            if (!Directory.Exists(Config.RuntimePath))
+            {
+                Console.Error.WriteLine($"The runtime path '{Config.RuntimePath}' does not exists.");
+                return;
+            }
+
             // Clear output path
             Directory.Delete(Config.OutputPath, true);
             Directory.CreateDirectory(Config.OutputPath);
 
-            // Write modules
+            // Write runtime folder
+            string runtimeDirectory = $"{Config.OutputPath}runtime";
+
+            if (!Directory.Exists(runtimeDirectory))
+                Directory.CreateDirectory(runtimeDirectory);
+
+            foreach (string file in Directory.GetFiles(Config.RuntimePath))
+            {
+                string fileName = Path.GetFileName(file);
+                File.Copy(file, Path.Combine(runtimeDirectory, fileName), true);
+            }
+
+            // Write modules folder
             string modulesDirectory = $"{Config.OutputPath}modules";
 
             if (!Directory.Exists(modulesDirectory))
@@ -45,12 +71,9 @@ namespace Suteki
                 output += $"#ifndef {moduleGuardName}\n";
                 output += $"#define {moduleGuardName}\n\n";
 
-                // Add string type to global module
-                // TODO: do a better way, like suteki folder with some runtime cpp files
+                // Include runtime files (TODO: optimize this)
                 if (module.Key == "global")
-                {
-                    output += "struct string\n{\n\tstring(const char *) {}\n};\n\n";
-                }
+                    output += $"#include <runtime/string.hpp>\n\n";
 
                 foreach (Input input in Config.Inputs)
                 {
@@ -65,7 +88,7 @@ namespace Suteki
                 File.WriteAllText($"{modulesDirectory}/{module.Key}.hpp", output);
             }
 
-            // Write files
+            // Write files folder
             foreach (Input input in Config.Inputs)
             {
                 string path       = GetPath(input.Path);
