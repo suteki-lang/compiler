@@ -277,15 +277,14 @@ namespace Suteki
         }
 
         // Parse identifier expression
-        private Node ParseIdentifierExpression(bool isExpression = true)
+        private Node ParseIdentifierExpression()
         {
             Node name = ParseName(Previous);
             
             if (Match(TokenKind.LeftParenthesis))
-                return ParseCall(name, isExpression);
-            
-            Logger.Error(Previous, "Unexpected token.");
-            return null;
+                return ParseCall(name, true);
+           
+            return ParseName(Previous);
         }
 
         // Parse primary expression
@@ -411,11 +410,19 @@ namespace Suteki
         // Parse identifier statement
         private Node ParseIdentifierStatement()
         {
-            Node node = ParseIdentifierExpression(false);
+            Node name = ParseName(Previous);
+            
+            if (Match(TokenKind.LeftParenthesis))
+            {
+                Node node = ParseCall(name, false);
 
-            // Optional semicolon
-            Match(TokenKind.Semicolon);
-            return node;
+                // Optional semicolon
+                Match(TokenKind.Semicolon);
+                return node;
+            }
+
+            Logger.Error(Previous, "Unexpected token.");
+            return null;
         }
 
         // Parse statement

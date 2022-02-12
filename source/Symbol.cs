@@ -4,6 +4,7 @@ namespace Suteki
     {
         None,
         Function,
+        Parameter,
     }
 
     class Symbol

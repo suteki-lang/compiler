@@ -1,19 +1,13 @@
 #include <modules/global.hpp>
 #include <modules/std.hpp>
 
-int binary()
+void su_global_writeln(string message)
 {
-	return (70 - 1);
-}
-
-int unary()
-{
-	return -1;
+	puts(message);
 }
 
 int main()
 {
-	unary();
-	binary();
-	return binary();
+	su_global_writeln("hello!");
+	return 0;
 }

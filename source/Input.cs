@@ -14,6 +14,8 @@ namespace Suteki
         public List<Node>   Nodes;
         public List<Module> Imports;
 
+        public Dictionary<string, Symbol> Locals;
+
         // Constructor
         public Input(string path, string source)
         {
@@ -26,6 +28,7 @@ namespace Suteki
             Scanner         = new Scanner();
             Nodes           = new List<Node>();
             Imports         = new List<Module>();
+            Locals          = new Dictionary<string, Symbol>();
 
             // Set scanner source
             Scanner.Set(source);

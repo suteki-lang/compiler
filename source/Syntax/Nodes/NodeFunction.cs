@@ -29,6 +29,9 @@ namespace Suteki
         // Resolve symbols
         public override void ResolveSymbols(Input input)
         {
+            foreach (Node parameter in Parameters)
+                parameter.ResolveSymbols(input);
+
             if (Block != null)
                 Block.ResolveSymbols(input);
         }

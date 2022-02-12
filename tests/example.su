@@ -1,18 +1,10 @@
-import std;
-
-extern int binary()
+void writeln(string message)
 {
-    return (70 - 1);
-}
-
-extern int unary()
-{
-    return -1;
+    stdc.puts(message);
 }
 
 extern int main()
 {
-    unary();
-    binary();
-    return binary();
+    writeln("hello!");
+    return 0;
 }

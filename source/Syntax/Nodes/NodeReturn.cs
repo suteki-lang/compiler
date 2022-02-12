@@ -7,6 +7,12 @@ namespace Suteki
 
         public override Token GetToken => Token;
 
+        // Resolve symbols
+        public override void ResolveSymbols(Input input)
+        {
+            Expression.ResolveSymbols(input);
+        }
+
         // Type checking
         public override Type TypeCheck(Input input)
         {
