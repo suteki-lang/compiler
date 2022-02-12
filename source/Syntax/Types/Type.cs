@@ -15,8 +15,8 @@ namespace Suteki
         public virtual bool IsPointer () => false;
         public virtual bool IsString  () => false;
 
-        public virtual bool CanCastTo  (Type  type) => false;
-        public virtual bool IsIdentical(Type other) => false;
+        public virtual bool CanCastTo  (Type  type)                            => false;
+        public virtual bool IsIdentical(Type other, bool isExpression = false) => false;
 
         public virtual int GetSize() => 0;
 

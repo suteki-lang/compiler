@@ -21,7 +21,7 @@ namespace Suteki
                 return Type.CanCastTo(type);
         }
 
-        public override bool IsIdentical(Type other)
+        public override bool IsIdentical(Type other, bool isExpression = false)
         {
             if (other.IsConst())
                 return Type.IsIdentical(other.GetDeconstedType());

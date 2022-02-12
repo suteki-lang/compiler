@@ -72,7 +72,7 @@ namespace Suteki
             return type.IsBasic();
         }
 
-        public override bool IsIdentical(Type other)
+        public override bool IsIdentical(Type other, bool isExpression = false)
         {
             if (IsNull() && other.IsNull())
                 return true;
@@ -81,6 +81,9 @@ namespace Suteki
                 return true;
 
             if (IsInteger() && other.IsInteger())
+                return true;
+                
+            if (isExpression && IsInteger() && other.IsFloat())
                 return true;
 
             if (IsFloat() && other.IsFloat())

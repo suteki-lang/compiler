@@ -1,13 +1,17 @@
 #include <modules/global.hpp>
 #include <modules/std.hpp>
 
-string su_global_h()
+int binary()
 {
-	return "hello";
+	return (70 - 1);
+}
+
+int unary()
+{
+	return -1;
 }
 
 int main()
 {
-	su_global_h();
-	puts("test");
+	return 0;
 }

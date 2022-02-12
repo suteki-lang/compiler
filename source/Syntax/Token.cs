@@ -20,6 +20,9 @@ namespace Suteki
         Semicolon,
         Dot,
         Star,
+        Plus,
+        Minus,
+        Slash,
 
         Module,
         Import,
@@ -49,6 +52,28 @@ namespace Suteki
             token.Column  = previous.Column;
 
             return token;
+        }
+
+        // Convert TokenKind into OperatorKind
+        public static OperatorKind ToOperatorKind(TokenKind kind)
+        {
+            switch (kind)
+            {
+                case TokenKind.Plus:
+                    return OperatorKind.Add;
+
+                case TokenKind.Minus:
+                    return OperatorKind.Subtract;
+
+                case TokenKind.Slash:
+                    return OperatorKind.Divide;
+
+                case TokenKind.Star:
+                    return OperatorKind.Multiply;
+                
+                default:
+                    return OperatorKind.None;
+            }
         }
     }
 }

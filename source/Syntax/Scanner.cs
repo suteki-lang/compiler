@@ -262,6 +262,15 @@ namespace Suteki
                 case '*':
                     return MakeToken(TokenKind.Star);
 
+                case '+':
+                    return MakeToken(TokenKind.Plus);
+
+                case '-':
+                    return MakeToken(TokenKind.Minus);
+
+                case '/':
+                    return MakeToken(TokenKind.Slash);
+
                 case '"':
                     return MakeStringToken();
 

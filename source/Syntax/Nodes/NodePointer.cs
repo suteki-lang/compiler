@@ -4,7 +4,7 @@ namespace Suteki
     {
         public Node PointsTo;
         
-        public override Token GetToken  => PointsTo.GetToken;
+        public override Token GetToken => PointsTo.GetToken;
 
         public override string GetString
         {

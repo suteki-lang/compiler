@@ -251,8 +251,8 @@ namespace Suteki
             return node;
         }
 
-        // Parse expression
-        private Node ParseExpression()
+        // Parse primary expression
+        private Node ParsePrimaryExpression()
         {
             if (Match(TokenKind.Float))
                 return new NodeFloat(Previous);
@@ -269,8 +269,80 @@ namespace Suteki
             if (Match(TokenKind.Null))
                 return new NodeNull(Previous);
 
+            if (Match(TokenKind.LeftParenthesis))
+            {
+                Node expression = ParseExpression();
+
+                Consume(TokenKind.RightParenthesis, "Expected ')' after expression.");
+                return new NodeGrouping(expression);
+            }
+
             Logger.Error(Current, "Unexpected token.");
             return null;
+        }
+
+        // Parse unary expression
+        private Node ParseUnaryExpression()
+        {
+            if (Match(TokenKind.Minus))
+            {
+                OperatorKind op      = Token.ToOperatorKind(Previous.Kind);
+                Node         operand = ParseUnaryExpression();
+
+                return new NodeUnary(op, operand);
+            }
+
+            return ParsePrimaryExpression();
+        }
+
+        // Parse factor expression
+        private Node ParseFactorExpression()
+        {
+            Node expression = ParseUnaryExpression();
+
+            while (Match(TokenKind.Slash) || Match(TokenKind.Star))
+            {
+                OperatorKind op    = Token.ToOperatorKind(Previous.Kind);
+                Node         right = ParseUnaryExpression();
+
+                expression = new NodeBinary(expression, op, right);
+            }
+
+            return expression;
+        }
+
+        // Parse term expression
+        private Node ParseTermExpression()
+        {
+            Node expression = ParseFactorExpression();
+
+            while (Match(TokenKind.Minus) || Match(TokenKind.Plus))
+            {
+                OperatorKind op    = Token.ToOperatorKind(Previous.Kind);
+                Node         right = ParseFactorExpression();
+
+                expression = new NodeBinary(expression, op, right);
+            }
+
+            return expression;
+        }
+
+        // Parse comparison expression
+        private Node ParseComparisonExpression()
+        {
+            return ParseTermExpression();
+        }
+
+        // Parse equality expression
+        private Node ParseEqualityExpression()
+        {
+            return ParseComparisonExpression();
+        }
+
+        // Parse expression
+        private Node ParseExpression()
+        {
+            return ParseEqualityExpression();
         }
 
         // Parse return statement

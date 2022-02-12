@@ -31,7 +31,7 @@ namespace Suteki
         // Emit C++ code
         public override void Emit(Input input)
         {
-            input.Output.FunctionDefinitions += Value.Content;
+            input.Output.FunctionDefinitions += GetString;
         }
     }
 }

@@ -1,12 +1,16 @@
 import std;
 
-string h()
+extern int binary()
 {
-    return "hello";
+    return (70 - 1);
+}
+
+extern int unary()
+{
+    return -1;
 }
 
 extern int main()
 {
-    h();
-    puts("test");
+    return 0;
 }
