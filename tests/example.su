@@ -1,6 +1,8 @@
 void writeln(string message)
 {
+    stdc.puts("Looping..");
     stdc.puts(message);
+    writeln(message);
 }
 
 extern int main()

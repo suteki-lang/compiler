@@ -103,7 +103,7 @@ namespace Suteki
                     Logger.Error(token, $"Ambiguous reference between '{foundSymbol.Module.Name}.{foundSymbol.Name}' and '{lastSymbol.Module.Name}.{lastSymbol.Name}'.");
 
                 // Add import
-                if (!Imports.Contains(lastSymbol.Module))
+                if (lastSymbol != null && !Imports.Contains(lastSymbol.Module))
                     Imports.Add(lastSymbol.Module);
 
                 foundSymbol = lastSymbol;

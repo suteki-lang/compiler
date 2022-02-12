@@ -1,4 +1,4 @@
-module std;
+module stdc;
 
 extern int   puts(const byte *msg);
 extern void  exit(int status);
