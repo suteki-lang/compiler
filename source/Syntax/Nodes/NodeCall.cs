@@ -4,6 +4,7 @@ namespace Suteki
 {
     class NodeCall : Node
     {
+        public bool       IsExpression;
         public Node       Name;
         public List<Node> Parameters = new List<Node>();
 
@@ -38,7 +39,7 @@ namespace Suteki
                     input.Logger.Error(Parameters[index].GetToken, $"Function call parameter ({index}) type does not match expression type.");
             }
 
-            return null;
+            return node.Type.TypeCheck(input);
         }
 
         // Emit C++ code
@@ -58,7 +59,10 @@ namespace Suteki
                     input.Output.FunctionDefinitions += ", ";
             }
 
-            input.Output.FunctionDefinitions += ");\n";
+            input.Output.FunctionDefinitions += ')';
+
+            if (!IsExpression)
+                input.Output.FunctionDefinitions += ";\n";
         }
     }
 }

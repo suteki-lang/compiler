@@ -12,5 +12,7 @@ extern int unary()
 
 extern int main()
 {
-    return 0;
+    unary();
+    binary();
+    return binary();
 }

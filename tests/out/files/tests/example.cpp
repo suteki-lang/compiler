@@ -13,5 +13,7 @@ int unary()
 
 int main()
 {
-	return 0;
+	unary();
+	binary();
+	return binary();
 }

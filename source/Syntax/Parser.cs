@@ -251,6 +251,43 @@ namespace Suteki
             return node;
         }
 
+        // Parse call
+        private Node ParseCall(Node name, bool isExpression)
+        {
+            // Make node
+            NodeCall node = new NodeCall()
+            {
+                Name         = name,
+                IsExpression = isExpression
+            };
+
+            // Parse function parameters
+            if (!Match(TokenKind.RightParenthesis))
+            {
+                do
+                {
+                    node.Parameters.Add(ParseExpression());
+                }
+                while (Match(TokenKind.Comma));
+
+                Consume(TokenKind.RightParenthesis, "Expected ')' after function call parameter(s).");
+            }
+
+            return node;
+        }
+
+        // Parse identifier expression
+        private Node ParseIdentifierExpression(bool isExpression = true)
+        {
+            Node name = ParseName(Previous);
+            
+            if (Match(TokenKind.LeftParenthesis))
+                return ParseCall(name, isExpression);
+            
+            Logger.Error(Previous, "Unexpected token.");
+            return null;
+        }
+
         // Parse primary expression
         private Node ParsePrimaryExpression()
         {
@@ -276,6 +313,9 @@ namespace Suteki
                 Consume(TokenKind.RightParenthesis, "Expected ')' after expression.");
                 return new NodeGrouping(expression);
             }
+
+            if (Match(TokenKind.Identifier))
+                return ParseIdentifierExpression();
 
             Logger.Error(Current, "Unexpected token.");
             return null;
@@ -368,41 +408,14 @@ namespace Suteki
             return node;
         }
 
-        // Parse call
-        private Node ParseCall(Node name)
-        {
-            // Make node
-            NodeCall node      = new NodeCall();
-                     node.Name = name;
-
-            // Parse function parameters
-            if (!Match(TokenKind.RightParenthesis))
-            {
-                do
-                {
-                    node.Parameters.Add(ParseExpression());
-                }
-                while (Match(TokenKind.Comma));
-
-                Consume(TokenKind.RightParenthesis, "Expected ')' after function call parameter(s).");
-            }
-
-            // Optional semicolon
-            Match(TokenKind.Semicolon);
-
-            return node;
-        }
-
         // Parse identifier statement
         private Node ParseIdentifierStatement()
         {
-            Node name = ParseName(Previous);
-            
-            if (Match(TokenKind.LeftParenthesis))
-                return ParseCall(name);
-            
-            Logger.Error(Current, "Unexpected token.");
-            return null;
+            Node node = ParseIdentifierExpression(false);
+
+            // Optional semicolon
+            Match(TokenKind.Semicolon);
+            return node;
         }
 
         // Parse statement
