@@ -33,7 +33,5 @@ namespace Suteki
 
         public override Type GetDerefedType  () => Type.GetDerefedType();
         public override Type GetDeconstedType() => Type;
-
-        public override string GetName() => $"c{Type.GetName()}";
     }
 }

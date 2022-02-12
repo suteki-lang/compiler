@@ -22,7 +22,5 @@ namespace Suteki
 
         public virtual Type GetDerefedType  () => null;
         public virtual Type GetDeconstedType() => null;
-
-        public virtual string GetName() => "";
     }
 }

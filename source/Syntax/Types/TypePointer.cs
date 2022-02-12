@@ -33,7 +33,5 @@ namespace Suteki
         public override int GetSize() => 8;
 
         public override Type GetDerefedType() => Base;
-
-        public override string GetName() => $"p{Base.GetName()}";
     }
 }

@@ -142,10 +142,5 @@ namespace Suteki
                     return 0;
             }
         }
-
-        public override string GetName()
-        {
-            return Kind.ToString().ToLower();
-        }
     }
 }
