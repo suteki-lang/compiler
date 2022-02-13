@@ -200,8 +200,8 @@ namespace Suteki
 
             CurrentInput.Module = Config.Modules[moduleName];
 
-            // Optional semicolon
-            Match(TokenKind.Semicolon);
+            // Expect semicolon
+            Consume(TokenKind.Semicolon, "Expected ';' after module name.");
         }
 
         // Parse import
@@ -213,8 +213,8 @@ namespace Suteki
 
             Nodes.Add(node);
 
-            // Optional semicolon
-            Match(TokenKind.Semicolon);
+            // Expect semicolon
+            Consume(TokenKind.Semicolon, "Expected ';' after module name.");
         }
 
         // Parse type
@@ -400,8 +400,8 @@ namespace Suteki
             {
                 node.Expression = ParseExpression();
 
-                // Optional semicolon
-                Match(TokenKind.Semicolon);
+                // Expect semicolon
+                Consume(TokenKind.Semicolon, "Expected ';' after expression.");
             }
 
             return node;
@@ -416,8 +416,8 @@ namespace Suteki
             {
                 Node node = ParseCall(name, false);
 
-                // Optional semicolon
-                Match(TokenKind.Semicolon);
+                // Expect semicolon
+                Consume(TokenKind.Semicolon, "Expected ';' after identifier.");
                 return node;
             }
 
@@ -513,8 +513,8 @@ namespace Suteki
             {
                 node.Block = null;
 
-                // Optional semicolon
-                Match(TokenKind.Semicolon);
+                // Expect semicolon
+                Consume(TokenKind.Semicolon, "Expected ';' after module ')'.");
             }
 
             Nodes.Add(node);
