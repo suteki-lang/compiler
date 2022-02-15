@@ -1,6 +1,6 @@
 module libc;
 
-extern int  puts(const byte *msg);
+extern int  puts(const byte *str);
 extern void exit(int status);
 
 extern void *malloc(uword size);
