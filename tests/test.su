@@ -1,0 +1,7 @@
+import common;
+
+extern int main()
+{
+    puts("Public imports!");
+    return 0;
+}

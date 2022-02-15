@@ -208,8 +208,11 @@ namespace Suteki
         private void ParseImport()
         {
             // Make node
-            NodeImport node            = new NodeImport();
-                       node.ModuleName = ParseName();
+            NodeImport node = new NodeImport()
+            {
+                ModuleName = ParseName(),
+                IsPublic   = (CurrentProperty == PropertyKind.Public)
+            };
 
             Nodes.Add(node);
 
@@ -542,6 +545,18 @@ namespace Suteki
 
             switch (Previous.Kind)
             {
+                case TokenKind.Public:
+                {
+                    CurrentProperty = PropertyKind.Public;
+                    break;
+                }
+
+                case TokenKind.Private:
+                {
+                    CurrentProperty = PropertyKind.Private;
+                    break;
+                }
+
                 case TokenKind.Extern:
                 {
                     CurrentProperty = PropertyKind.Extern;

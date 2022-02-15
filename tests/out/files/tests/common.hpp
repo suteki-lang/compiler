@@ -1,0 +1,6 @@
+#ifndef FILES_TESTS_COMMON_HPP
+#define FILES_TESTS_COMMON_HPP
+
+
+
+#endif

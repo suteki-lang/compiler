@@ -54,6 +54,18 @@ namespace Suteki
 
                     foundSymbol = module.GetSymbol(name);
                 }
+
+                foreach (Module publicModule in module.Imports)
+                {
+                    if (publicModule.HasSymbol(name))
+                    {
+                        // Check for ambiguity
+                        if (foundSymbol != null && token != null)
+                            Logger.Error(token, $"Ambiguous reference between '{foundSymbol.Module.Name}.{foundSymbol.Name}' and '{publicModule.Name}.{name}'.");
+
+                        foundSymbol = publicModule.GetSymbol(name);
+                    }
+                }
             }
 
             // Try finding symbol from a module that is not imported

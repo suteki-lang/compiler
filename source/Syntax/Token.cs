@@ -26,6 +26,8 @@ namespace Suteki
 
         Module,
         Import,
+        Public,
+        Private,
         
         Extern,
 

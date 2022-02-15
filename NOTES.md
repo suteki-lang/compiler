@@ -1,5 +1,6 @@
-- [ ] Fully working modules:
+- [ ] Clean up some code.
+- [x] Fully working modules:
     * [x] `module hello;`
 
-    - [ ] `public import hello;`
+    - [x] `public import hello;`
     - [x]        `import hello;`

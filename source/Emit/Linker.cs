@@ -62,30 +62,39 @@ namespace Suteki
             if (!Directory.Exists(modulesDirectory))
                 Directory.CreateDirectory(modulesDirectory);
 
-            foreach (KeyValuePair<string, Module> module in Config.Modules)
+            foreach (KeyValuePair<string, Module> pair in Config.Modules)
             {
                 string output          = "";
-                string moduleGuardName = $"MODULES_{module.Key.ToUpper().Replace(".", "__")}_HPP";
+                string moduleGuardName = $"MODULES_{pair.Key.ToUpper().Replace(".", "__")}_HPP";
 
                 // Write guard
                 output += $"#ifndef {moduleGuardName}\n";
                 output += $"#define {moduleGuardName}\n\n";
 
                 // Include runtime files (TODO: optimize this)
-                if (module.Key == "global")
+                if (pair.Key == "global")
                     output += $"#include <runtime/string.hpp>\n\n";
 
                 foreach (Input input in Config.Inputs)
                 {
-                    if (input.Module.Name == module.Key)
+                    if (input.Module.Name == pair.Key)
                         output += $"#include <{GetPath(input.Path)}.hpp>\n";
+                }
+
+                foreach (Module module in pair.Value.Imports)
+                {
+                    foreach (Input input in Config.Inputs)
+                    {
+                        if (input.Module.Name == pair.Key)
+                            output += $"#include <{GetPath(input.Path)}.hpp>\n";
+                    }
                 }
 
                 // End guard
                 output += "\n#endif";
 
                 // Write
-                File.WriteAllText($"{modulesDirectory}/{module.Key}.hpp", output);
+                File.WriteAllText($"{modulesDirectory}/{pair.Key}.hpp", output);
             }
 
             // Write files folder
@@ -104,6 +113,7 @@ namespace Suteki
                 header += $"#ifndef {guardName}\n";
                 header += $"#define {guardName}\n\n";
                 
+                // Header: Write external function declarations
                 if (input.Output.ExternalFunctionDeclarations == "")
                     header += '\n';
 

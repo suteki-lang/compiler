@@ -5,12 +5,14 @@ namespace Suteki
     class Module
     {
         public string                     Name;
+        public List<Module>               Imports;
         public Dictionary<string, Symbol> Symbols;
 
         // Constructor
         public Module(string name)
         {
             Name    = name;
+            Imports = new List<Module>();
             Symbols = new Dictionary<string, Symbol>();
         }
 

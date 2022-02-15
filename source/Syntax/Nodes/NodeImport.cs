@@ -3,6 +3,7 @@ namespace Suteki
     class NodeImport : Node
     {
         public Node ModuleName;
+        public bool IsPublic;
 
         public override string GetString => ModuleName.GetString;
         public override Token  GetToken  => ModuleName.GetToken;
@@ -26,7 +27,12 @@ namespace Suteki
             }
 
             // Add module
-            input.Imports.Add(Config.Modules[ModuleName.GetString]);
+            Module module = Config.Modules[ModuleName.GetString];
+
+            if (IsPublic)
+                input.Module.Imports.Add(module);
+            else
+                input.Imports.Add(module);
         }
     }
 }

@@ -1,0 +1,4 @@
+module common;
+
+// Import libc stuff
+public import libc;

@@ -3,5 +3,6 @@
 
 #include <runtime/string.hpp>
 
+#include <files/s/test.hpp>
 
 #endif

@@ -1,6 +1,0 @@
-import global;
-
-extern int main()
-{
-    return 0;
-}

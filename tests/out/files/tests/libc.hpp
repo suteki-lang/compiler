@@ -1,5 +1,5 @@
-#ifndef FILES_TESTS_STDC_HPP
-#define FILES_TESTS_STDC_HPP
+#ifndef FILES_TESTS_LIBC_HPP
+#define FILES_TESTS_LIBC_HPP
 
 extern "C" int puts(const char *msg);
 extern "C" void exit(int status);

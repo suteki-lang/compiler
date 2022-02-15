@@ -14,18 +14,20 @@ namespace Suteki
 
         private Dictionary<string, TokenKind> Keywords = new Dictionary<string, TokenKind>
         {
-            { "module", TokenKind.Module },
-            { "import", TokenKind.Import },
+            { "module",  TokenKind.Module  },
+            { "import",  TokenKind.Import  },
+            { "public",  TokenKind.Public  },
+            { "private", TokenKind.Private },
 
-            { "extern", TokenKind.Extern },
+            { "extern", TokenKind.Extern   },
+ 
+            { "const", TokenKind.Const     },
 
-            { "const", TokenKind.Const   },
+            { "true",  TokenKind.Bool      },
+            { "false", TokenKind.Bool      },
+            { "null",  TokenKind.Null      },
 
-            { "true",  TokenKind.Bool    },
-            { "false", TokenKind.Bool    },
-            { "null",  TokenKind.Null    },
-
-            { "return", TokenKind.Return },
+            { "return", TokenKind.Return   },
         };
 
         // Set scanner input
