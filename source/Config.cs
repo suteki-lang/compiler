@@ -4,10 +4,12 @@ namespace Suteki
 {
     class Config
     {
-        public static bool        HadError               = false;
-        public static string      OutputPath             = "../tests/out/";
-        public static string      RuntimePath            = "../runtime/";
-        public static List<Input> Inputs                 = new List<Input>();
+        public static bool         HadError    = false;
+        public static string       OutputPath  = "../tests/out/";
+        public static string       RuntimePath = "../runtime/";
+        public static List<string> Versions    = new List<string>() { "OS.Linux" };
+        public static List<Input>  Inputs      = new List<Input>();
+
         public static Dictionary<string, Module> Modules = new Dictionary<string, Module>();
     
         // Add module

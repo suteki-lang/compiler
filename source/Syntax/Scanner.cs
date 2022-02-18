@@ -19,6 +19,8 @@ namespace Suteki
             { "public",  TokenKind.Public  },
             { "private", TokenKind.Private },
 
+            { "version", TokenKind.Version },
+
             { "extern", TokenKind.Extern   },
  
             { "const", TokenKind.Const     },

@@ -1,13 +1,16 @@
 import common;
 
-private string test()
-{
-    return "private function test";
-}
-
 extern int main()
 {
-    puts(test());
-    // libc(); // This will show an error
+    version (OS.Linux)
+    {
+        puts("Hello, Linux!");
+    }
+
+    version (OS.Windows)
+    {
+        puts("Hello, Windows!");
+    }
+
     return 0;
 }

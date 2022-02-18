@@ -182,6 +182,35 @@ namespace Suteki
             return result;
         }
 
+        // Parse version identifier
+        private string ParseVersionIdentifier()
+        {
+            string result = "";
+
+            for (;;)
+            {
+                if (Match(TokenKind.Identifier))
+                    result += Previous.Content;
+                else
+                {
+                    if (result != "")
+                    {
+                        Current.Content = result;
+                        Logger.Error(Current, "Invalid version identifier.");
+                    }
+                    else
+                        Logger.Error(Current, "Expected version identifier.");
+                }
+
+                if (!Match(TokenKind.Dot))
+                    break;
+
+                result += '.';
+            }
+
+            return result;
+        }
+
         // Parse module
         private void ParseModule()
         {
@@ -428,8 +457,49 @@ namespace Suteki
             return null;
         }
 
+        // Check version
+        private void CheckVersion(NodeBlock block = null)
+        {
+            Consume(TokenKind.LeftParenthesis, "Expected '(' after 'version'.");
+            string version = ParseVersionIdentifier();
+            Consume(TokenKind.RightParenthesis, "Expected ')' after version identifier.");
+
+            Consume(TokenKind.LeftBrace, "Expected '{' after ')'.");
+            Token start = Previous;
+
+            if (!Match(TokenKind.RightBrace))
+            {
+                // Check for version
+                if (Config.Versions.Contains(version))
+                {
+                    // Parse everything
+                    while (!Match(TokenKind.RightBrace) && !Match(TokenKind.End))
+                    {
+                        if (block != null)
+                        {
+                            Node statementNode = ParseStatement();
+
+                            if (statementNode != null)
+                                block.Statements.Add(statementNode);
+                        }
+                        else
+                            ParseDeclaration();
+                    }
+                }
+                else
+                {
+                    // Skip everything
+                    while (!Match(TokenKind.RightBrace) && !Match(TokenKind.End))
+                        Advance();
+                }
+
+                if (Previous.Kind == TokenKind.End)
+                    Logger.Error(start, "Expected '}'.");
+            }
+        }
+
         // Parse statement
-        private Node ParseStatement()
+        private Node ParseStatement(NodeBlock block = null)
         {
             Advance();
 
@@ -440,6 +510,12 @@ namespace Suteki
 
                 case TokenKind.Identifier:
                     return ParseIdentifierStatement();
+                
+                case TokenKind.Version:
+                {
+                    CheckVersion(block);
+                    return null;
+                }
 
                 default:
                 {
@@ -452,7 +528,7 @@ namespace Suteki
         // Parse block of statements
         private Node ParseBlock()
         {
-            Token start = Current;
+            Token start = Previous;
 
             // Make node
             NodeBlock node = new NodeBlock()
@@ -464,7 +540,12 @@ namespace Suteki
             if (!Match(TokenKind.RightBrace))
             {
                 while (!Match(TokenKind.RightBrace) && !Match(TokenKind.End))
-                    node.Statements.Add(ParseStatement());
+                {
+                    Node statementNode = ParseStatement(node);
+
+                    if (statementNode != null)
+                        node.Statements.Add(statementNode);
+                }
 
                 if (Previous.Kind == TokenKind.End)
                     Logger.Error(start, "Expected '}' after statement(s).");
@@ -572,6 +653,12 @@ namespace Suteki
                 case TokenKind.Import:
                 {
                     ParseImport();
+                    break;
+                }
+
+                case TokenKind.Version:
+                {
+                    CheckVersion();
                     break;
                 }
 

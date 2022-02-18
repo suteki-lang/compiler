@@ -8,6 +8,5 @@ extern "C" void exit(int status);
 extern "C" void *malloc(unsigned long size);
 extern "C" void *realloc(void *ptr, unsigned long size);
 extern "C" void free(void *ptr);
-extern void su_libc_libc();
 
 #endif

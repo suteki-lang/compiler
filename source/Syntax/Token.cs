@@ -28,6 +28,8 @@ namespace Suteki
         Import,
         Public,
         Private,
+
+        Version,
         
         Extern,
 

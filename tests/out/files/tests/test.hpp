@@ -3,7 +3,6 @@
 
 #include <runtime/runtime.hpp>
 
-extern string su_global_test();
 extern "C" int main();
 
 #endif
