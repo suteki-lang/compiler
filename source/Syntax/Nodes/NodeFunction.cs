@@ -8,7 +8,7 @@ namespace Suteki
         public Node         Type;
         public Token        Name;
         public List<Node>   Parameters = new List<Node>();
-        public Node         Block;
+        public Node         Body;
 
         public override Token GetToken => Name;
 
@@ -32,8 +32,8 @@ namespace Suteki
             foreach (Node parameter in Parameters)
                 parameter.ResolveSymbols(input);
 
-            if (Block != null)
-                Block.ResolveSymbols(input);
+            if (Body != null)
+                Body.ResolveSymbols(input);
         }
 
         // Type checking
@@ -41,8 +41,8 @@ namespace Suteki
         {
             input.CurrentFunction = this;
 
-            if (Block != null)
-                Block.TypeCheck(input);
+            if (Body != null)
+                Body.TypeCheck(input);
 
             return null;
         }
@@ -79,13 +79,13 @@ namespace Suteki
             // Emit function declaration
             input.Output.ExternalFunctionDeclarations += $"{property}{head};\n";
 
-            if (Block != null)
+            if (Body != null)
             {
                 // Emit function definition
                 input.Output.FunctionDefinitions += head;
 
-                // Emit function block
-                Block.Emit(input);
+                // Emit function body
+                Body.Emit(input);
 
                 // Emit new line
                 input.Output.FunctionDefinitions += '\n';

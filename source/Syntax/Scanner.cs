@@ -277,6 +277,14 @@ namespace Suteki
                 case '/':
                     return MakeToken(TokenKind.Slash);
 
+                case '=':
+                {
+                    if (Match('>'))
+                        return MakeToken(TokenKind.Arrow);
+
+                    return MakeToken(TokenKind.Equal);
+                }
+
                 case '"':
                     return MakeStringToken();
 

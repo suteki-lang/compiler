@@ -6,3 +6,5 @@ extern void exit(int status);
 extern void *malloc(uword size);
 extern void *realloc(void *ptr, uword size);
 extern void  free(void *ptr);
+
+extern int system(const byte *command);

@@ -8,5 +8,6 @@ extern "C" void exit(int status);
 extern "C" void *malloc(unsigned long size);
 extern "C" void *realloc(void *ptr, unsigned long size);
 extern "C" void free(void *ptr);
+extern "C" int system(const char *command);
 
 #endif

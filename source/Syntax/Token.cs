@@ -23,6 +23,8 @@ namespace Suteki
         Plus,
         Minus,
         Slash,
+        Equal,
+        Arrow,
 
         Module,
         Import,

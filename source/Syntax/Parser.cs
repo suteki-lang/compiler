@@ -608,10 +608,25 @@ namespace Suteki
 
             // Parse function block
             if (Match(TokenKind.LeftBrace))
-                node.Block = ParseBlock();
+                node.Body = ParseBlock();
+            else if (Match(TokenKind.Arrow))
+            {
+                NodeBlock block = new NodeBlock();
+
+                block.Statements.Add(new NodeReturn()
+                {
+                    Token      = Previous,
+                    Expression = ParseExpression() 
+                });
+
+                node.Body = block;
+
+                // Expect semicolon
+                Consume(TokenKind.Semicolon, "Expected ';' after expression.");
+            }
             else
             {
-                node.Block = null;
+                node.Body = null;
 
                 // Make sure the function is extern,
                 // since forward declarations aren't allowed.
