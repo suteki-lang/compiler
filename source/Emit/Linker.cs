@@ -9,10 +9,10 @@ namespace Suteki
         // Get path
         private static string GetPath(string path)
         {
-            string name = Path.GetFileName(path).Replace(".su", "");
+            string name = Path.GetFileName(path);
 
             // Format the path
-            path = path.Replace(".su", "").Replace("../", "").Replace(name, "");
+            path = path.Replace("../", "").Replace(name, "");
             path = ("files/" + path);
 
             // Make the directory
@@ -21,7 +21,7 @@ namespace Suteki
             if (!Directory.Exists(directory))
                 Directory.CreateDirectory(directory);
 
-            return (path + name);            
+            return (path + name.Replace(".su", ""));            
         }
 
         // Start linking
