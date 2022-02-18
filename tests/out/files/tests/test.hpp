@@ -3,6 +3,6 @@
 
 #include <runtime/runtime.hpp>
 
-extern "C" int main();
+extern int su_global_exit_code(int code);
 
 #endif

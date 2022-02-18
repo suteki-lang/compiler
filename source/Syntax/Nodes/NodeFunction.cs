@@ -55,7 +55,7 @@ namespace Suteki
             string property = "";
 
             // Mangle name and get property
-            if (Property != PropertyKind.Extern) 
+            if (Property != PropertyKind.Extern && Name.Content != "main") 
             {
                 mangle   = $"su_{input.Module.Name.Replace('.', '_')}_";
                 property = "extern ";
@@ -77,7 +77,8 @@ namespace Suteki
             head += ')';
 
             // Emit function declaration
-            input.Output.ExternalFunctionDeclarations += $"{property}{head};\n";
+            if (Name.Content != "main")
+                input.Output.ExternalFunctionDeclarations += $"{property}{head};\n";
 
             if (Body != null)
             {
