@@ -4,6 +4,6 @@
 
 int main()
 {
-	puts("Unknown OS!");
+	puts("Linux OS");
 	return 0;
 }
