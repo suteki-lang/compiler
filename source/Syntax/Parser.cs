@@ -420,7 +420,7 @@ namespace Suteki
                 Node node = ParseCall(name, false);
 
                 // Expect semicolon
-                Consume(TokenKind.Semicolon, "Expected ';' after identifier.");
+                Consume(TokenKind.Semicolon, "Expected ';' after ')'.");
                 return node;
             }
 
@@ -517,7 +517,7 @@ namespace Suteki
                 node.Block = null;
 
                 // Expect semicolon
-                Consume(TokenKind.Semicolon, "Expected ';' after module ')'.");
+                Consume(TokenKind.Semicolon, "Expected ';' after ')'.");
             }
 
             Nodes.Add(node);
