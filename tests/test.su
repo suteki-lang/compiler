@@ -2,14 +2,17 @@ import common;
 
 extern int main()
 {
-    version (OS.Linux)
-    {
-        puts("Hello, Linux!");
-    }
-
     version (OS.Windows)
     {
-        puts("Hello, Windows!");
+        puts("Windows OS");
+    }
+    else version (OS.Linux)
+    {
+        puts("Linux OS");
+    }
+    else
+    {
+        puts("Unknown OS!");
     }
 
     return 0;

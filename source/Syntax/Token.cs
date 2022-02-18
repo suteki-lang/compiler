@@ -35,6 +35,8 @@ namespace Suteki
 
         Const,
 
+        Else,
+
         Return,
     }
 

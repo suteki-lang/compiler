@@ -458,19 +458,31 @@ namespace Suteki
         }
 
         // Check version
-        private void CheckVersion(NodeBlock block = null)
+        private void CheckVersion(bool skip, NodeBlock block = null)
         {
-            Consume(TokenKind.LeftParenthesis, "Expected '(' after 'version'.");
-            string version = ParseVersionIdentifier();
-            Consume(TokenKind.RightParenthesis, "Expected ')' after version identifier.");
+            string version = "";
 
-            Consume(TokenKind.LeftBrace, "Expected '{' after ')'.");
-            Token start = Previous;
+            if (Previous.Kind == TokenKind.Else)
+                Match(TokenKind.Version);
+
+            if (Previous.Kind == TokenKind.Version)
+            {
+                Consume(TokenKind.LeftParenthesis, "Expected '(' after 'version'.");
+                version = ParseVersionIdentifier();
+                Consume(TokenKind.RightParenthesis, "Expected ')' after version identifier.");
+
+                Consume(TokenKind.LeftBrace, "Expected '{' after ')'.");
+            }
+            else
+                Consume(TokenKind.LeftBrace, "Expected '{' after 'else'.");
+
+            Token start  = Previous;
+            bool  success = (Config.Versions.Contains(version) || version == "");
 
             if (!Match(TokenKind.RightBrace))
             {
                 // Check for version
-                if (Config.Versions.Contains(version))
+                if (success && !skip)
                 {
                     // Parse everything
                     while (!Match(TokenKind.RightBrace) && !Match(TokenKind.End))
@@ -496,6 +508,10 @@ namespace Suteki
                 if (Previous.Kind == TokenKind.End)
                     Logger.Error(start, "Expected '}'.");
             }
+
+            // Else?
+            if (Match(TokenKind.Else))
+                CheckVersion(success, block);
         }
 
         // Parse statement
@@ -513,7 +529,7 @@ namespace Suteki
                 
                 case TokenKind.Version:
                 {
-                    CheckVersion(block);
+                    CheckVersion(false, block);
                     return null;
                 }
 
@@ -658,7 +674,7 @@ namespace Suteki
 
                 case TokenKind.Version:
                 {
-                    CheckVersion();
+                    CheckVersion(false);
                     break;
                 }
 

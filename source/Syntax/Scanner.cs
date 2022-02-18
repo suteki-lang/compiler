@@ -29,6 +29,8 @@ namespace Suteki
             { "false", TokenKind.Bool      },
             { "null",  TokenKind.Null      },
 
+            { "else",  TokenKind.Else      },
+
             { "return", TokenKind.Return   },
         };
 
