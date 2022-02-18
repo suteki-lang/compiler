@@ -14,7 +14,7 @@ namespace Suteki
         public override void ResolveSymbols(Input input)
         {
             // Add local symbol
-            input.Locals[Name.Content] = new Symbol(SymbolKind.Parameter, input.Module, Name.Content, this);
+            input.Locals[Name.Content] = new Symbol(SymbolKind.Parameter, PropertyKind.None, input.Module, Name.Content, this);
         }
 
         // Type checking

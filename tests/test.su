@@ -1,7 +1,13 @@
 import common;
 
+private string test()
+{
+    return "private function test";
+}
+
 extern int main()
 {
-    puts("Public imports!");
+    puts(test());
+    // libc(); // This will show an error
     return 0;
 }

@@ -3,7 +3,6 @@ namespace Suteki
     class Output
     {
         public string ExternalFunctionDeclarations;
-        public string FunctionDeclarations;
         public string FunctionDefinitions;
 
         public int Tabs;
@@ -12,7 +11,6 @@ namespace Suteki
         public Output()
         {
             ExternalFunctionDeclarations = "";
-            FunctionDeclarations         = "";
             FunctionDefinitions          = "";
             Tabs                         = 0;
         }

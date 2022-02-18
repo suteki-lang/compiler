@@ -68,7 +68,7 @@ namespace Suteki
                 // Add 'su_' and module name
                 string mangle = "su_"; 
 
-                if (!name.Contains(symbol.Module.Name))
+                if (!name.Contains('.'))
                     mangle += $"{symbol.Module.Name.Replace('.', '_')}_";
 
                 result = $"{mangle}{result}";

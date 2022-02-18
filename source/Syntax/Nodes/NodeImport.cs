@@ -18,14 +18,6 @@ namespace Suteki
                 return;
             }
 
-            // Make sure that module isn't the global one
-            if (ModuleName.GetString == input.Module.Name)
-            {
-                // NOTE: maybe this error can be better?
-                input.Logger.Error(GetToken, "You can't self import a module.");
-                return;
-            }
-
             // Add module
             Module module = Config.Modules[ModuleName.GetString];
 

@@ -71,10 +71,6 @@ namespace Suteki
                 output += $"#ifndef {moduleGuardName}\n";
                 output += $"#define {moduleGuardName}\n\n";
 
-                // Include runtime files (TODO: optimize this)
-                if (pair.Key == "global")
-                    output += $"#include <runtime/string.hpp>\n\n";
-
                 foreach (Input input in Config.Inputs)
                 {
                     if (input.Module.Name == pair.Key)
@@ -85,7 +81,7 @@ namespace Suteki
                 {
                     foreach (Input input in Config.Inputs)
                     {
-                        if (input.Module.Name == pair.Key)
+                        if (input.Module.Name == module.Name)
                             output += $"#include <{GetPath(input.Path)}.hpp>\n";
                     }
                 }
@@ -112,15 +108,18 @@ namespace Suteki
                 // Header: Write guard
                 header += $"#ifndef {guardName}\n";
                 header += $"#define {guardName}\n\n";
+
+                // Header: Include runtime
+                header += "#include <runtime/runtime.hpp>\n\n";
                 
                 // Header: Write external function declarations
-                if (input.Output.ExternalFunctionDeclarations == "")
-                    header += '\n';
-
                 header += input.Output.ExternalFunctionDeclarations;
 
                 // Header: End guard
-                header += "\n#endif";
+                if (input.Output.ExternalFunctionDeclarations != "")
+                    header += '\n';
+                    
+                header += "#endif";
 
                 // Source: Add includes
                 source += $"#include <modules/{input.Module.Name}.hpp>\n";
@@ -130,19 +129,10 @@ namespace Suteki
 
                 source += '\n';
 
-                if (input.Output.FunctionDeclarations != "")
-                {
-                    source += input.Output.FunctionDeclarations;
-                    source += '\n';
-
-                    sourceIsEmpty = false;
-                }
-
                 if (input.Output.FunctionDefinitions != "")
                 {
-                    source += input.Output.FunctionDefinitions.Substring(0, input.Output.FunctionDefinitions.Length - 2);
-
-                    sourceIsEmpty = false;
+                    source        += input.Output.FunctionDefinitions.Substring(0, input.Output.FunctionDefinitions.Length - 2);
+                    sourceIsEmpty  = false;
                 }
 
                 // Write files

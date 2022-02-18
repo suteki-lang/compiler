@@ -23,7 +23,7 @@ namespace Suteki
             }
 
             // Add symbol
-            input.Module.AddSymbol(Name.Content, new Symbol(SymbolKind.Function, input.Module, Name.Content, this));
+            input.Module.AddSymbol(Name.Content, new Symbol(SymbolKind.Function, Property, input.Module, Name.Content, this));
         }
 
         // Resolve symbols
@@ -57,8 +57,8 @@ namespace Suteki
             // Mangle name and get property
             if (Property != PropertyKind.Extern) 
             {
-                mangle   = $"su_{input.Module.Name.Replace('.', '_')}_"; 
-                property = "extern \"C\" "; //"static ";
+                mangle   = $"su_{input.Module.Name.Replace('.', '_')}_";
+                property = "extern ";
             }
             else
                 property = "extern \"C\" ";
@@ -77,10 +77,7 @@ namespace Suteki
             head += ')';
 
             // Emit function declaration
-            // if (Property == PropertyKind.Extern)
-                input.Output.ExternalFunctionDeclarations += $"{property}{head};\n";
-            // else
-                // input.Output.FunctionDeclarations += $"{property}{head};\n";
+            input.Output.ExternalFunctionDeclarations += $"{property}{head};\n";
 
             if (Block != null)
             {

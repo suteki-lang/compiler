@@ -41,7 +41,12 @@ namespace Suteki
 
             // Try finding symbol in current module
             if (Module.HasSymbol(name))
+            {
                 foundSymbol = Module.GetSymbol(name);
+
+                if (!name.Contains('.'))
+                    goto End;
+            }
 
             // Try finding symbol in imported modules
             foreach (Module module in Imports)
@@ -53,6 +58,9 @@ namespace Suteki
                         Logger.Error(token, $"Ambiguous reference between '{foundSymbol.Module.Name}.{foundSymbol.Name}' and '{module.Name}.{name}'.");
 
                     foundSymbol = module.GetSymbol(name);
+
+                    if (!name.Contains('.'))
+                        goto End;
                 }
 
                 foreach (Module publicModule in module.Imports)
@@ -64,6 +72,9 @@ namespace Suteki
                             Logger.Error(token, $"Ambiguous reference between '{foundSymbol.Module.Name}.{foundSymbol.Name}' and '{publicModule.Name}.{name}'.");
 
                         foundSymbol = publicModule.GetSymbol(name);
+                        
+                        if (!name.Contains('.'))
+                            goto End;
                     }
                 }
             }
@@ -86,7 +97,7 @@ namespace Suteki
                     moduleName += nameSplitted;
 
                     // Check if splitted name is a module
-                    if (Config.HasModule(nameSplitted))
+                    if (Config.HasModule(nameSplitted) && (index + 1) < names.Length)
                     {
                         Module module     = Config.GetModule(nameSplitted);
                         string symbolName = names[index + 1];
@@ -96,7 +107,7 @@ namespace Suteki
                     }
                     
                     // Check if module name is a module
-                    else if (Config.HasModule(moduleName))
+                    else if (Config.HasModule(moduleName) && (index + 1) < names.Length)
                     {
                         Module module = Config.GetModule(moduleName);
                         
@@ -114,12 +125,19 @@ namespace Suteki
                 if (foundSymbol != null && token != null)
                     Logger.Error(token, $"Ambiguous reference between '{foundSymbol.Module.Name}.{foundSymbol.Name}' and '{lastSymbol.Module.Name}.{lastSymbol.Name}'.");
 
-                // Add import
-                if (lastSymbol != null && !Imports.Contains(lastSymbol.Module))
-                    Imports.Add(lastSymbol.Module);
-
                 foundSymbol = lastSymbol;
             }
+
+End:
+            // Check if symbol is private
+            if (foundSymbol != null && token != null &&
+                foundSymbol.Property == PropertyKind.Private &&
+                Module.Name != foundSymbol.Module.Name)
+                Logger.Error(token, $"This symbol is private and can't be used outside the module '{foundSymbol.Module.Name}'.");
+
+            // Add import if needed
+            if (foundSymbol != null && !Imports.Contains(foundSymbol.Module))
+                Imports.Add(foundSymbol.Module);
 
             return foundSymbol;
         }
