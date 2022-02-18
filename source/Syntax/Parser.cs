@@ -613,6 +613,11 @@ namespace Suteki
             {
                 node.Block = null;
 
+                // Make sure the function is extern,
+                // since forward declarations aren't allowed.
+                if (CurrentProperty != PropertyKind.Extern)
+                    Logger.Error(Current, "Expected '{' after ')'.");
+
                 // Expect semicolon
                 Consume(TokenKind.Semicolon, "Expected ';' after ')'.");
             }
