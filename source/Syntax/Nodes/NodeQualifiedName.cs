@@ -14,6 +14,7 @@ namespace Suteki
 
         public override string GetString => $"{Left.GetString}.{Right.GetString}";
         public override Token  GetToken  => Token.From(Left.GetToken, GetString);
+        public override NodeKind Kind    => NodeKind.QualifiedName;
 
         // Resolve symbols
         public override void ResolveSymbols(Input input)

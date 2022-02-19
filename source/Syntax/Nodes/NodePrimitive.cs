@@ -6,7 +6,8 @@ namespace Suteki
         public bool          IsConst;
         public PrimitiveKind PrimitiveKind;
 
-        public override Token GetToken => Token;
+        public override Token    GetToken => Token;
+        public override NodeKind Kind     => NodeKind.Primitive;
 
         public override string GetString
         {

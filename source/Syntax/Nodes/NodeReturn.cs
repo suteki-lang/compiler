@@ -6,6 +6,7 @@ namespace Suteki
         public Node  Expression;
 
         public override Token GetToken => Token;
+        public override NodeKind Kind  => NodeKind.Return;
 
         // Resolve symbols
         public override void ResolveSymbols(Input input)

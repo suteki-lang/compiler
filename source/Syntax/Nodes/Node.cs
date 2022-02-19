@@ -28,5 +28,6 @@ namespace Suteki
 
         public virtual string   GetString => "";
         public virtual Token    GetToken  => null;
+        public virtual NodeKind Kind      => NodeKind.Node;
     }
 }

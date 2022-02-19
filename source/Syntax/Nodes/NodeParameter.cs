@@ -7,8 +7,9 @@ namespace Suteki
         public Node  Type;
         public Token Name;
 
-        public override string GetString => $"{Type.GetString}{Name.Content}";
-        public override Token  GetToken  => Name;
+        public override string   GetString => $"{Type.GetString}{Name.Content}";
+        public override Token    GetToken  => Name;
+        public override NodeKind Kind      => NodeKind.Parameter;
 
         // Resolve symbols
         public override void ResolveSymbols(Input input)

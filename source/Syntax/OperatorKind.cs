@@ -7,6 +7,7 @@ namespace Suteki
         Subtract,
         Divide,
         Multiply,
+        Equality,
     }
 
     class Operator
@@ -26,6 +27,9 @@ namespace Suteki
 
                 case OperatorKind.Multiply:
                     return "*";
+
+                case OperatorKind.Equality:
+                    return "==";
 
                 default:
                     return "<?>";

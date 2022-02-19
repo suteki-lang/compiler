@@ -10,8 +10,9 @@ namespace Suteki
             Value = value;
         }
 
-        public override string GetString => Value.Content;
-        public override Token  GetToken  => Value;
+        public override string   GetString => Value.Content;
+        public override Token    GetToken  => Value;
+        public override NodeKind Kind      => NodeKind.String;
 
         // Type checking
         public override Type TypeCheck(Input input)

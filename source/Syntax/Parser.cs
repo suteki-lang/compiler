@@ -407,7 +407,17 @@ namespace Suteki
         // Parse equality expression
         private Node ParseEqualityExpression()
         {
-            return ParseComparisonExpression();
+            Node expression = ParseComparisonExpression();
+
+            while (Match(TokenKind.EqualEqual))
+            {
+                OperatorKind op    = Token.ToOperatorKind(Previous.Kind);
+                Node         right = ParseComparisonExpression();
+
+                expression = new NodeBinary(expression, op, right);
+            }
+
+            return expression;
         }
 
         // Parse expression
@@ -514,6 +524,27 @@ namespace Suteki
                 CheckVersion(success, block);
         }
 
+        // Parse if statement
+        private Node ParseIf()
+        {
+            NodeIf node = new NodeIf()
+            {
+                Token = Previous
+            };
+
+            Consume(TokenKind.LeftParenthesis, "Expected '(' after 'if'.");
+            node.Condition = ParseExpression();
+            Consume(TokenKind.RightParenthesis, "Expected ')' after condition.");
+
+            node.ThenBody = ParseStatement();
+            node.ElseBody = null;
+
+            if (Match(TokenKind.Else))
+                node.ElseBody = ParseStatement();
+
+            return node;
+        }
+
         // Parse statement
         private Node ParseStatement(NodeBlock block = null)
         {
@@ -532,6 +563,12 @@ namespace Suteki
                     CheckVersion(false, block);
                     return null;
                 }
+
+                case TokenKind.If:
+                    return ParseIf();
+
+                case TokenKind.LeftBrace:
+                    return ParseBlock();
 
                 default:
                 {

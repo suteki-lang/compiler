@@ -24,6 +24,7 @@ namespace Suteki
         Minus,
         Slash,
         Equal,
+        EqualEqual,
         Arrow,
 
         Module,
@@ -37,6 +38,7 @@ namespace Suteki
 
         Const,
 
+        If,
         Else,
 
         Return,
@@ -78,6 +80,9 @@ namespace Suteki
 
                 case TokenKind.Star:
                     return OperatorKind.Multiply;
+
+                case TokenKind.EqualEqual:
+                    return OperatorKind.Equality;
                 
                 default:
                     return OperatorKind.None;

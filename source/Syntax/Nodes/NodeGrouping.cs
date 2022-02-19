@@ -10,8 +10,9 @@ namespace Suteki
             Expression = expression;
         }
 
-        public override string GetString => $"({Expression.GetString})";
-        public override Token  GetToken  => Token.From(Expression.GetToken, GetString);
+        public override string   GetString => $"({Expression.GetString})";
+        public override Token    GetToken  => Token.From(Expression.GetToken, GetString);
+        public override NodeKind Kind      => NodeKind.Grouping;
 
         // Type checking
         public override Type TypeCheck(Input input)

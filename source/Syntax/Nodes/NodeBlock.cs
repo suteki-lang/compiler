@@ -7,7 +7,8 @@ namespace Suteki
         public Token      Token;
         public List<Node> Statements = new List<Node>();
 
-        public override Token GetToken => Token;
+        public override Token    GetToken => Token;
+        public override NodeKind Kind     => NodeKind.Block;
 
         // Resolve symbols
         public override void ResolveSymbols(Input input)
@@ -28,16 +29,18 @@ namespace Suteki
         // Emit C++ code
         public override void Emit(Input input)
         {
-            input.Output.FunctionDefinitions += "\n{\n";
+            input.Output.FunctionDefinitions += '\n';
+            input.Output.FunctionDefinitions += input.Output.GetTabs();
+            input.Output.FunctionDefinitions += "{\n";
 
             if (Statements.Count == 0)
             {
                 input.Output.FunctionDefinitions += "\t\n";
+                input.Output.FunctionDefinitions += input.Output.GetTabs();
                 input.Output.FunctionDefinitions += "}\n";
                 return;
             }
 
-            input.Output.FunctionDefinitions += input.Output.GetTabs();
             ++input.Output.Tabs;
 
             foreach (Node node in Statements)
@@ -47,6 +50,7 @@ namespace Suteki
             }
 
             --input.Output.Tabs;
+            input.Output.FunctionDefinitions += input.Output.GetTabs();
             input.Output.FunctionDefinitions += "}\n";
         }
     }

@@ -14,6 +14,7 @@ namespace Suteki
 
         public override string GetString => $"{Operator.ToString(Op)}{Operand.GetString}";
         public override Token  GetToken  => Token.From(Operand.GetToken, GetString);
+        public override NodeKind Kind    => NodeKind.Unary;
 
         // Type checking
         public override Type TypeCheck(Input input)
@@ -33,7 +34,8 @@ namespace Suteki
         // Emit C++ code
         public override void Emit(Input input)
         {
-            input.Output.FunctionDefinitions += GetString;
+            input.Output.FunctionDefinitions += Operator.ToString(Op);
+            Operand.Emit(input);
         }
     }
 }

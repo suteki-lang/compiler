@@ -10,8 +10,9 @@ namespace Suteki
             Value = value;
         }
 
-        public override string GetString => Value.Content;
-        public override Token  GetToken  => Value;
+        public override string   GetString => Value.Content;
+        public override Token    GetToken  => Value;
+        public override NodeKind Kind      => NodeKind.IdentifierName;
 
         // Resolve symbols
         public override void ResolveSymbols(Input input)

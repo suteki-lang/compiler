@@ -10,7 +10,8 @@ namespace Suteki
         public List<Node>   Parameters = new List<Node>();
         public Node         Body;
 
-        public override Token GetToken => Name;
+        public override Token    GetToken => Name;
+        public override NodeKind Kind      => NodeKind.Function;
 
         // Register symbols
         public override void RegisterSymbols(Input input)

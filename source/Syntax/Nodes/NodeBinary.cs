@@ -14,8 +14,9 @@ namespace Suteki
             Right = right;
         }
 
-        public override string GetString => $"{Left.GetString} {Operator.ToString(Op)} {Right.GetString}";
-        public override Token  GetToken  => Token.From(Left.GetToken, GetString);
+        public override string   GetString => $"{Left.GetString} {Operator.ToString(Op)} {Right.GetString}";
+        public override Token    GetToken  => Token.From(Left.GetToken, GetString);
+        public override NodeKind Kind      => NodeKind.Binary;
 
         // Type checking
         public override Type TypeCheck(Input input)
@@ -26,6 +27,9 @@ namespace Suteki
             if (!left.IsIdentical(right, true))
                 input.Logger.Error(GetToken, "Expression types does not match.");
 
+            if (Op == OperatorKind.Equality)
+                return new TypePrimitive() { Kind = PrimitiveKind.Bool };
+
             if (left.IsFloat())
                 return left;
 
@@ -35,7 +39,9 @@ namespace Suteki
         // Emit C++ code
         public override void Emit(Input input)
         {
-            input.Output.FunctionDefinitions += GetString;
+            Left.Emit(input);
+            input.Output.FunctionDefinitions += $" {Operator.ToString(Op)} ";
+            Right.Emit(input);
         }
     }
 }

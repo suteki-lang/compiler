@@ -29,6 +29,7 @@ namespace Suteki
             { "false", TokenKind.Bool      },
             { "null",  TokenKind.Null      },
 
+            { "if",    TokenKind.If        },
             { "else",  TokenKind.Else      },
 
             { "return", TokenKind.Return   },
@@ -279,6 +280,9 @@ namespace Suteki
 
                 case '=':
                 {
+                    if (Match('='))
+                        return MakeToken(TokenKind.EqualEqual);
+
                     if (Match('>'))
                         return MakeToken(TokenKind.Arrow);
 

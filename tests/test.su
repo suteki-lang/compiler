@@ -1,2 +1,26 @@
-int exit_code(int code) => code;
-int main     ()         => exit_code(13);
+string hello() => "hello!";
+void *alloc() => null;
+
+int main()
+{
+    if (alloc() == null)
+    {
+        libc.puts("null");
+        return 1;
+    }
+    else
+        return 69;
+
+    if (1.23 == 1)
+        libc.puts("true");
+    else if (false)
+        libc.puts("ok");
+    else
+    {
+        hello();
+        libc.puts("k");
+    }
+
+    libc.puts(hello());
+    return 0;
+}

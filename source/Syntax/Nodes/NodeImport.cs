@@ -7,6 +7,7 @@ namespace Suteki
 
         public override string GetString => ModuleName.GetString;
         public override Token  GetToken  => ModuleName.GetToken;
+        public override NodeKind Kind    => NodeKind.Import;
 
         // Register symbols
         public override void RegisterSymbols(Input input)

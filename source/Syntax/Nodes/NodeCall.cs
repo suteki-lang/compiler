@@ -8,7 +8,31 @@ namespace Suteki
         public Node       Name;
         public List<Node> Parameters = new List<Node>();
 
-        public override Token GetToken => Name.GetToken;
+        public override Token    GetToken => Name.GetToken;
+        public override NodeKind Kind     => NodeKind.Call;
+
+        public override string GetString
+        {
+            get 
+            {
+                string result = $"{Name.GetString}(";
+
+                for (int index = 0; index < Parameters.Count; ++index)
+                {
+                    result += Parameters[index].GetString;
+
+                    if (index != (Parameters.Count - 1))
+                        result += ", ";
+                }
+
+                result += ')';
+
+                if (!IsExpression)
+                    result += ";\n";
+
+                return result;
+            }
+        }
 
         // Resolve symbols
         public override void ResolveSymbols(Input input)

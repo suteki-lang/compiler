@@ -1,14 +1,14 @@
 #ifndef SUTEKI_STRING_HPP
 #define SUTEKI_STRING_HPP
 
-#include <runtime/common.hpp>
+#include <string.h>
 
 // NOTE: this is temporary
 
 struct string
 {
-    const char *content;
-    uint32_t    length;
+    const char   *content;
+    unsigned int  length;
 
     // Default Constructor
     string()
