@@ -181,8 +181,8 @@ class Parser
         return result;
     }
 
-    // Parse version identifier
-    private string ParseVersionIdentifier()
+    // Parse version name
+    private string ParseVersionName()
     {
         string result = "";
 
@@ -195,10 +195,10 @@ class Parser
                 if (result != "")
                 {
                     Current.Content = result;
-                    Logger.Error(Current, "Invalid version identifier.");
+                    Logger.Error(Current, "Invalid version name.");
                 }
                 else
-                    Logger.Error(Current, "Expected version identifier.");
+                    Logger.Error(Current, "Expected version name.");
             }
 
             if (!Match(TokenKind.Dot))
@@ -246,31 +246,39 @@ class Parser
 
         // Expect semicolon
         Consume(TokenKind.Semicolon, "Expected ';' after module name.");
+
+        // Reset property
+        CurrentProperty = PropertyKind.None;
     }
 
     // Parse type
     private Node ParseType()
     {
-        bool   isConst  = false;
-        Node   node     = null;
-
+        // Parse constant type
         if (Previous.Kind == TokenKind.Const)
         {
-            isConst = true;
+            Token previous = Previous;
             Advance();
-        }
 
-        string typeName = Previous.Content;
-
-        if (Types.ContainsKey(typeName))
-        {
-            node = new NodePrimitive()
+            return new NodeConst()
             {
-                IsConst       = isConst,
-                PrimitiveKind = Types[typeName].Kind
+                Token = previous,
+                Type  = ParseType()
             };
         }
 
+        // Parse primitive type
+        Node node = null;
+
+        if (Types.ContainsKey(Previous.Content))
+        {
+            node = new NodePrimitive()
+            {
+                PrimitiveKind = Types[Previous.Content].Kind
+            };
+        }
+
+        // Parse pointer type
         while (Match(TokenKind.Star))
         {
             node = new NodePointer()
@@ -296,9 +304,7 @@ class Parser
         if (!Match(TokenKind.RightParenthesis))
         {
             do
-            {
                 node.Parameters.Add(ParseExpression());
-            }
             while (Match(TokenKind.Comma));
 
             Consume(TokenKind.RightParenthesis, "Expected ')' after function call parameter(s).");
@@ -347,7 +353,7 @@ class Parser
         if (Match(TokenKind.Identifier))
             return ParseIdentifierExpression();
 
-        Logger.Error(Current, "Unexpected token.");
+        Logger.Error(Current, "Expected expression.");
         return null;
     }
 
@@ -458,7 +464,7 @@ class Parser
             Node node = ParseCall(name, false);
 
             // Expect semicolon
-            Consume(TokenKind.Semicolon, "Expected ';' after ')'.");
+            Consume(TokenKind.Semicolon, "Expected ';' after call.");
             return node;
         }
 
@@ -469,6 +475,7 @@ class Parser
     // Check version
     private void CheckVersion(bool skip, NodeBlock block = null)
     {
+        // TODO: use nodes instead
         string version = "";
 
         if (Previous.Kind == TokenKind.Else)
@@ -477,8 +484,8 @@ class Parser
         if (Previous.Kind == TokenKind.Version)
         {
             Consume(TokenKind.LeftParenthesis, "Expected '(' after 'version'.");
-            version = ParseVersionIdentifier();
-            Consume(TokenKind.RightParenthesis, "Expected ')' after version identifier.");
+            version = ParseVersionName();
+            Consume(TokenKind.RightParenthesis, "Expected ')' after version name.");
 
             Consume(TokenKind.LeftBrace, "Expected '{' after ')'.");
         }
@@ -547,6 +554,7 @@ class Parser
     // Parse statement
     private Node ParseStatement(NodeBlock block = null)
     {
+        // TODO: remove block parameter when changing CheckVersion to ParseVersion
         Advance();
 
         switch (Previous.Kind)
@@ -610,10 +618,12 @@ class Parser
     private void ParseFunction(Node type, Token name)
     {
         // Make node
-        NodeFunction node          = new NodeFunction();
-                        node.Property = CurrentProperty;
-                        node.Type     = type;
-                        node.Name     = name;
+        NodeFunction node = new NodeFunction()
+        {
+            Property = CurrentProperty,
+            Type     = type,
+            Name     = name
+        };
 
         // Parse function parameters
         if (!Match(TokenKind.RightParenthesis))
@@ -628,11 +638,11 @@ class Parser
                     Consume(TokenKind.Identifier, "Expected function name after type.");
 
                     // Make node
-                    NodeParameter parameter      = new NodeParameter();
-                                    parameter.Type = parameterType;
-                                    parameter.Name = Previous;
-
-                    node.Parameters.Add(parameter);
+                    node.Parameters.Add(new NodeParameter()
+                    {
+                        Type = parameterType,
+                        Name = Previous
+                    });
                 }
                 else
                     Logger.Error(Previous, "Expected type.");
@@ -664,13 +674,12 @@ class Parser
         {
             node.Body = null;
 
-            // Make sure the function is extern,
-            // since forward declarations aren't allowed.
+            // Expect function to be extern
             if (CurrentProperty != PropertyKind.Extern)
                 Logger.Error(Current, "Expected '{' after ')'.");
-
-            // Expect semicolon
-            Consume(TokenKind.Semicolon, "Expected ';' after ')'.");
+            else
+                // Expect semicolon
+                Consume(TokenKind.Semicolon, "Expected ';' after ')'.");
         }
 
         Nodes.Add(node);
@@ -774,8 +783,15 @@ class Parser
         */
 
         // Make global module
-        Module globalModule = new Module("global");
-        Config.Modules.Add("global", globalModule);
+        Module globalModule;
+
+        if (!Config.HasModule("global"))
+        {
+            globalModule = new Module("global");
+            Config.AddModule("global", globalModule);
+        }
+        else
+            globalModule = Config.GetModule("global");
 
         // Register all global symbols from inputs
         foreach (Input input in Config.Inputs)
@@ -803,7 +819,7 @@ class Parser
             foreach (Node node in input.Nodes)
                 node.ResolveSymbols(input);
 
-            // Don't do the other pass if an error happened.
+            // Don't do the other passes if an error happened.
             if (Config.HadError)
                 return;
 
