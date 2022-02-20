@@ -136,7 +136,8 @@ End:
             Logger.Error(token, $"This symbol is private and can't be used outside the module '{foundSymbol.Module.Name}'.");
 
         // Add import if needed
-        if (foundSymbol != null && !Imports.Contains(foundSymbol.Module))
+        if (foundSymbol != null && !Imports.Contains(foundSymbol.Module) &&
+            foundSymbol.Module.Name != "global")
             Imports.Add(foundSymbol.Module);
 
         return foundSymbol;

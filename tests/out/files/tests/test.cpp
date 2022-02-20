@@ -1,6 +1,5 @@
 #include <modules/global.hpp>
 #include <modules/libc.hpp>
-#include <modules/global.hpp>
 
 string su_global_hello()
 {
