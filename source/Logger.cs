@@ -23,7 +23,7 @@ class Logger
         {
             case TokenKind.End:
             {
-                Console.Error.Write(" at end");
+                Console.Error.Write(" at end: ");
                 break;
             }
 
