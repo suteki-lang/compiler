@@ -10,7 +10,7 @@ and many more.
 ```d
 import std.io;
 
-extern int main()
+int main()
 {
     writeln("Hello, World!");
     return 0;
