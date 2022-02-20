@@ -7,6 +7,7 @@ enum NodeKind
     Block,
     Bool,
     Call,
+    Const,
     Float,
     Function,
     Grouping,

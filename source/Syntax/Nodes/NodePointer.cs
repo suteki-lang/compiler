@@ -4,17 +4,9 @@ class NodePointer : Node
 {
     public Node PointsTo;
     
-    public override Token    GetToken => PointsTo.GetToken;
-
-    public override NodeKind Kind     => NodeKind.Pointer;
-
-    public override string GetString
-    {
-        get
-        {
-            return $"{PointsTo.GetString}*";
-        }
-    }
+    public override string   GetString => $"{PointsTo.GetString}*";
+    public override Token    GetToken  => PointsTo.GetToken;
+    public override NodeKind Kind      => NodeKind.Pointer;
 
     // Type checking
     public override Type TypeCheck(Input input)

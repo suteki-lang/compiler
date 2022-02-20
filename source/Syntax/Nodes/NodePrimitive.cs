@@ -3,7 +3,6 @@ namespace Suteki;
 class NodePrimitive : Node
 {
     public Token         Token;
-    public bool          IsConst;
     public PrimitiveKind PrimitiveKind;
 
     public override Token    GetToken => Token;
@@ -35,9 +34,6 @@ class NodePrimitive : Node
                 "float ",
                 "double ",
             };
-            
-            if (IsConst)
-                return $"const {cTypes[(int)PrimitiveKind]}";
 
             return cTypes[(int)PrimitiveKind];
         }
@@ -46,22 +42,9 @@ class NodePrimitive : Node
     // Type checking
     public override Type TypeCheck(Input input)
     {
-        if (IsConst)
-        {
-            return new TypeConst()
-            {
-                Type = new TypePrimitive()
-                {
-                    Kind = PrimitiveKind
-                }
-            };
-        }
-        else
-        {
-            return new TypePrimitive() 
-            { 
-                Kind = PrimitiveKind
-            };
-        }
+        return new TypePrimitive() 
+        { 
+            Kind = PrimitiveKind
+        };
     }
 }
