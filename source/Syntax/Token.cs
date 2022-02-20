@@ -32,8 +32,6 @@ enum TokenKind
 
     Public,
     Private,
-
-    Version,
     
     Extern,
 

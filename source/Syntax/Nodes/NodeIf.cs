@@ -13,6 +13,7 @@ class NodeIf : Node
     // Resolve symbols
     public override void ResolveSymbols(Input input)
     {
+        // Resolve all the symbols
         Condition.ResolveSymbols(input);
         ThenBody .ResolveSymbols(input);
 
@@ -23,10 +24,19 @@ class NodeIf : Node
     // Type checking
     public override Type TypeCheck(Input input)
     {
+        // Type check the condition
         Type conditionType = Condition.TypeCheck(input);
 
-        if (!conditionType.IsBool())
+        // Make sure condition is a boolean, integer or pointer
+        if (!conditionType.IsBool() && !conditionType.IsInteger() &&
+            !conditionType.IsPointer())
             input.Logger.Error(Condition.GetToken, "Expected boolean, integer or pointer condition.");
+
+        // Type check the bodies
+        ThenBody.TypeCheck(input);
+
+        if (ElseBody != null)
+            ElseBody.TypeCheck(input);
 
         return null;
     }

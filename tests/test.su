@@ -1,9 +1,7 @@
-string hello() => "hello!";
-void *alloc() => null;
-
-long a(const long *b) => 0;
-
 int main()
 {
+    if (true)
+        return 10;
+
     return 0;
 }

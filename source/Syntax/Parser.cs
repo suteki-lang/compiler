@@ -181,35 +181,6 @@ class Parser
         return result;
     }
 
-    // Parse version name
-    private string ParseVersionName()
-    {
-        string result = "";
-
-        for (;;)
-        {
-            if (Match(TokenKind.Identifier))
-                result += Previous.Content;
-            else
-            {
-                if (result != "")
-                {
-                    Current.Content = result;
-                    Logger.Error(Current, "Invalid version name.");
-                }
-                else
-                    Logger.Error(Current, "Expected version name.");
-            }
-
-            if (!Match(TokenKind.Dot))
-                break;
-
-            result += '.';
-        }
-
-        return result;
-    }
-
     // Parse module
     private void ParseModule()
     {
@@ -472,64 +443,6 @@ class Parser
         return null;
     }
 
-    // Check version
-    private void CheckVersion(bool skip, NodeBlock block = null)
-    {
-        // TODO: use nodes instead
-        string version = "";
-
-        if (Previous.Kind == TokenKind.Else)
-            Match(TokenKind.Version);
-
-        if (Previous.Kind == TokenKind.Version)
-        {
-            Consume(TokenKind.LeftParenthesis, "Expected '(' after 'version'.");
-            version = ParseVersionName();
-            Consume(TokenKind.RightParenthesis, "Expected ')' after version name.");
-
-            Consume(TokenKind.LeftBrace, "Expected '{' after ')'.");
-        }
-        else
-            Consume(TokenKind.LeftBrace, "Expected '{' after 'else'.");
-
-        Token start  = Previous;
-        bool  success = (Config.Versions.Contains(version) || version == "");
-
-        if (!Match(TokenKind.RightBrace))
-        {
-            // Check for version
-            if (success && !skip)
-            {
-                // Parse everything
-                while (!Match(TokenKind.RightBrace) && !Match(TokenKind.End))
-                {
-                    if (block != null)
-                    {
-                        Node statementNode = ParseStatement();
-
-                        if (statementNode != null)
-                            block.Statements.Add(statementNode);
-                    }
-                    else
-                        ParseDeclaration();
-                }
-            }
-            else
-            {
-                // Skip everything
-                while (!Match(TokenKind.RightBrace) && !Match(TokenKind.End))
-                    Advance();
-            }
-
-            if (Previous.Kind == TokenKind.End)
-                Logger.Error(start, "Expected '}'.");
-        }
-
-        // Else?
-        if (Match(TokenKind.Else))
-            CheckVersion(success, block);
-    }
-
     // Parse if statement
     private Node ParseIf()
     {
@@ -552,9 +465,8 @@ class Parser
     }
 
     // Parse statement
-    private Node ParseStatement(NodeBlock block = null)
+    private Node ParseStatement()
     {
-        // TODO: remove block parameter when changing CheckVersion to ParseVersion
         Advance();
 
         switch (Previous.Kind)
@@ -564,12 +476,6 @@ class Parser
 
             case TokenKind.Identifier:
                 return ParseIdentifierStatement();
-            
-            case TokenKind.Version:
-            {
-                CheckVersion(false, block);
-                return null;
-            }
 
             case TokenKind.If:
                 return ParseIf();
@@ -601,7 +507,7 @@ class Parser
         {
             while (!Match(TokenKind.RightBrace) && !Match(TokenKind.End))
             {
-                Node statementNode = ParseStatement(node);
+                Node statementNode = ParseStatement();
 
                 if (statementNode != null)
                     node.Statements.Add(statementNode);
@@ -734,12 +640,6 @@ class Parser
             case TokenKind.Import:
             {
                 ParseImport();
-                break;
-            }
-
-            case TokenKind.Version:
-            {
-                CheckVersion(false);
                 break;
             }
 
