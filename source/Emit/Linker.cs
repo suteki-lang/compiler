@@ -27,16 +27,23 @@ struct Linker
     // Start linking
     public static void Start()
     {
+        // Check for valid paths
+        if (!Config.OutputPath.EndsWith('/'))
+            Config.OutputPath += '/';
+
+        if (!Config.RuntimePath.EndsWith('/'))
+            Config.RuntimePath += '/';
+
         // Check for paths
         if (!Directory.Exists(Config.OutputPath))
         {
-            Console.Error.WriteLine($"The output path '{Config.OutputPath}' does not exists.");
+            Console.Error.WriteLine($"Linker Error: The output path '{Config.OutputPath}' does not exists.");
             return;
         }
 
         if (!Directory.Exists(Config.RuntimePath))
         {
-            Console.Error.WriteLine($"The runtime path '{Config.RuntimePath}' does not exists.");
+            Console.Error.WriteLine($"Linker Error: The runtime path '{Config.RuntimePath}' does not exists.");
             return;
         }
 
@@ -46,9 +53,7 @@ struct Linker
 
         // Write runtime folder
         string runtimeDirectory = $"{Config.OutputPath}runtime";
-
-        if (!Directory.Exists(runtimeDirectory))
-            Directory.CreateDirectory(runtimeDirectory);
+        Directory.CreateDirectory(runtimeDirectory);
 
         foreach (string file in Directory.GetFiles(Config.RuntimePath))
         {
@@ -58,9 +63,7 @@ struct Linker
 
         // Write modules folder
         string modulesDirectory = $"{Config.OutputPath}modules";
-
-        if (!Directory.Exists(modulesDirectory))
-            Directory.CreateDirectory(modulesDirectory);
+        Directory.CreateDirectory(modulesDirectory);
 
         foreach (KeyValuePair<string, Module> pair in Config.Modules)
         {
@@ -71,19 +74,19 @@ struct Linker
             output += $"#ifndef {moduleGuardName}\n";
             output += $"#define {moduleGuardName}\n\n";
 
+            // Include public imports
+            foreach (Module module in pair.Value.Imports)
+                output += $"#include <modules/{module.Name}.hpp>\n";
+
+            // Write spacing
+            if (pair.Value.Imports.Count != 0)
+                output += '\n';
+
+            // Include files that uses this module
             foreach (Input input in Config.Inputs)
             {
                 if (input.Module.Name == pair.Key)
                     output += $"#include <{GetPath(input.Path)}.hpp>\n";
-            }
-
-            foreach (Module module in pair.Value.Imports)
-            {
-                foreach (Input input in Config.Inputs)
-                {
-                    if (input.Module.Name == module.Name)
-                        output += $"#include <{GetPath(input.Path)}.hpp>\n";
-                }
             }
 
             // End guard

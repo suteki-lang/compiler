@@ -1,7 +1,8 @@
 #ifndef MODULES_COMMON_HPP
 #define MODULES_COMMON_HPP
 
+#include <modules/libc.hpp>
+
 #include <files/tests/common.hpp>
-#include <files/tests/libc.hpp>
 
 #endif
