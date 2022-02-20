@@ -1,13 +1,12 @@
-namespace Suteki
-{
-    class UserType
-    {
-        public PrimitiveKind Kind;
+namespace Suteki;
 
-        // Constructor
-        public UserType(PrimitiveKind kind)
-        {
-            Kind = kind;
-        }
+class UserType
+{
+    public PrimitiveKind Kind;
+
+    // Constructor
+    public UserType(PrimitiveKind kind)
+    {
+        Kind = kind;
     }
 }

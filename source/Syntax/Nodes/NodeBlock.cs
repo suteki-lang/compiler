@@ -1,57 +1,56 @@
+namespace Suteki;
+
 using System.Collections.Generic;
 
-namespace Suteki
+class NodeBlock : Node
 {
-    class NodeBlock : Node
+    public Token      Token;
+    public List<Node> Statements = new List<Node>();
+
+    public override Token    GetToken => Token;
+    public override NodeKind Kind     => NodeKind.Block;
+
+    // Resolve symbols
+    public override void ResolveSymbols(Input input)
     {
-        public Token      Token;
-        public List<Node> Statements = new List<Node>();
+        foreach (Node node in Statements)
+            node.ResolveSymbols(input);
+    }
 
-        public override Token    GetToken => Token;
-        public override NodeKind Kind     => NodeKind.Block;
+    // Type checking
+    public override Type TypeCheck(Input input)
+    {
+        foreach (Node node in Statements)
+            node.TypeCheck(input);
 
-        // Resolve symbols
-        public override void ResolveSymbols(Input input)
+        return null;
+    }
+    
+    // Emit C++ code
+    public override void Emit(Input input)
+    {
+        input.Output.FunctionDefinitions += '\n';
+        input.Output.FunctionDefinitions += input.Output.GetTabs();
+        input.Output.FunctionDefinitions += "{\n";
+
+        if (Statements.Count == 0)
         {
-            foreach (Node node in Statements)
-                node.ResolveSymbols(input);
-        }
-
-        // Type checking
-        public override Type TypeCheck(Input input)
-        {
-            foreach (Node node in Statements)
-                node.TypeCheck(input);
-
-            return null;
-        }
-        
-        // Emit C++ code
-        public override void Emit(Input input)
-        {
-            input.Output.FunctionDefinitions += '\n';
-            input.Output.FunctionDefinitions += input.Output.GetTabs();
-            input.Output.FunctionDefinitions += "{\n";
-
-            if (Statements.Count == 0)
-            {
-                input.Output.FunctionDefinitions += "\t\n";
-                input.Output.FunctionDefinitions += input.Output.GetTabs();
-                input.Output.FunctionDefinitions += "}\n";
-                return;
-            }
-
-            ++input.Output.Tabs;
-
-            foreach (Node node in Statements)
-            {
-                input.Output.FunctionDefinitions += input.Output.GetTabs();
-                node.Emit(input);
-            }
-
-            --input.Output.Tabs;
+            input.Output.FunctionDefinitions += "\t\n";
             input.Output.FunctionDefinitions += input.Output.GetTabs();
             input.Output.FunctionDefinitions += "}\n";
+            return;
         }
+
+        ++input.Output.Tabs;
+
+        foreach (Node node in Statements)
+        {
+            input.Output.FunctionDefinitions += input.Output.GetTabs();
+            node.Emit(input);
+        }
+
+        --input.Output.Tabs;
+        input.Output.FunctionDefinitions += input.Output.GetTabs();
+        input.Output.FunctionDefinitions += "}\n";
     }
 }

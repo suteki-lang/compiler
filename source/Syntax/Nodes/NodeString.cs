@@ -1,32 +1,31 @@
-namespace Suteki
+namespace Suteki;
+
+class NodeString : Node
 {
-    class NodeString : Node
+    public Token Value;
+
+    // Constructor
+    public NodeString(Token value)
     {
-        public Token Value;
+        Value = value;
+    }
 
-        // Constructor
-        public NodeString(Token value)
+    public override string   GetString => Value.Content;
+    public override Token    GetToken  => Value;
+    public override NodeKind Kind      => NodeKind.String;
+
+    // Type checking
+    public override Type TypeCheck(Input input)
+    {
+        return new TypePrimitive()
         {
-            Value = value;
-        }
+            Kind = PrimitiveKind.String
+        };
+    }
 
-        public override string   GetString => Value.Content;
-        public override Token    GetToken  => Value;
-        public override NodeKind Kind      => NodeKind.String;
-
-        // Type checking
-        public override Type TypeCheck(Input input)
-        {
-            return new TypePrimitive()
-            {
-                Kind = PrimitiveKind.String
-            };
-        }
-
-        // Emit C++ code
-        public override void Emit(Input input)
-        {
-            input.Output.FunctionDefinitions += GetString;
-        }
+    // Emit C++ code
+    public override void Emit(Input input)
+    {
+        input.Output.FunctionDefinitions += GetString;
     }
 }

@@ -1,29 +1,28 @@
-namespace Suteki
+namespace Suteki;
+
+class Output
 {
-    class Output
+    public string ExternalFunctionDeclarations;
+    public string FunctionDefinitions;
+
+    public int Tabs;
+
+    // Default Constructor
+    public Output()
     {
-        public string ExternalFunctionDeclarations;
-        public string FunctionDefinitions;
+        ExternalFunctionDeclarations = "";
+        FunctionDefinitions          = "";
+        Tabs                         = 0;
+    }
 
-        public int Tabs;
+    // Get tabs
+    public string GetTabs()
+    {
+        string result = "";
 
-        // Default Constructor
-        public Output()
-        {
-            ExternalFunctionDeclarations = "";
-            FunctionDefinitions          = "";
-            Tabs                         = 0;
-        }
+        for (int i = 0; i < Tabs; ++i)
+            result += '\t';
 
-        // Get tabs
-        public string GetTabs()
-        {
-            string result = "";
-
-            for (int i = 0; i < Tabs; ++i)
-                result += '\t';
-
-            return result;
-        }
+        return result;
     }
 }

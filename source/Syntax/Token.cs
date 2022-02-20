@@ -1,92 +1,91 @@
-namespace Suteki
+namespace Suteki;
+
+enum TokenKind
 {
-    enum TokenKind
+    Error,
+    End,
+
+    Identifier,
+    Integer,
+    Float,
+    String,
+    Bool,
+    Null,
+
+    LeftParenthesis,
+    RightParenthesis,
+    LeftBrace,
+    RightBrace,
+    Comma,
+    Semicolon,
+    Dot,
+    Star,
+    Plus,
+    Minus,
+    Slash,
+    Equal,
+    EqualEqual,
+    Arrow,
+
+    Module,
+    Import,
+    Public,
+    Private,
+
+    Version,
+    
+    Extern,
+
+    Const,
+
+    If,
+    Else,
+
+    Return,
+}
+
+class Token
+{
+    public TokenKind Kind;
+    public string    Content;
+    public int       Line;
+    public int       Column;
+
+    // Create token with same line information and kind but different content
+    public static Token From(Token previous, string content)
     {
-        Error,
-        End,
+        Token token = new Token();
 
-        Identifier,
-        Integer,
-        Float,
-        String,
-        Bool,
-        Null,
+        token.Kind    = previous.Kind;
+        token.Content = content;
+        token.Line    = previous.Line;
+        token.Column  = previous.Column;
 
-        LeftParenthesis,
-        RightParenthesis,
-        LeftBrace,
-        RightBrace,
-        Comma,
-        Semicolon,
-        Dot,
-        Star,
-        Plus,
-        Minus,
-        Slash,
-        Equal,
-        EqualEqual,
-        Arrow,
-
-        Module,
-        Import,
-        Public,
-        Private,
-
-        Version,
-        
-        Extern,
-
-        Const,
-
-        If,
-        Else,
-
-        Return,
+        return token;
     }
 
-    class Token
+    // Convert TokenKind into OperatorKind
+    public static OperatorKind ToOperatorKind(TokenKind kind)
     {
-        public TokenKind Kind;
-        public string    Content;
-        public int       Line;
-        public int       Column;
-
-        // Create token with same line information and kind but different content
-        public static Token From(Token previous, string content)
+        switch (kind)
         {
-            Token token = new Token();
+            case TokenKind.Plus:
+                return OperatorKind.Add;
 
-            token.Kind    = previous.Kind;
-            token.Content = content;
-            token.Line    = previous.Line;
-            token.Column  = previous.Column;
+            case TokenKind.Minus:
+                return OperatorKind.Subtract;
 
-            return token;
-        }
+            case TokenKind.Slash:
+                return OperatorKind.Divide;
 
-        // Convert TokenKind into OperatorKind
-        public static OperatorKind ToOperatorKind(TokenKind kind)
-        {
-            switch (kind)
-            {
-                case TokenKind.Plus:
-                    return OperatorKind.Add;
+            case TokenKind.Star:
+                return OperatorKind.Multiply;
 
-                case TokenKind.Minus:
-                    return OperatorKind.Subtract;
-
-                case TokenKind.Slash:
-                    return OperatorKind.Divide;
-
-                case TokenKind.Star:
-                    return OperatorKind.Multiply;
-
-                case TokenKind.EqualEqual:
-                    return OperatorKind.Equality;
-                
-                default:
-                    return OperatorKind.None;
-            }
+            case TokenKind.EqualEqual:
+                return OperatorKind.Equality;
+            
+            default:
+                return OperatorKind.None;
         }
     }
 }

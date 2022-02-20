@@ -1,10 +1,9 @@
-namespace Suteki
+namespace Suteki;
+
+enum PropertyKind
 {
-    enum PropertyKind
-    {
-        None,
-        Public,
-        Private,
-        Extern,
-    }
+    None,
+    Public,
+    Private,
+    Extern,
 }

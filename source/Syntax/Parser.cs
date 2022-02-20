@@ -1,817 +1,815 @@
-using System;
+namespace Suteki;
+
 using System.Collections.Generic;
 
-namespace Suteki
+class Parser
 {
-    class Parser
+    private Input        CurrentInput;
+    private PropertyKind CurrentProperty;
+
+    private Dictionary<string, UserType> Types = new Dictionary<string, UserType>
     {
-        private Input        CurrentInput;
-        private PropertyKind CurrentProperty;
+        { "void",    new UserType(PrimitiveKind.Void)    },
+        { "bool",    new UserType(PrimitiveKind.Bool)    },
+        { "string",  new UserType(PrimitiveKind.String)  },
 
-        private Dictionary<string, UserType> Types = new Dictionary<string, UserType>
+        { "ubyte",   new UserType(PrimitiveKind.UByte)   },
+        { "ushort",  new UserType(PrimitiveKind.UShort)  },
+        { "uint",    new UserType(PrimitiveKind.UInt)    },
+        { "ulong",   new UserType(PrimitiveKind.ULong)   },
+        { "uword",   new UserType(PrimitiveKind.UWord)   },
+
+        { "sbyte",   new UserType(PrimitiveKind.SByte)   },
+        { "sshort",  new UserType(PrimitiveKind.SShort)  },
+        { "sint",    new UserType(PrimitiveKind.SInt)    },
+        { "slong",   new UserType(PrimitiveKind.SLong)   },
+        { "sword",   new UserType(PrimitiveKind.SWord)   },
+
+        { "byte",    new UserType(PrimitiveKind.SByte)   },
+        { "short",   new UserType(PrimitiveKind.SShort)  },
+        { "int",     new UserType(PrimitiveKind.SInt)    },
+        { "long",    new UserType(PrimitiveKind.SLong)   },
+        { "word",    new UserType(PrimitiveKind.SWord)   },
+
+        { "single",  new UserType(PrimitiveKind.Single)  },
+        { "double",  new UserType(PrimitiveKind.Double)  },
+    };
+
+    // Get scanner
+    private Scanner Scanner
+    {
+        get 
         {
-            { "void",    new UserType(PrimitiveKind.Void)    },
-            { "bool",    new UserType(PrimitiveKind.Bool)    },
-            { "string",  new UserType(PrimitiveKind.String)  },
+            return CurrentInput.Scanner;
+        }
+    }
 
-            { "ubyte",   new UserType(PrimitiveKind.UByte)   },
-            { "ushort",  new UserType(PrimitiveKind.UShort)  },
-            { "uint",    new UserType(PrimitiveKind.UInt)    },
-            { "ulong",   new UserType(PrimitiveKind.ULong)   },
-            { "uword",   new UserType(PrimitiveKind.UWord)   },
+    // Get logger
+    private Logger Logger
+    {
+        get
+        {
+            return CurrentInput.Logger;
+        }
+    }
 
-            { "sbyte",   new UserType(PrimitiveKind.SByte)   },
-            { "sshort",  new UserType(PrimitiveKind.SShort)  },
-            { "sint",    new UserType(PrimitiveKind.SInt)    },
-            { "slong",   new UserType(PrimitiveKind.SLong)   },
-            { "sword",   new UserType(PrimitiveKind.SWord)   },
+    // Get nodes
+    private List<Node> Nodes
+    {
+        get
+        {
+            return CurrentInput.Nodes;
+        }
+    }
 
-            { "byte",    new UserType(PrimitiveKind.SByte)   },
-            { "short",   new UserType(PrimitiveKind.SShort)  },
-            { "int",     new UserType(PrimitiveKind.SInt)    },
-            { "long",    new UserType(PrimitiveKind.SLong)   },
-            { "word",    new UserType(PrimitiveKind.SWord)   },
+    // Get previous token
+    private Token Previous
+    {
+        get
+        {
+            return Scanner.Previous;
+        }
+    }
 
-            { "single",  new UserType(PrimitiveKind.Single)  },
-            { "double",  new UserType(PrimitiveKind.Double)  },
+    // Get current token
+    private Token Current
+    {
+        get
+        {
+            return Scanner.Current;
+        }
+    }
+
+    // Advance current token
+    private void Advance()
+    {
+        for (;;)
+        {
+            if (Scanner.Next() != TokenKind.Error)
+                break;
+
+            Logger.Error(Current, Current.Content);
+        }
+    }
+
+    // Match current token?
+    private bool Match(TokenKind expected)
+    {
+        if (Current.Kind == expected)
+        {
+            Advance();
+            return true;
+        }
+
+        return false;
+    }
+
+    // Consume token
+    private void Consume(TokenKind expected, string message)
+    {
+        if (Match(expected))
+            return;
+
+        Logger.Error(Current, message);
+    }
+
+    // Parse qualified name
+    private Node ParseQualifiedName(Node left)
+    {
+        Node name;
+
+        Consume(TokenKind.Identifier, "Expected identifier.");
+        name = new NodeQualifiedName(left, new NodeIdentifierName(Previous));
+
+        if (Match(TokenKind.Dot))
+            return ParseQualifiedName(name);
+
+        return name;
+    }
+
+    // Parse name
+    private Node ParseName()
+    {
+        Node left;
+
+        Consume(TokenKind.Identifier, "Expected identifier.");
+        left = new NodeIdentifierName(Previous);
+
+        if (Match(TokenKind.Dot))
+            return ParseQualifiedName(left);
+
+        return left;
+    }
+
+    // Parse name
+    private Node ParseName(Token token)
+    {
+        Node left = new NodeIdentifierName(token);
+
+        if (Match(TokenKind.Dot))
+            return ParseQualifiedName(left);
+
+        return left;
+    }
+
+    // Parse module name
+    private string ParseModuleName()
+    {
+        string result = "";
+
+        for (;;)
+        {
+            if (Match(TokenKind.Identifier))
+                result += Previous.Content;
+            else
+            {
+                if (result != "")
+                {
+                    Current.Content = result;
+                    Logger.Error(Current, "Invalid module name.");
+                }
+                else
+                    Logger.Error(Current, "Expected module name.");
+            }
+
+            if (!Match(TokenKind.Dot))
+                break;
+
+            result += '.';
+        }
+
+        return result;
+    }
+
+    // Parse version identifier
+    private string ParseVersionIdentifier()
+    {
+        string result = "";
+
+        for (;;)
+        {
+            if (Match(TokenKind.Identifier))
+                result += Previous.Content;
+            else
+            {
+                if (result != "")
+                {
+                    Current.Content = result;
+                    Logger.Error(Current, "Invalid version identifier.");
+                }
+                else
+                    Logger.Error(Current, "Expected version identifier.");
+            }
+
+            if (!Match(TokenKind.Dot))
+                break;
+
+            result += '.';
+        }
+
+        return result;
+    }
+
+    // Parse module
+    private void ParseModule()
+    {
+        string moduleName = ParseModuleName();
+
+        // Add module
+        if (!Config.Modules.ContainsKey(moduleName))
+            Config.Modules.Add(moduleName, new Module(moduleName));
+
+        // Set input module
+        if (CurrentInput.Module != null)
+        {
+            Previous.Content = moduleName;
+            Logger.Error(Previous, "This file was already exported.");
+        }
+
+        CurrentInput.Module = Config.Modules[moduleName];
+
+        // Expect semicolon
+        Consume(TokenKind.Semicolon, "Expected ';' after module name.");
+    }
+
+    // Parse import
+    private void ParseImport()
+    {
+        // Make node
+        NodeImport node = new NodeImport()
+        {
+            ModuleName = ParseName(),
+            IsPublic   = (CurrentProperty == PropertyKind.Public)
         };
 
-        // Get scanner
-        private Scanner Scanner
+        Nodes.Add(node);
+
+        // Expect semicolon
+        Consume(TokenKind.Semicolon, "Expected ';' after module name.");
+    }
+
+    // Parse type
+    private Node ParseType()
+    {
+        bool   isConst  = false;
+        Node   node     = null;
+
+        if (Previous.Kind == TokenKind.Const)
         {
-            get 
+            isConst = true;
+            Advance();
+        }
+
+        string typeName = Previous.Content;
+
+        if (Types.ContainsKey(typeName))
+        {
+            node = new NodePrimitive()
             {
-                return CurrentInput.Scanner;
-            }
-        }
-
-        // Get logger
-        private Logger Logger
-        {
-            get
-            {
-                return CurrentInput.Logger;
-            }
-        }
-
-        // Get nodes
-        private List<Node> Nodes
-        {
-            get
-            {
-                return CurrentInput.Nodes;
-            }
-        }
-
-        // Get previous token
-        private Token Previous
-        {
-            get
-            {
-                return Scanner.Previous;
-            }
-        }
-
-        // Get current token
-        private Token Current
-        {
-            get
-            {
-                return Scanner.Current;
-            }
-        }
-
-        // Advance current token
-        private void Advance()
-        {
-            for (;;)
-            {
-                if (Scanner.Next() != TokenKind.Error)
-                    break;
-
-                Logger.Error(Current, Current.Content);
-            }
-        }
-
-        // Match current token?
-        private bool Match(TokenKind expected)
-        {
-            if (Current.Kind == expected)
-            {
-                Advance();
-                return true;
-            }
-
-            return false;
-        }
-
-        // Consume token
-        private void Consume(TokenKind expected, string message)
-        {
-            if (Match(expected))
-                return;
-
-            Logger.Error(Current, message);
-        }
-
-        // Parse qualified name
-        private Node ParseQualifiedName(Node left)
-        {
-            Node name;
-
-            Consume(TokenKind.Identifier, "Expected identifier.");
-            name = new NodeQualifiedName(left, new NodeIdentifierName(Previous));
-
-            if (Match(TokenKind.Dot))
-                return ParseQualifiedName(name);
-
-            return name;
-        }
-
-        // Parse name
-        private Node ParseName()
-        {
-            Node left;
-
-            Consume(TokenKind.Identifier, "Expected identifier.");
-            left = new NodeIdentifierName(Previous);
-
-            if (Match(TokenKind.Dot))
-                return ParseQualifiedName(left);
-
-            return left;
-        }
-
-        // Parse name
-        private Node ParseName(Token token)
-        {
-            Node left = new NodeIdentifierName(token);
-
-            if (Match(TokenKind.Dot))
-                return ParseQualifiedName(left);
-
-            return left;
-        }
-
-        // Parse module name
-        private string ParseModuleName()
-        {
-            string result = "";
-
-            for (;;)
-            {
-                if (Match(TokenKind.Identifier))
-                    result += Previous.Content;
-                else
-                {
-                    if (result != "")
-                    {
-                        Current.Content = result;
-                        Logger.Error(Current, "Invalid module name.");
-                    }
-                    else
-                        Logger.Error(Current, "Expected module name.");
-                }
-
-                if (!Match(TokenKind.Dot))
-                    break;
-
-                result += '.';
-            }
-
-            return result;
-        }
-
-        // Parse version identifier
-        private string ParseVersionIdentifier()
-        {
-            string result = "";
-
-            for (;;)
-            {
-                if (Match(TokenKind.Identifier))
-                    result += Previous.Content;
-                else
-                {
-                    if (result != "")
-                    {
-                        Current.Content = result;
-                        Logger.Error(Current, "Invalid version identifier.");
-                    }
-                    else
-                        Logger.Error(Current, "Expected version identifier.");
-                }
-
-                if (!Match(TokenKind.Dot))
-                    break;
-
-                result += '.';
-            }
-
-            return result;
-        }
-
-        // Parse module
-        private void ParseModule()
-        {
-            string moduleName = ParseModuleName();
-
-            // Add module
-            if (!Config.Modules.ContainsKey(moduleName))
-                Config.Modules.Add(moduleName, new Module(moduleName));
-
-            // Set input module
-            if (CurrentInput.Module != null)
-            {
-                Previous.Content = moduleName;
-                Logger.Error(Previous, "This file was already exported.");
-            }
-
-            CurrentInput.Module = Config.Modules[moduleName];
-
-            // Expect semicolon
-            Consume(TokenKind.Semicolon, "Expected ';' after module name.");
-        }
-
-        // Parse import
-        private void ParseImport()
-        {
-            // Make node
-            NodeImport node = new NodeImport()
-            {
-                ModuleName = ParseName(),
-                IsPublic   = (CurrentProperty == PropertyKind.Public)
+                IsConst       = isConst,
+                PrimitiveKind = Types[typeName].Kind
             };
-
-            Nodes.Add(node);
-
-            // Expect semicolon
-            Consume(TokenKind.Semicolon, "Expected ';' after module name.");
         }
 
-        // Parse type
-        private Node ParseType()
+        while (Match(TokenKind.Star))
         {
-            bool   isConst  = false;
-            Node   node     = null;
-
-            if (Previous.Kind == TokenKind.Const)
+            node = new NodePointer()
             {
-                isConst = true;
-                Advance();
-            }
-
-            string typeName = Previous.Content;
-
-            if (Types.ContainsKey(typeName))
-            {
-                node = new NodePrimitive()
-                {
-                    IsConst       = isConst,
-                    PrimitiveKind = Types[typeName].Kind
-                };
-            }
-
-            while (Match(TokenKind.Star))
-            {
-                node = new NodePointer()
-                {
-                    PointsTo = node
-                };
-            }
-
-            return node;
-        }
-
-        // Parse call
-        private Node ParseCall(Node name, bool isExpression)
-        {
-            // Make node
-            NodeCall node = new NodeCall()
-            {
-                Name         = name,
-                IsExpression = isExpression
+                PointsTo = node
             };
+        }
 
-            // Parse function parameters
-            if (!Match(TokenKind.RightParenthesis))
+        return node;
+    }
+
+    // Parse call
+    private Node ParseCall(Node name, bool isExpression)
+    {
+        // Make node
+        NodeCall node = new NodeCall()
+        {
+            Name         = name,
+            IsExpression = isExpression
+        };
+
+        // Parse function parameters
+        if (!Match(TokenKind.RightParenthesis))
+        {
+            do
             {
-                do
-                {
-                    node.Parameters.Add(ParseExpression());
-                }
-                while (Match(TokenKind.Comma));
-
-                Consume(TokenKind.RightParenthesis, "Expected ')' after function call parameter(s).");
+                node.Parameters.Add(ParseExpression());
             }
+            while (Match(TokenKind.Comma));
 
-            return node;
+            Consume(TokenKind.RightParenthesis, "Expected ')' after function call parameter(s).");
         }
 
-        // Parse identifier expression
-        private Node ParseIdentifierExpression()
+        return node;
+    }
+
+    // Parse identifier expression
+    private Node ParseIdentifierExpression()
+    {
+        Node name = ParseName(Previous);
+        
+        if (Match(TokenKind.LeftParenthesis))
+            return ParseCall(name, true);
+        
+        return ParseName(Previous);
+    }
+
+    // Parse primary expression
+    private Node ParsePrimaryExpression()
+    {
+        if (Match(TokenKind.Float))
+            return new NodeFloat(Previous);
+
+        if (Match(TokenKind.Integer))
+            return new NodeInteger(Previous);
+
+        if (Match(TokenKind.String))
+            return new NodeString(Previous);
+
+        if (Match(TokenKind.Bool))
+            return new NodeBool(Previous);
+
+        if (Match(TokenKind.Null))
+            return new NodeNull(Previous);
+
+        if (Match(TokenKind.LeftParenthesis))
         {
-            Node name = ParseName(Previous);
-            
-            if (Match(TokenKind.LeftParenthesis))
-                return ParseCall(name, true);
-           
-            return ParseName(Previous);
+            Node expression = ParseExpression();
+
+            Consume(TokenKind.RightParenthesis, "Expected ')' after expression.");
+            return new NodeGrouping(expression);
         }
 
-        // Parse primary expression
-        private Node ParsePrimaryExpression()
+        if (Match(TokenKind.Identifier))
+            return ParseIdentifierExpression();
+
+        Logger.Error(Current, "Unexpected token.");
+        return null;
+    }
+
+    // Parse unary expression
+    private Node ParseUnaryExpression()
+    {
+        if (Match(TokenKind.Minus))
         {
-            if (Match(TokenKind.Float))
-                return new NodeFloat(Previous);
+            OperatorKind op      = Token.ToOperatorKind(Previous.Kind);
+            Node         operand = ParseUnaryExpression();
 
-            if (Match(TokenKind.Integer))
-                return new NodeInteger(Previous);
-
-            if (Match(TokenKind.String))
-                return new NodeString(Previous);
-
-            if (Match(TokenKind.Bool))
-                return new NodeBool(Previous);
-
-            if (Match(TokenKind.Null))
-                return new NodeNull(Previous);
-
-            if (Match(TokenKind.LeftParenthesis))
-            {
-                Node expression = ParseExpression();
-
-                Consume(TokenKind.RightParenthesis, "Expected ')' after expression.");
-                return new NodeGrouping(expression);
-            }
-
-            if (Match(TokenKind.Identifier))
-                return ParseIdentifierExpression();
-
-            Logger.Error(Current, "Unexpected token.");
-            return null;
+            return new NodeUnary(op, operand);
         }
 
-        // Parse unary expression
-        private Node ParseUnaryExpression()
+        return ParsePrimaryExpression();
+    }
+
+    // Parse factor expression
+    private Node ParseFactorExpression()
+    {
+        Node expression = ParseUnaryExpression();
+
+        while (Match(TokenKind.Slash) || Match(TokenKind.Star))
         {
-            if (Match(TokenKind.Minus))
-            {
-                OperatorKind op      = Token.ToOperatorKind(Previous.Kind);
-                Node         operand = ParseUnaryExpression();
+            OperatorKind op    = Token.ToOperatorKind(Previous.Kind);
+            Node         right = ParseUnaryExpression();
 
-                return new NodeUnary(op, operand);
-            }
-
-            return ParsePrimaryExpression();
+            expression = new NodeBinary(expression, op, right);
         }
 
-        // Parse factor expression
-        private Node ParseFactorExpression()
+        return expression;
+    }
+
+    // Parse term expression
+    private Node ParseTermExpression()
+    {
+        Node expression = ParseFactorExpression();
+
+        while (Match(TokenKind.Minus) || Match(TokenKind.Plus))
         {
-            Node expression = ParseUnaryExpression();
+            OperatorKind op    = Token.ToOperatorKind(Previous.Kind);
+            Node         right = ParseFactorExpression();
 
-            while (Match(TokenKind.Slash) || Match(TokenKind.Star))
-            {
-                OperatorKind op    = Token.ToOperatorKind(Previous.Kind);
-                Node         right = ParseUnaryExpression();
-
-                expression = new NodeBinary(expression, op, right);
-            }
-
-            return expression;
+            expression = new NodeBinary(expression, op, right);
         }
 
-        // Parse term expression
-        private Node ParseTermExpression()
+        return expression;
+    }
+
+    // Parse comparison expression
+    private Node ParseComparisonExpression()
+    {
+        return ParseTermExpression();
+    }
+
+    // Parse equality expression
+    private Node ParseEqualityExpression()
+    {
+        Node expression = ParseComparisonExpression();
+
+        while (Match(TokenKind.EqualEqual))
         {
-            Node expression = ParseFactorExpression();
+            OperatorKind op    = Token.ToOperatorKind(Previous.Kind);
+            Node         right = ParseComparisonExpression();
 
-            while (Match(TokenKind.Minus) || Match(TokenKind.Plus))
-            {
-                OperatorKind op    = Token.ToOperatorKind(Previous.Kind);
-                Node         right = ParseFactorExpression();
-
-                expression = new NodeBinary(expression, op, right);
-            }
-
-            return expression;
+            expression = new NodeBinary(expression, op, right);
         }
 
-        // Parse comparison expression
-        private Node ParseComparisonExpression()
+        return expression;
+    }
+
+    // Parse expression
+    private Node ParseExpression()
+    {
+        return ParseEqualityExpression();
+    }
+
+    // Parse return statement
+    private Node ParseReturn()
+    {
+        // Make node
+        NodeReturn node = new NodeReturn()
         {
-            return ParseTermExpression();
-        }
-
-        // Parse equality expression
-        private Node ParseEqualityExpression()
-        {
-            Node expression = ParseComparisonExpression();
-
-            while (Match(TokenKind.EqualEqual))
-            {
-                OperatorKind op    = Token.ToOperatorKind(Previous.Kind);
-                Node         right = ParseComparisonExpression();
-
-                expression = new NodeBinary(expression, op, right);
-            }
-
-            return expression;
-        }
+            Token = Previous
+        };
 
         // Parse expression
-        private Node ParseExpression()
+        if (Match(TokenKind.Semicolon))
+            node.Expression = null;
+        else
         {
-            return ParseEqualityExpression();
+            node.Expression = ParseExpression();
+
+            // Expect semicolon
+            Consume(TokenKind.Semicolon, "Expected ';' after expression.");
         }
 
-        // Parse return statement
-        private Node ParseReturn()
+        return node;
+    }
+
+    // Parse identifier statement
+    private Node ParseIdentifierStatement()
+    {
+        Node name = ParseName(Previous);
+        
+        if (Match(TokenKind.LeftParenthesis))
         {
-            // Make node
-            NodeReturn node = new NodeReturn()
-            {
-                Token = Previous
-            };
+            Node node = ParseCall(name, false);
 
-            // Parse expression
-            if (Match(TokenKind.Semicolon))
-                node.Expression = null;
-            else
-            {
-                node.Expression = ParseExpression();
-
-                // Expect semicolon
-                Consume(TokenKind.Semicolon, "Expected ';' after expression.");
-            }
-
+            // Expect semicolon
+            Consume(TokenKind.Semicolon, "Expected ';' after ')'.");
             return node;
         }
 
-        // Parse identifier statement
-        private Node ParseIdentifierStatement()
+        Logger.Error(Previous, "Unexpected token.");
+        return null;
+    }
+
+    // Check version
+    private void CheckVersion(bool skip, NodeBlock block = null)
+    {
+        string version = "";
+
+        if (Previous.Kind == TokenKind.Else)
+            Match(TokenKind.Version);
+
+        if (Previous.Kind == TokenKind.Version)
         {
-            Node name = ParseName(Previous);
-            
-            if (Match(TokenKind.LeftParenthesis))
-            {
-                Node node = ParseCall(name, false);
+            Consume(TokenKind.LeftParenthesis, "Expected '(' after 'version'.");
+            version = ParseVersionIdentifier();
+            Consume(TokenKind.RightParenthesis, "Expected ')' after version identifier.");
 
-                // Expect semicolon
-                Consume(TokenKind.Semicolon, "Expected ';' after ')'.");
-                return node;
-            }
-
-            Logger.Error(Previous, "Unexpected token.");
-            return null;
+            Consume(TokenKind.LeftBrace, "Expected '{' after ')'.");
         }
+        else
+            Consume(TokenKind.LeftBrace, "Expected '{' after 'else'.");
 
-        // Check version
-        private void CheckVersion(bool skip, NodeBlock block = null)
+        Token start  = Previous;
+        bool  success = (Config.Versions.Contains(version) || version == "");
+
+        if (!Match(TokenKind.RightBrace))
         {
-            string version = "";
-
-            if (Previous.Kind == TokenKind.Else)
-                Match(TokenKind.Version);
-
-            if (Previous.Kind == TokenKind.Version)
+            // Check for version
+            if (success && !skip)
             {
-                Consume(TokenKind.LeftParenthesis, "Expected '(' after 'version'.");
-                version = ParseVersionIdentifier();
-                Consume(TokenKind.RightParenthesis, "Expected ')' after version identifier.");
-
-                Consume(TokenKind.LeftBrace, "Expected '{' after ')'.");
-            }
-            else
-                Consume(TokenKind.LeftBrace, "Expected '{' after 'else'.");
-
-            Token start  = Previous;
-            bool  success = (Config.Versions.Contains(version) || version == "");
-
-            if (!Match(TokenKind.RightBrace))
-            {
-                // Check for version
-                if (success && !skip)
-                {
-                    // Parse everything
-                    while (!Match(TokenKind.RightBrace) && !Match(TokenKind.End))
-                    {
-                        if (block != null)
-                        {
-                            Node statementNode = ParseStatement();
-
-                            if (statementNode != null)
-                                block.Statements.Add(statementNode);
-                        }
-                        else
-                            ParseDeclaration();
-                    }
-                }
-                else
-                {
-                    // Skip everything
-                    while (!Match(TokenKind.RightBrace) && !Match(TokenKind.End))
-                        Advance();
-                }
-
-                if (Previous.Kind == TokenKind.End)
-                    Logger.Error(start, "Expected '}'.");
-            }
-
-            // Else?
-            if (Match(TokenKind.Else))
-                CheckVersion(success, block);
-        }
-
-        // Parse if statement
-        private Node ParseIf()
-        {
-            NodeIf node = new NodeIf()
-            {
-                Token = Previous
-            };
-
-            Consume(TokenKind.LeftParenthesis, "Expected '(' after 'if'.");
-            node.Condition = ParseExpression();
-            Consume(TokenKind.RightParenthesis, "Expected ')' after condition.");
-
-            node.ThenBody = ParseStatement();
-            node.ElseBody = null;
-
-            if (Match(TokenKind.Else))
-                node.ElseBody = ParseStatement();
-
-            return node;
-        }
-
-        // Parse statement
-        private Node ParseStatement(NodeBlock block = null)
-        {
-            Advance();
-
-            switch (Previous.Kind)
-            {
-                case TokenKind.Return:
-                    return ParseReturn();
-
-                case TokenKind.Identifier:
-                    return ParseIdentifierStatement();
-                
-                case TokenKind.Version:
-                {
-                    CheckVersion(false, block);
-                    return null;
-                }
-
-                case TokenKind.If:
-                    return ParseIf();
-
-                case TokenKind.LeftBrace:
-                    return ParseBlock();
-
-                default:
-                {
-                    Logger.Error(Previous, "Unexpected token.");
-                    return null;
-                }
-            }
-        }
-
-        // Parse block of statements
-        private Node ParseBlock()
-        {
-            Token start = Previous;
-
-            // Make node
-            NodeBlock node = new NodeBlock()
-            {
-                Token = start
-            };
-
-            // Parse statements
-            if (!Match(TokenKind.RightBrace))
-            {
+                // Parse everything
                 while (!Match(TokenKind.RightBrace) && !Match(TokenKind.End))
                 {
-                    Node statementNode = ParseStatement(node);
-
-                    if (statementNode != null)
-                        node.Statements.Add(statementNode);
-                }
-
-                if (Previous.Kind == TokenKind.End)
-                    Logger.Error(start, "Expected '}' after statement(s).");
-            }
-
-            return node;
-        }
-
-        // Parse function declaration
-        private void ParseFunction(Node type, Token name)
-        {
-            // Make node
-            NodeFunction node          = new NodeFunction();
-                         node.Property = CurrentProperty;
-                         node.Type     = type;
-                         node.Name     = name;
-
-            // Parse function parameters
-            if (!Match(TokenKind.RightParenthesis))
-            {
-                do
-                {
-                    Advance();
-                    Node parameterType = ParseType();
-
-                    if (parameterType != null)
+                    if (block != null)
                     {
-                        Consume(TokenKind.Identifier, "Expected function name after type.");
+                        Node statementNode = ParseStatement();
 
-                        // Make node
-                        NodeParameter parameter      = new NodeParameter();
-                                      parameter.Type = parameterType;
-                                      parameter.Name = Previous;
-
-                        node.Parameters.Add(parameter);
+                        if (statementNode != null)
+                            block.Statements.Add(statementNode);
                     }
                     else
-                        Logger.Error(Previous, "Expected type.");
+                        ParseDeclaration();
                 }
-                while (Match(TokenKind.Comma));
-
-                Consume(TokenKind.RightParenthesis, "Expected ')' after function parameter(s).");
+            }
+            else
+            {
+                // Skip everything
+                while (!Match(TokenKind.RightBrace) && !Match(TokenKind.End))
+                    Advance();
             }
 
-            // Parse function block
-            if (Match(TokenKind.LeftBrace))
-                node.Body = ParseBlock();
-            else if (Match(TokenKind.Arrow))
-            {
-                NodeBlock block = new NodeBlock();
+            if (Previous.Kind == TokenKind.End)
+                Logger.Error(start, "Expected '}'.");
+        }
 
-                block.Statements.Add(new NodeReturn()
+        // Else?
+        if (Match(TokenKind.Else))
+            CheckVersion(success, block);
+    }
+
+    // Parse if statement
+    private Node ParseIf()
+    {
+        NodeIf node = new NodeIf()
+        {
+            Token = Previous
+        };
+
+        Consume(TokenKind.LeftParenthesis, "Expected '(' after 'if'.");
+        node.Condition = ParseExpression();
+        Consume(TokenKind.RightParenthesis, "Expected ')' after condition.");
+
+        node.ThenBody = ParseStatement();
+        node.ElseBody = null;
+
+        if (Match(TokenKind.Else))
+            node.ElseBody = ParseStatement();
+
+        return node;
+    }
+
+    // Parse statement
+    private Node ParseStatement(NodeBlock block = null)
+    {
+        Advance();
+
+        switch (Previous.Kind)
+        {
+            case TokenKind.Return:
+                return ParseReturn();
+
+            case TokenKind.Identifier:
+                return ParseIdentifierStatement();
+            
+            case TokenKind.Version:
+            {
+                CheckVersion(false, block);
+                return null;
+            }
+
+            case TokenKind.If:
+                return ParseIf();
+
+            case TokenKind.LeftBrace:
+                return ParseBlock();
+
+            default:
+            {
+                Logger.Error(Previous, "Unexpected token.");
+                return null;
+            }
+        }
+    }
+
+    // Parse block of statements
+    private Node ParseBlock()
+    {
+        Token start = Previous;
+
+        // Make node
+        NodeBlock node = new NodeBlock()
+        {
+            Token = start
+        };
+
+        // Parse statements
+        if (!Match(TokenKind.RightBrace))
+        {
+            while (!Match(TokenKind.RightBrace) && !Match(TokenKind.End))
+            {
+                Node statementNode = ParseStatement(node);
+
+                if (statementNode != null)
+                    node.Statements.Add(statementNode);
+            }
+
+            if (Previous.Kind == TokenKind.End)
+                Logger.Error(start, "Expected '}' after statement(s).");
+        }
+
+        return node;
+    }
+
+    // Parse function declaration
+    private void ParseFunction(Node type, Token name)
+    {
+        // Make node
+        NodeFunction node          = new NodeFunction();
+                        node.Property = CurrentProperty;
+                        node.Type     = type;
+                        node.Name     = name;
+
+        // Parse function parameters
+        if (!Match(TokenKind.RightParenthesis))
+        {
+            do
+            {
+                Advance();
+                Node parameterType = ParseType();
+
+                if (parameterType != null)
                 {
-                    Token      = Previous,
-                    Expression = ParseExpression() 
-                });
+                    Consume(TokenKind.Identifier, "Expected function name after type.");
 
-                node.Body = block;
+                    // Make node
+                    NodeParameter parameter      = new NodeParameter();
+                                    parameter.Type = parameterType;
+                                    parameter.Name = Previous;
 
-                // Expect semicolon
-                Consume(TokenKind.Semicolon, "Expected ';' after expression.");
+                    node.Parameters.Add(parameter);
+                }
+                else
+                    Logger.Error(Previous, "Expected type.");
             }
-            else
+            while (Match(TokenKind.Comma));
+
+            Consume(TokenKind.RightParenthesis, "Expected ')' after function parameter(s).");
+        }
+
+        // Parse function block
+        if (Match(TokenKind.LeftBrace))
+            node.Body = ParseBlock();
+        else if (Match(TokenKind.Arrow))
+        {
+            NodeBlock block = new NodeBlock();
+
+            block.Statements.Add(new NodeReturn()
             {
-                node.Body = null;
+                Token      = Previous,
+                Expression = ParseExpression() 
+            });
 
-                // Make sure the function is extern,
-                // since forward declarations aren't allowed.
-                if (CurrentProperty != PropertyKind.Extern)
-                    Logger.Error(Current, "Expected '{' after ')'.");
+            node.Body = block;
 
-                // Expect semicolon
-                Consume(TokenKind.Semicolon, "Expected ';' after ')'.");
+            // Expect semicolon
+            Consume(TokenKind.Semicolon, "Expected ';' after expression.");
+        }
+        else
+        {
+            node.Body = null;
+
+            // Make sure the function is extern,
+            // since forward declarations aren't allowed.
+            if (CurrentProperty != PropertyKind.Extern)
+                Logger.Error(Current, "Expected '{' after ')'.");
+
+            // Expect semicolon
+            Consume(TokenKind.Semicolon, "Expected ';' after ')'.");
+        }
+
+        Nodes.Add(node);
+
+        // Reset property
+        CurrentProperty = PropertyKind.None;
+    }
+
+    // Parse identifier
+    private void ParseIdentifier(Node type)
+    {
+        Consume(TokenKind.Identifier, "Expected identifier after type.");
+        Token name = Previous;
+
+        if (Match(TokenKind.LeftParenthesis))
+            ParseFunction(type, name);
+        else
+            Logger.Error(Current, "Unexpected token.");
+    }
+
+    // Parse declaration
+    private void ParseDeclaration()
+    {
+        Advance();
+
+        switch (Previous.Kind)
+        {
+            case TokenKind.Public:
+            {
+                CurrentProperty = PropertyKind.Public;
+                break;
             }
 
-            Nodes.Add(node);
+            case TokenKind.Private:
+            {
+                CurrentProperty = PropertyKind.Private;
+                break;
+            }
 
-            // Reset property
-            CurrentProperty = PropertyKind.None;
+            case TokenKind.Extern:
+            {
+                CurrentProperty = PropertyKind.Extern;
+                break;
+            }
+
+            case TokenKind.Module:
+            {
+                ParseModule();
+                break;
+            }
+
+            case TokenKind.Import:
+            {
+                ParseImport();
+                break;
+            }
+
+            case TokenKind.Version:
+            {
+                CheckVersion(false);
+                break;
+            }
+
+            case TokenKind.Const:
+            case TokenKind.Identifier:
+            {
+                Node type = ParseType();
+
+                if (type != null)
+                    ParseIdentifier(type);
+                else
+                    Logger.Error(Previous, "Unexpected token.");
+
+                break;
+            }
+
+            default:
+                break;
         }
+    }
 
-        // Parse identifier
-        private void ParseIdentifier(Node type)
+    // Start parsing
+    public void Start()
+    {
+        // Parse all source code into AST nodes
+        foreach (Input input in Config.Inputs)
         {
-            Consume(TokenKind.Identifier, "Expected identifier after type.");
-            Token name = Previous;
-
-            if (Match(TokenKind.LeftParenthesis))
-                ParseFunction(type, name);
-            else
-                Logger.Error(Current, "Unexpected token.");
-        }
-
-        // Parse declaration
-        private void ParseDeclaration()
-        {
+            CurrentInput = input;
             Advance();
 
-            switch (Previous.Kind)
-            {
-                case TokenKind.Public:
-                {
-                    CurrentProperty = PropertyKind.Public;
-                    break;
-                }
-
-                case TokenKind.Private:
-                {
-                    CurrentProperty = PropertyKind.Private;
-                    break;
-                }
-
-                case TokenKind.Extern:
-                {
-                    CurrentProperty = PropertyKind.Extern;
-                    break;
-                }
-
-                case TokenKind.Module:
-                {
-                    ParseModule();
-                    break;
-                }
-
-                case TokenKind.Import:
-                {
-                    ParseImport();
-                    break;
-                }
-
-                case TokenKind.Version:
-                {
-                    CheckVersion(false);
-                    break;
-                }
-
-                case TokenKind.Const:
-                case TokenKind.Identifier:
-                {
-                    Node type = ParseType();
-
-                    if (type != null)
-                        ParseIdentifier(type);
-                    else
-                        Logger.Error(Previous, "Unexpected token.");
-
-                    break;
-                }
-
-                default:
-                    break;
-            }
+            while (!Match(TokenKind.End))
+                ParseDeclaration();
         }
 
-        // Start parsing
-        public void Start()
+        // Don't analyze the nodes if there's an error
+        if (Config.HadError)
+            return;
+
+        /*
+            SEMANTIC ANALYSIS
+        */
+
+        // Make global module
+        Module globalModule = new Module("global");
+        Config.Modules.Add("global", globalModule);
+
+        // Register all global symbols from inputs
+        foreach (Input input in Config.Inputs)
         {
-            // Parse all source code into AST nodes
-            foreach (Input input in Config.Inputs)
+            // Use global module?
+            if (input.Module == null)
+                input.Module = globalModule;
+            else
             {
-                CurrentInput = input;
-                Advance();
-
-                while (!Match(TokenKind.End))
-                    ParseDeclaration();
+                // Always import the global module
+                input.Imports.Add(globalModule);
             }
 
-            // Don't analyze the nodes if there's an error
+            foreach (Node node in input.Nodes)
+                node.RegisterSymbols(input);
+        }
+
+        // Don't do the other passes if an error happened.
+        if (Config.HadError)
+            return;
+
+        foreach (Input input in Config.Inputs)
+        {
+            // Resolve symbols
+            foreach (Node node in input.Nodes)
+                node.ResolveSymbols(input);
+
+            // Don't do the other pass if an error happened.
             if (Config.HadError)
                 return;
 
-            /*
-                SEMANTIC ANALYSIS
-            */
-
-            // Make global module
-            Module globalModule = new Module("global");
-            Config.Modules.Add("global", globalModule);
-
-            // Register all global symbols from inputs
-            foreach (Input input in Config.Inputs)
-            {
-                // Use global module?
-                if (input.Module == null)
-                    input.Module = globalModule;
-                else
-                {
-                    // Always import the global module
-                    input.Imports.Add(globalModule);
-                }
-
-                foreach (Node node in input.Nodes)
-                    node.RegisterSymbols(input);
-            }
-
-            // Don't do the other passes if an error happened.
-            if (Config.HadError)
-                return;
-
-            foreach (Input input in Config.Inputs)
-            {
-                // Resolve symbols
-                foreach (Node node in input.Nodes)
-                    node.ResolveSymbols(input);
-
-                // Don't do the other pass if an error happened.
-                if (Config.HadError)
-                    return;
-
-                // Type checking
-                foreach (Node node in input.Nodes)
-                    node.TypeCheck(input);
-            }
+            // Type checking
+            foreach (Node node in input.Nodes)
+                node.TypeCheck(input);
         }
     }
 }

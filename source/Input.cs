@@ -1,145 +1,144 @@
+namespace Suteki;
+
 using System.Collections.Generic;
 
-namespace Suteki
+class Input
 {
-    class Input
+    public string       Path;
+    public string       Source;
+    public Module       Module;
+    public Output       Output;
+    public NodeFunction CurrentFunction;
+    public Logger       Logger;
+    public Scanner      Scanner;
+    public List<Node>   Nodes;
+    public List<Module> Imports;
+
+    public Dictionary<string, Symbol> Locals;
+
+    // Constructor
+    public Input(string path, string source)
     {
-        public string       Path;
-        public string       Source;
-        public Module       Module;
-        public Output       Output;
-        public NodeFunction CurrentFunction;
-        public Logger       Logger;
-        public Scanner      Scanner;
-        public List<Node>   Nodes;
-        public List<Module> Imports;
+        Path            = path;
+        Source          = source;
+        Module          = null;
+        Output          = new Output();
+        CurrentFunction = null;
+        Logger          = new Logger() { Path = path };
+        Scanner         = new Scanner();
+        Nodes           = new List<Node>();
+        Imports         = new List<Module>();
+        Locals          = new Dictionary<string, Symbol>();
 
-        public Dictionary<string, Symbol> Locals;
+        // Set scanner source
+        Scanner.Set(source);
+    }
 
-        // Constructor
-        public Input(string path, string source)
+    // Get symbol 
+    public Symbol GetSymbol(string name, Token token = null)
+    {
+        Symbol foundSymbol = null;
+
+        // Try finding symbol in current module
+        if (Module.HasSymbol(name))
         {
-            Path            = path;
-            Source          = source;
-            Module          = null;
-            Output          = new Output();
-            CurrentFunction = null;
-            Logger          = new Logger() { Path = path };
-            Scanner         = new Scanner();
-            Nodes           = new List<Node>();
-            Imports         = new List<Module>();
-            Locals          = new Dictionary<string, Symbol>();
+            foundSymbol = Module.GetSymbol(name);
 
-            // Set scanner source
-            Scanner.Set(source);
+            if (!name.Contains('.'))
+                goto End;
         }
 
-        // Get symbol 
-        public Symbol GetSymbol(string name, Token token = null)
+        // Try finding symbol in imported modules
+        foreach (Module module in Imports)
         {
-            Symbol foundSymbol = null;
-
-            // Try finding symbol in current module
-            if (Module.HasSymbol(name))
+            if (module.HasSymbol(name))
             {
-                foundSymbol = Module.GetSymbol(name);
+                // Check for ambiguity
+                if (foundSymbol != null && token != null)
+                    Logger.Error(token, $"Ambiguous reference between '{foundSymbol.Module.Name}.{foundSymbol.Name}' and '{module.Name}.{name}'.");
+
+                foundSymbol = module.GetSymbol(name);
 
                 if (!name.Contains('.'))
                     goto End;
             }
 
-            // Try finding symbol in imported modules
-            foreach (Module module in Imports)
+            foreach (Module publicModule in module.Imports)
             {
-                if (module.HasSymbol(name))
+                if (publicModule.HasSymbol(name))
                 {
                     // Check for ambiguity
                     if (foundSymbol != null && token != null)
-                        Logger.Error(token, $"Ambiguous reference between '{foundSymbol.Module.Name}.{foundSymbol.Name}' and '{module.Name}.{name}'.");
+                        Logger.Error(token, $"Ambiguous reference between '{foundSymbol.Module.Name}.{foundSymbol.Name}' and '{publicModule.Name}.{name}'.");
 
-                    foundSymbol = module.GetSymbol(name);
-
+                    foundSymbol = publicModule.GetSymbol(name);
+                    
                     if (!name.Contains('.'))
                         goto End;
                 }
-
-                foreach (Module publicModule in module.Imports)
-                {
-                    if (publicModule.HasSymbol(name))
-                    {
-                        // Check for ambiguity
-                        if (foundSymbol != null && token != null)
-                            Logger.Error(token, $"Ambiguous reference between '{foundSymbol.Module.Name}.{foundSymbol.Name}' and '{publicModule.Name}.{name}'.");
-
-                        foundSymbol = publicModule.GetSymbol(name);
-                        
-                        if (!name.Contains('.'))
-                            goto End;
-                    }
-                }
             }
+        }
 
-            // Try finding symbol from a module that is not imported
-            if (name.Contains('.'))
+        // Try finding symbol from a module that is not imported
+        if (name.Contains('.'))
+        {
+            string[] names      = name.Split('.');
+            string   moduleName = "";
+            Symbol   lastSymbol = null;
+
+            for (int index = 0; index < names.Length; ++index)
             {
-                string[] names      = name.Split('.');
-                string   moduleName = "";
-                Symbol   lastSymbol = null;
+                string nameSplitted = names[index];
 
-                for (int index = 0; index < names.Length; ++index)
+                // Add splitted name to module name
+                if (moduleName != "")
+                    moduleName += '.'; 
+                    
+                moduleName += nameSplitted;
+
+                // Check if splitted name is a module
+                if (Config.HasModule(nameSplitted) && (index + 1) < names.Length)
                 {
-                    string nameSplitted = names[index];
+                    Module module     = Config.GetModule(nameSplitted);
+                    string symbolName = names[index + 1];
 
-                    // Add splitted name to module name
-                    if (moduleName != "")
-                        moduleName += '.'; 
-                        
-                    moduleName += nameSplitted;
-
-                    // Check if splitted name is a module
-                    if (Config.HasModule(nameSplitted) && (index + 1) < names.Length)
+                    if (module.HasSymbol(symbolName))
+                        lastSymbol = module.GetSymbol(symbolName);
+                }
+                
+                // Check if module name is a module
+                else if (Config.HasModule(moduleName) && (index + 1) < names.Length)
+                {
+                    Module module = Config.GetModule(moduleName);
+                    
+                    if ((index + 1) < names.Length)
                     {
-                        Module module     = Config.GetModule(nameSplitted);
                         string symbolName = names[index + 1];
 
                         if (module.HasSymbol(symbolName))
                             lastSymbol = module.GetSymbol(symbolName);
                     }
-                    
-                    // Check if module name is a module
-                    else if (Config.HasModule(moduleName) && (index + 1) < names.Length)
-                    {
-                        Module module = Config.GetModule(moduleName);
-                        
-                        if ((index + 1) < names.Length)
-                        {
-                            string symbolName = names[index + 1];
-
-                            if (module.HasSymbol(symbolName))
-                                lastSymbol = module.GetSymbol(symbolName);
-                        }
-                    }
                 }
-
-                // Check for ambiguity
-                if (foundSymbol != null && token != null)
-                    Logger.Error(token, $"Ambiguous reference between '{foundSymbol.Module.Name}.{foundSymbol.Name}' and '{lastSymbol.Module.Name}.{lastSymbol.Name}'.");
-
-                foundSymbol = lastSymbol;
             }
 
-End:
-            // Check if symbol is private
-            if (foundSymbol != null && token != null &&
-                foundSymbol.Property == PropertyKind.Private &&
-                Module.Name != foundSymbol.Module.Name)
-                Logger.Error(token, $"This symbol is private and can't be used outside the module '{foundSymbol.Module.Name}'.");
+            // Check for ambiguity
+            if (foundSymbol != null && token != null)
+                Logger.Error(token, $"Ambiguous reference between '{foundSymbol.Module.Name}.{foundSymbol.Name}' and '{lastSymbol.Module.Name}.{lastSymbol.Name}'.");
 
-            // Add import if needed
-            if (foundSymbol != null && !Imports.Contains(foundSymbol.Module))
-                Imports.Add(foundSymbol.Module);
-
-            return foundSymbol;
+            foundSymbol = lastSymbol;
         }
+
+End:
+        // Check if symbol is private
+        if (foundSymbol != null && token != null &&
+            foundSymbol.Property == PropertyKind.Private &&
+            Module.Name != foundSymbol.Module.Name)
+            Logger.Error(token, $"This symbol is private and can't be used outside the module '{foundSymbol.Module.Name}'.");
+
+        // Add import if needed
+        if (foundSymbol != null && !Imports.Contains(foundSymbol.Module))
+            Imports.Add(foundSymbol.Module);
+
+        return foundSymbol;
     }
 }

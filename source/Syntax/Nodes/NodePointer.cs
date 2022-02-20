@@ -1,28 +1,27 @@
-namespace Suteki
+namespace Suteki;
+
+class NodePointer : Node
 {
-    class NodePointer : Node
+    public Node PointsTo;
+    
+    public override Token    GetToken => PointsTo.GetToken;
+
+    public override NodeKind Kind     => NodeKind.Pointer;
+
+    public override string GetString
     {
-        public Node PointsTo;
-        
-        public override Token    GetToken => PointsTo.GetToken;
-
-        public override NodeKind Kind     => NodeKind.Pointer;
-
-        public override string GetString
+        get
         {
-            get
-            {
-                return $"{PointsTo.GetString}*";
-            }
+            return $"{PointsTo.GetString}*";
         }
+    }
 
-        // Type checking
-        public override Type TypeCheck(Input input)
+    // Type checking
+    public override Type TypeCheck(Input input)
+    {
+        return new TypePointer() 
         {
-            return new TypePointer() 
-            {
-                Base = PointsTo.TypeCheck(input)
-            };
-        }
+            Base = PointsTo.TypeCheck(input)
+        };
     }
 }

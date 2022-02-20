@@ -1,68 +1,67 @@
-namespace Suteki
+namespace Suteki;
+
+class NodePrimitive : Node
 {
-    class NodePrimitive : Node
+    public Token         Token;
+    public bool          IsConst;
+    public PrimitiveKind PrimitiveKind;
+
+    public override Token    GetToken => Token;
+    public override NodeKind Kind     => NodeKind.Primitive;
+
+    public override string GetString
     {
-        public Token         Token;
-        public bool          IsConst;
-        public PrimitiveKind PrimitiveKind;
-
-        public override Token    GetToken => Token;
-        public override NodeKind Kind     => NodeKind.Primitive;
-
-        public override string GetString
+        get
         {
-            get
+            string[] cTypes =
             {
-                string[] cTypes =
-                {
-                    "",
-                    "void ", 
-                    "bool ", 
-                    "string ",
+                "",
+                "void ", 
+                "bool ", 
+                "string ",
 
-                    "unsigned char ",
-                    "unsigned short ",
-                    "unsigned int ", 
-                    "unsigned long ",
-                    "unsigned long ",
+                "unsigned char ",
+                "unsigned short ",
+                "unsigned int ", 
+                "unsigned long ",
+                "unsigned long ",
 
-                    "char ",  
-                    "short ", 
-                    "int ",   
-                    "long ",  
-                    "long ",  
+                "char ",  
+                "short ", 
+                "int ",   
+                "long ",  
+                "long ",  
 
-                    "float ",
-                    "double ",
-                };
-                
-                if (IsConst)
-                    return $"const {cTypes[(int)PrimitiveKind]}";
-
-                return cTypes[(int)PrimitiveKind];
-            }
-        }
-
-        // Type checking
-        public override Type TypeCheck(Input input)
-        {
+                "float ",
+                "double ",
+            };
+            
             if (IsConst)
+                return $"const {cTypes[(int)PrimitiveKind]}";
+
+            return cTypes[(int)PrimitiveKind];
+        }
+    }
+
+    // Type checking
+    public override Type TypeCheck(Input input)
+    {
+        if (IsConst)
+        {
+            return new TypeConst()
             {
-                return new TypeConst()
+                Type = new TypePrimitive()
                 {
-                    Type = new TypePrimitive()
-                    {
-                        Kind = PrimitiveKind
-                    }
-                };
-            }
-            else
-            {
-                return new TypePrimitive() 
-                { 
                     Kind = PrimitiveKind
-                };
-            }
+                }
+            };
+        }
+        else
+        {
+            return new TypePrimitive() 
+            { 
+                Kind = PrimitiveKind
+            };
         }
     }
 }

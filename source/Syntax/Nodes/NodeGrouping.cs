@@ -1,29 +1,28 @@
-namespace Suteki
+namespace Suteki;
+
+class NodeGrouping : Node
 {
-    class NodeGrouping : Node
+    Node Expression;
+
+    // Constructor
+    public NodeGrouping(Node expression)
     {
-        Node Expression;
+        Expression = expression;
+    }
 
-        // Constructor
-        public NodeGrouping(Node expression)
-        {
-            Expression = expression;
-        }
+    public override string   GetString => $"({Expression.GetString})";
+    public override Token    GetToken  => Token.From(Expression.GetToken, GetString);
+    public override NodeKind Kind      => NodeKind.Grouping;
 
-        public override string   GetString => $"({Expression.GetString})";
-        public override Token    GetToken  => Token.From(Expression.GetToken, GetString);
-        public override NodeKind Kind      => NodeKind.Grouping;
+    // Type checking
+    public override Type TypeCheck(Input input)
+    {
+        return Expression.TypeCheck(input);
+    }
 
-        // Type checking
-        public override Type TypeCheck(Input input)
-        {
-            return Expression.TypeCheck(input);
-        }
-
-        // Emit C++ code
-        public override void Emit(Input input)
-        {
-            input.Output.FunctionDefinitions += GetString;
-        }
+    // Emit C++ code
+    public override void Emit(Input input)
+    {
+        input.Output.FunctionDefinitions += GetString;
     }
 }
