@@ -225,28 +225,35 @@ class Parser
     // Parse type
     private Node ParseType()
     {
+        Node node = null;
+
         // Parse constant type
         if (Previous.Kind == TokenKind.Const)
         {
             Token previous = Previous;
             Advance();
 
-            return new NodeConst()
+            node = new NodeConst()
             {
-                Token = previous,
-                Type  = ParseType()
+                Token = previous
             };
         }
 
         // Parse primitive type
-        Node node = null;
-
         if (Types.ContainsKey(Previous.Content))
         {
-            node = new NodePrimitive()
+            NodePrimitive primitive = new NodePrimitive()
             {
                 PrimitiveKind = Types[Previous.Content].Kind
             };
+
+            if (node != null)
+            {
+                NodeConst constNode      = ((NodeConst)node);
+                          constNode.Type = primitive;
+            }
+            else
+                node = primitive;
         }
 
         // Parse pointer type

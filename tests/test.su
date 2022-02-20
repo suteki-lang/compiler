@@ -1,5 +1,9 @@
+const byte *hello() => "H";
+
 int main()
 {
+    libc.puts(hello());
+
     if (true)
         return 10;
 

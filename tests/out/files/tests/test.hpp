@@ -3,4 +3,6 @@
 
 #include <runtime/runtime.hpp>
 
+extern const char *su_global_hello();
+
 #endif
