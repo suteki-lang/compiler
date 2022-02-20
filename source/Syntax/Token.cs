@@ -29,6 +29,7 @@ enum TokenKind
 
     Module,
     Import,
+
     Public,
     Private,
 
@@ -54,17 +55,16 @@ class Token
     // Create token with same line information and kind but different content
     public static Token From(Token previous, string content)
     {
-        Token token = new Token();
-
-        token.Kind    = previous.Kind;
-        token.Content = content;
-        token.Line    = previous.Line;
-        token.Column  = previous.Column;
-
-        return token;
+        return new Token()
+        {
+            Kind    = previous.Kind,
+            Content = content,
+            Line    = previous.Line,
+            Column  = previous.Column
+        };
     }
 
-    // Convert TokenKind into OperatorKind
+    // Convert TokenKind to OperatorKind
     public static OperatorKind ToOperatorKind(TokenKind kind)
     {
         switch (kind)

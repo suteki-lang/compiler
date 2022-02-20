@@ -21,18 +21,18 @@ class Scanner
 
         { "version", TokenKind.Version },
 
-        { "extern", TokenKind.Extern   },
+        { "extern",  TokenKind.Extern  },
 
-        { "const", TokenKind.Const     },
+        { "const",   TokenKind.Const   },
 
-        { "true",  TokenKind.Bool      },
-        { "false", TokenKind.Bool      },
-        { "null",  TokenKind.Null      },
+        { "true",    TokenKind.Bool    },
+        { "false",   TokenKind.Bool    },
+        { "null",    TokenKind.Null    },
 
-        { "if",    TokenKind.If        },
-        { "else",  TokenKind.Else      },
+        { "if",      TokenKind.If      },
+        { "else",    TokenKind.Else    },
 
-        { "return", TokenKind.Return   },
+        { "return",  TokenKind.Return  },
     };
 
     // Set scanner input
@@ -72,8 +72,8 @@ class Scanner
     private bool IsIdentifier(char character)
     {
         return (character >= 'A' && character <= 'Z') ||
-                (character >= 'a' && character <= 'z') ||
-                (character == '_');
+               (character >= 'a' && character <= 'z') ||
+               (character == '_');
     }
 
     // Character matches number?
@@ -218,7 +218,7 @@ class Scanner
 
         // Replace newlines
         string source = Source.Substring(Start, (End - Start));
-                source = source.Replace("\n", "\\n");
+               source = source.Replace("\n", "\\n");
 
         return MakeToken(TokenKind.String, source);
     }

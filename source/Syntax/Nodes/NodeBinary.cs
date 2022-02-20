@@ -21,12 +21,15 @@ class NodeBinary : Node
     // Type checking
     public override Type TypeCheck(Input input)
     {
-        Type left  = Left.TypeCheck(input);
+        // Type check the operands
+        Type left  = Left .TypeCheck(input);
         Type right = Right.TypeCheck(input);
 
+        // Compare the types
         if (!left.IsIdentical(right, true))
             input.Logger.Error(GetToken, "Expression types does not match.");
 
+        // Check for operator
         if (Op == OperatorKind.Equality)
             return new TypePrimitive() { Kind = PrimitiveKind.Bool };
 
