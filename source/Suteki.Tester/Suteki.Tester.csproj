@@ -4,6 +4,7 @@
 <TargetFramework>net6.0</TargetFramework>
 </PropertyGroup>
 <ItemGroup>
-<ProjectReference Include="..\Suteki.Compiler\Suteki.Compiler.csproj" />
+<ProjectReference Include="..\Suteki.Compiler\Suteki.Compiler.csproj"   />
+<ProjectReference Include="..\Suteki.Utilities\Suteki.Utilities.csproj" />
 </ItemGroup>
 </Project>

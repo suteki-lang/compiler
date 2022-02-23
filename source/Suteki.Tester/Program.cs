@@ -1,5 +1,6 @@
 ﻿namespace Suteki.Tester;
 
+using Suteki.Utilities;
 using Suteki.Compiler;
 using System.IO;
 using System;
@@ -30,7 +31,7 @@ class Program
             // Compile each file
             foreach (string file in files)
             {
-                Console.Write($"Compiling file '{file}'.. ");
+                Console.Out.Write(ConsoleColor.White, $"Compiling file '{file}'.. ");
 
                 // Add input
                 Input input = new Input(file, File.ReadAllText(file) + '\0');
@@ -50,9 +51,12 @@ class Program
                 parser.Parse(input);
 
                 if (!Config.HadError)
-                    Console.WriteLine("OK");
+                    Console.Out.WriteLine(ConsoleColor.Green, "OK");
                 else
-                    Console.WriteLine("FAILED");
+                    Console.Out.WriteLine(ConsoleColor.Red, "FAILED");
+                
+                // Reset error
+                Config.HadError = false;
             }
         }
 

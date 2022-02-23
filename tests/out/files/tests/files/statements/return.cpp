@@ -1,6 +1,6 @@
 #include <modules/test.hpp>
 
-int main()
+int su_test_return_()
 {
 	return 111;
 }

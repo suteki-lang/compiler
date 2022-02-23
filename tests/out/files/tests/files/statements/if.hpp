@@ -3,4 +3,6 @@
 
 #include <runtime/runtime.hpp>
 
+extern int su_test_if_();
+
 #endif
