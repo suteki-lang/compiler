@@ -36,9 +36,14 @@ public class Program
                 Input input = new Input(file, File.ReadAllText(file) + '\0');
                 Config.Inputs.Add(input);
 
+                // Add test module
+                Config.Modules.Clear();
+                
+                Module testModule = new Module("test");
+                Config.AddModule("test", testModule);
+
                 // Set input module
-                input.Module = new Module(file.Replace(filesDirectory, "").Replace(".su", "").Replace("/", "."));
-                Config.AddModule(input.Module.Name, input.Module);
+                input.Module = testModule;
 
                 // Parse the input to AST nodes
                 Parser parser = new Parser();

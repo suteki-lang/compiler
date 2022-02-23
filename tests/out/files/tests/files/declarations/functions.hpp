@@ -3,9 +3,9 @@
 
 #include <runtime/runtime.hpp>
 
-extern string su_declarations_functions_get_name();
-extern double su_declarations_functions_add(double a, double b);
+extern string su_test_get_name();
+extern double su_test_add(double a, double b);
 extern "C" void exit(int status);
-extern void su_declarations_functions_hello_file();
+extern void su_test_hello_file();
 
 #endif
