@@ -9,8 +9,8 @@ public class Scanner
     public int    Start;
     public int    End;
     public string Source;
-    public  Token  Previous;
-    public  Token  Current;
+    public Token  Previous;
+    public Token  Current;
 
     public Dictionary<string, TokenKind> Keywords = new Dictionary<string, TokenKind>
     {
@@ -111,9 +111,6 @@ public class Scanner
                     {
                         while (Source[End] != '\n' && Source[End] != '\0')
                             Advance();
-
-                        Line   += 1;
-                        Column  = 0;
                     }
                     else
                     {
