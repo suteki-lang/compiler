@@ -10,3 +10,11 @@ double add(double a, double b)
 // Extern functions
 extern void exit(int status);
 extern int main() => 0;
+
+// Private functions
+// (functions are public by default, but you can use public 
+//  keyword if you want too)
+private void hello_file()
+{
+
+}
