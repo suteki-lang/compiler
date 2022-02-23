@@ -4,7 +4,7 @@ using Suteki.Compiler;
 using System.IO;
 using System;
 
-public class Program
+class Program
 {
     static void Main()
     {   

@@ -3,7 +3,4 @@
 <OutputType>Exe</OutputType>
 <TargetFramework>net6.0</TargetFramework>
 </PropertyGroup>
-<ItemGroup>
-<ProjectReference Include="..\Suteki.Utilities\Suteki.Utilities.csproj" />
-</ItemGroup>
 </Project>

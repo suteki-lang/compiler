@@ -1,5 +1,6 @@
 namespace Suteki.Compiler;
 
+using Suteki.Utilities;
 using System;
 
 public class Logger
@@ -14,7 +15,7 @@ public class Logger
         if (!Config.CanLog)
             return;
 
-        Console.Error.WriteLine($"[{Path}] Error: {message}");
+        Console.Error.WriteLine(ConsoleColor.Red, $"[{Path}] Error: ", ConsoleColor.White, message);
     }
 
     // Show error at token
@@ -25,29 +26,31 @@ public class Logger
         if (!Config.CanLog)
             return;
 
-        Console.Error.Write($"[{Path}:{token.Line}:{token.Column}] Error");
+        Console.Error.Write(ConsoleColor.Red, $"[{Path}:{token.Line}:{token.Column}] Error");
 
         switch (token.Kind)
         {
             case TokenKind.End:
             {
-                Console.Error.Write(" at end: ");
+                Console.Error.Write(ConsoleColor.Red, " at end: ");
                 break;
             }
 
             case TokenKind.Error:
             {
-                Console.Error.Write(": ");
+                Console.Error.Write(ConsoleColor.Red, ": ");
                 break;
             }
 
             default:
             {
-                Console.Error.Write($" at '{token.Content}': ");
+                Console.Error.Write(ConsoleColor.Red,    " at ");
+                Console.Error.Write(ConsoleColor.White, $"'{token.Content}'");
+                Console.Error.Write(ConsoleColor.Red,    ": ");
                 break;
             }
         }
 
-        Console.Error.WriteLine(message);
+        Console.Error.WriteLine(ConsoleColor.White, message);
     }
 }

@@ -3,6 +3,7 @@ namespace Suteki.Compiler;
 using System;
 using System.IO;
 using System.Collections.Generic;
+using Suteki.Utilities;
 
 public class Linker
 {
@@ -37,13 +38,13 @@ public class Linker
         // Check for paths
         if (!Directory.Exists(Config.OutputPath))
         {
-            Console.Error.WriteLine($"Linker Error: The output path '{Config.OutputPath}' does not exists.");
+            Console.Error.WriteLine(ConsoleColor.Red, "Linker Error: ", $"The output path '{Config.OutputPath}' does not exists.");
             return;
         }
 
         if (!Directory.Exists(Config.RuntimePath))
         {
-            Console.Error.WriteLine($"Linker Error: The runtime path '{Config.RuntimePath}' does not exists.");
+            Console.Error.WriteLine(ConsoleColor.Red, "Linker Error: ", $"The runtime path '{Config.RuntimePath}' does not exists.");
             return;
         }
 

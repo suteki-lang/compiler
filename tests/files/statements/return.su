@@ -1,4 +1,4 @@
-int main()
+int return_()
 {
     return 111;
 }
