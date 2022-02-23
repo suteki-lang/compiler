@@ -1,0 +1,12 @@
+// Single line function
+string get_name() => "Bob";
+
+// Multiple lines function
+double add(double a, double b)
+{
+    return (a + b);
+}
+
+// Extern functions
+extern void exit(int status);
+extern int main() => 0;
