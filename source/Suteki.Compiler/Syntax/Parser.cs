@@ -4,10 +4,10 @@ using System.Collections.Generic;
 
 public class Parser
 {
-    private Input        CurrentInput;
-    private PropertyKind CurrentProperty;
+    public Input        CurrentInput;
+    public PropertyKind CurrentProperty;
 
-    private Dictionary<string, UserType> Types = new Dictionary<string, UserType>
+    public Dictionary<string, UserType> Types = new Dictionary<string, UserType>
     {
         { "void",    new UserType(PrimitiveKind.Void)    },
         { "bool",    new UserType(PrimitiveKind.Bool)    },
@@ -36,7 +36,7 @@ public class Parser
     };
 
     // Get scanner
-    private Scanner Scanner
+    public Scanner Scanner
     {
         get 
         {
@@ -45,7 +45,7 @@ public class Parser
     }
 
     // Get logger
-    private Logger Logger
+    public Logger Logger
     {
         get
         {
@@ -54,7 +54,7 @@ public class Parser
     }
 
     // Get nodes
-    private List<Node> Nodes
+    public List<Node> Nodes
     {
         get
         {
@@ -63,7 +63,7 @@ public class Parser
     }
 
     // Get previous token
-    private Token Previous
+    public Token Previous
     {
         get
         {
@@ -72,7 +72,7 @@ public class Parser
     }
 
     // Get current token
-    private Token Current
+    public Token Current
     {
         get
         {
@@ -81,7 +81,7 @@ public class Parser
     }
 
     // Advance current token
-    private void Advance()
+    public void Advance()
     {
         for (;;)
         {
@@ -93,7 +93,7 @@ public class Parser
     }
 
     // Match current token?
-    private bool Match(TokenKind expected)
+    public bool Match(TokenKind expected)
     {
         if (Current.Kind == expected)
         {
@@ -105,7 +105,7 @@ public class Parser
     }
 
     // Consume token
-    private void Consume(TokenKind expected, string message)
+    public void Consume(TokenKind expected, string message)
     {
         if (Match(expected))
             return;
@@ -114,7 +114,7 @@ public class Parser
     }
 
     // Parse qualified name
-    private Node ParseQualifiedName(Node left)
+    public Node ParseQualifiedName(Node left)
     {
         Node name;
 
@@ -128,7 +128,7 @@ public class Parser
     }
 
     // Parse name
-    private Node ParseName()
+    public Node ParseName()
     {
         Node left;
 
@@ -142,7 +142,7 @@ public class Parser
     }
 
     // Parse name
-    private Node ParseName(Token token)
+    public Node ParseName(Token token)
     {
         Node left = new NodeIdentifierName(token);
 
@@ -153,7 +153,7 @@ public class Parser
     }
 
     // Parse module name
-    private string ParseModuleName()
+    public string ParseModuleName()
     {
         string result = "";
 
@@ -182,7 +182,7 @@ public class Parser
     }
 
     // Parse module
-    private void ParseModule()
+    public void ParseModule()
     {
         string moduleName = ParseModuleName();
 
@@ -204,7 +204,7 @@ public class Parser
     }
 
     // Parse import
-    private void ParseImport()
+    public void ParseImport()
     {
         // Make node
         NodeImport node = new NodeImport()
@@ -223,7 +223,7 @@ public class Parser
     }
 
     // Parse type
-    private Node ParseType()
+    public Node ParseType()
     {
         Node node = null;
 
@@ -269,7 +269,7 @@ public class Parser
     }
 
     // Parse call
-    private Node ParseCall(Node name, bool isExpression)
+    public Node ParseCall(Node name, bool isExpression)
     {
         // Make node
         NodeCall node = new NodeCall()
@@ -292,7 +292,7 @@ public class Parser
     }
 
     // Parse identifier expression
-    private Node ParseIdentifierExpression()
+    public Node ParseIdentifierExpression()
     {
         Node name = ParseName(Previous);
         
@@ -303,7 +303,7 @@ public class Parser
     }
 
     // Parse primary expression
-    private Node ParsePrimaryExpression()
+    public Node ParsePrimaryExpression()
     {
         if (Match(TokenKind.Float))
             return new NodeFloat(Previous);
@@ -336,7 +336,7 @@ public class Parser
     }
 
     // Parse unary expression
-    private Node ParseUnaryExpression()
+    public Node ParseUnaryExpression()
     {
         if (Match(TokenKind.Minus))
         {
@@ -350,7 +350,7 @@ public class Parser
     }
 
     // Parse factor expression
-    private Node ParseFactorExpression()
+    public Node ParseFactorExpression()
     {
         Node expression = ParseUnaryExpression();
 
@@ -366,7 +366,7 @@ public class Parser
     }
 
     // Parse term expression
-    private Node ParseTermExpression()
+    public Node ParseTermExpression()
     {
         Node expression = ParseFactorExpression();
 
@@ -382,13 +382,13 @@ public class Parser
     }
 
     // Parse comparison expression
-    private Node ParseComparisonExpression()
+    public Node ParseComparisonExpression()
     {
         return ParseTermExpression();
     }
 
     // Parse equality expression
-    private Node ParseEqualityExpression()
+    public Node ParseEqualityExpression()
     {
         Node expression = ParseComparisonExpression();
 
@@ -404,13 +404,13 @@ public class Parser
     }
 
     // Parse expression
-    private Node ParseExpression()
+    public Node ParseExpression()
     {
         return ParseEqualityExpression();
     }
 
     // Parse return statement
-    private Node ParseReturn()
+    public Node ParseReturn()
     {
         // Make node
         NodeReturn node = new NodeReturn()
@@ -433,7 +433,7 @@ public class Parser
     }
 
     // Parse identifier statement
-    private Node ParseIdentifierStatement()
+    public Node ParseIdentifierStatement()
     {
         Node name = ParseName(Previous);
         
@@ -451,7 +451,7 @@ public class Parser
     }
 
     // Parse if statement
-    private Node ParseIf()
+    public Node ParseIf()
     {
         NodeIf node = new NodeIf()
         {
@@ -472,7 +472,7 @@ public class Parser
     }
 
     // Parse statement
-    private Node ParseStatement()
+    public Node ParseStatement()
     {
         Advance();
 
@@ -499,7 +499,7 @@ public class Parser
     }
 
     // Parse block of statements
-    private Node ParseBlock()
+    public Node ParseBlock()
     {
         Token start = Previous;
 
@@ -528,7 +528,7 @@ public class Parser
     }
 
     // Parse function declaration
-    private void ParseFunction(Node type, Token name)
+    public void ParseFunction(Node type, Token name)
     {
         // Make node
         NodeFunction node = new NodeFunction()
@@ -602,7 +602,7 @@ public class Parser
     }
 
     // Parse identifier
-    private void ParseIdentifier(Node type)
+    public void ParseIdentifier(Node type)
     {
         Consume(TokenKind.Identifier, "Expected identifier after type.");
         Token name = Previous;
@@ -614,7 +614,7 @@ public class Parser
     }
 
     // Parse declaration
-    private void ParseDeclaration()
+    public void ParseDeclaration()
     {
         Advance();
 
@@ -700,7 +700,7 @@ public class Parser
         else
             globalModule = Config.GetModule("global");
 
-        // Register all global symbols from inputs
+        // Register all symbols from inputs
         foreach (Input input in Config.Inputs)
         {
             // Use global module?

@@ -4,15 +4,15 @@ using System.Collections.Generic;
 
 public class Scanner
 {
-    private int    Line;
-    private int    Column;
-    private int    Start;
-    private int    End;
-    private string Source;
+    public int    Line;
+    public int    Column;
+    public int    Start;
+    public int    End;
+    public string Source;
     public  Token  Previous;
     public  Token  Current;
 
-    private Dictionary<string, TokenKind> Keywords = new Dictionary<string, TokenKind>
+    public Dictionary<string, TokenKind> Keywords = new Dictionary<string, TokenKind>
     {
         { "module",  TokenKind.Module  },
         { "import",  TokenKind.Import  },
@@ -46,7 +46,7 @@ public class Scanner
     }
 
     // Advance character
-    private char Advance()
+    public char Advance()
     {
         ++End;
         ++Column;
@@ -55,7 +55,7 @@ public class Scanner
     }
 
     // Match current character?
-    private bool Match(char expected)
+    public bool Match(char expected)
     {
         if (Source[End] == expected)
         {
@@ -67,7 +67,7 @@ public class Scanner
     }
 
     // Character matches identifier?
-    private bool IsIdentifier(char character)
+    public bool IsIdentifier(char character)
     {
         return (character >= 'A' && character <= 'Z') ||
                (character >= 'a' && character <= 'z') ||
@@ -75,13 +75,13 @@ public class Scanner
     }
 
     // Character matches number?
-    private bool IsNumber(char character)
+    public bool IsNumber(char character)
     {
         return (character >= '0' && character <= '9');
     }
 
     // Skip whitespace
-    private void SkipWhitespace()
+    public void SkipWhitespace()
     {
         for (;;)
         {
@@ -131,7 +131,7 @@ public class Scanner
     }
 
     // Make token
-    private TokenKind MakeToken(TokenKind kind)
+    public TokenKind MakeToken(TokenKind kind)
     {
         Current = new Token
         { 
@@ -145,7 +145,7 @@ public class Scanner
     }
 
     // Make token
-    private TokenKind MakeToken(TokenKind kind, string content)
+    public TokenKind MakeToken(TokenKind kind, string content)
     {
         Current = new Token
         { 
@@ -159,7 +159,7 @@ public class Scanner
     }
 
     // Make error token
-    private TokenKind MakeToken(string message)
+    public TokenKind MakeToken(string message)
     {
         Current = new Token
         { 
@@ -173,7 +173,7 @@ public class Scanner
     }
 
     // Make number token
-    private TokenKind MakeNumberToken()
+    public TokenKind MakeNumberToken()
     {
         while (IsNumber(Source[End]))
             Advance();
@@ -190,7 +190,7 @@ public class Scanner
     }
 
     // Make identifier token
-    private TokenKind MakeIdentifierToken()
+    public TokenKind MakeIdentifierToken()
     {
         while (IsIdentifier(Source[End]))
             Advance();
@@ -204,7 +204,7 @@ public class Scanner
     }
 
     // Make string token
-    private TokenKind MakeStringToken()
+    public TokenKind MakeStringToken()
     {
         while (Source[End] != '"' && Source[End] != '\0')
             Advance();

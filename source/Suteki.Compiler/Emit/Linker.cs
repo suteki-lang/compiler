@@ -7,7 +7,7 @@ using System.Collections.Generic;
 public class Linker
 {
     // Get path
-    private static string GetPath(string path)
+    public static string GetPath(string path)
     {
         string name = Path.GetFileName(path);
 
