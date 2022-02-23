@@ -26,7 +26,7 @@ public static class ParserExtension
         foreach (Node node in input.Nodes)
             node.RegisterSymbols(input);
 
-        // Don't do the other passes if an error happened.
+        // Don't do the other pass if an error happened.
         if (Config.HadError)
             return;
 
@@ -34,7 +34,7 @@ public static class ParserExtension
         foreach (Node node in input.Nodes)
             node.ResolveSymbols(input);
 
-        // Don't do the other passes if an error happened.
+        // Don't do the other pass if an error happened.
         if (Config.HadError)
             return;
 
