@@ -135,6 +135,11 @@ public class Input
             if (foundSymbol != null && token != null)
                 Logger.Error(token, $"Ambiguous reference between '{foundSymbol.Module.Name}.{foundSymbol.Name}' and '{lastSymbol.Module.Name}.{lastSymbol.Name}'.");
 
+            // Add import if needed
+            if (foundSymbol != null && !Imports.Contains(foundSymbol.Module) &&
+                foundSymbol.Module.Name != "global")
+                Imports.Add(foundSymbol.Module);
+
             foundSymbol = lastSymbol;
         }
 
@@ -144,11 +149,6 @@ End:
             foundSymbol.Property == PropertyKind.Private &&
             Module.Name != foundSymbol.Module.Name)
             Logger.Error(token, $"This symbol is private and can't be used outside the module '{foundSymbol.Module.Name}'.");
-
-        // Add import if needed
-        if (foundSymbol != null && !Imports.Contains(foundSymbol.Module) &&
-            foundSymbol.Module.Name != "global")
-            Imports.Add(foundSymbol.Module);
 
         return foundSymbol;
     }

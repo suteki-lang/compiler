@@ -70,7 +70,7 @@ class Program
 
         // Check for runtime path
         if (Config.RuntimePath == "")
-            Config.RuntimePath = "../../runtime/";
+            Config.RuntimePath = "../../../runtime/";
 
         // Check for input files
         if (Config.Inputs.Count == 0)

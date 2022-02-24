@@ -1,0 +1,10 @@
+module suteki.compiler;
+
+import std.io;
+
+// Initialize the compiler
+int main()
+{
+    writeln("Hello, World!");
+    return 0;
+}

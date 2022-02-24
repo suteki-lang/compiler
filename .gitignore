@@ -1,7 +1,9 @@
 # Binary
 obj
 bin
-a.out
+
+# Output
+output
 
 # Visual Studio Code
 .vscode

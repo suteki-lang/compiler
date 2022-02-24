@@ -1,0 +1,9 @@
+module std.io;
+
+import std.c;
+
+// Write message with line to console
+void writeln(string message)
+{
+    puts(message);
+}
