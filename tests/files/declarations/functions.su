@@ -14,7 +14,7 @@ extern int main() => 0;
 // Private functions
 // (functions are public by default, but you can use public 
 //  keyword if you want too)
-public void hello_file()
+private void hello_file()
 {
 
 }
