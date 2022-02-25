@@ -18,7 +18,10 @@ class Program
 
             // Add inputs
             foreach (string file in files)
-                Config.Inputs.Add(new Input(file, File.ReadAllText(file) + '\0'));
+            {
+                if (file.EndsWith(".su"))
+                   Config.Inputs.Add(new Input(file, File.ReadAllText(file) + '\0'));
+            }
 
             // Add inputs from directories
             foreach (string directory in directories)
@@ -48,13 +51,39 @@ class Program
             {
                 if (!AddInputs(argument))
                 {
-                    Console.Error.WriteLine(ConsoleColor.Red, "Error: ", ConsoleColor.White, $"{argument}: ", "No such file or directory.");
+                    Console.Error.WriteLine(ConsoleColor.Red,    "Error: ");
+                    Console.Error.WriteLine(ConsoleColor.White, $"{argument}: ", "No such file or directory.");
                     return false;
                 }
             }
+            // Output path
+            else if (argument == "-o" || argument == "--output")
+            {
+                if ((index + 1) >= arguments.Length)
+                {
+                    Console.Error.WriteLine(ConsoleColor.Red,   "Error: ");
+                    Console.Error.WriteLine(ConsoleColor.White, "Expected output path.");
+                    return false;
+                }
+
+                Config.OutputPath = arguments[++index];
+            }
+            // Runtime path
+            else if (argument == "-r" || argument == "--runtime")
+            {
+                if ((index + 1) >= arguments.Length)
+                {
+                    Console.Error.WriteLine(ConsoleColor.Red,   "Error: ");
+                    Console.Error.WriteLine(ConsoleColor.White, "Expected runtime path.");
+                    return false;
+                }
+                
+                Config.RuntimePath = arguments[++index];
+            }
             else
             {
-                Console.Error.WriteLine(ConsoleColor.Red, "Error: ", ConsoleColor.White, "No input files.");
+                Console.Error.WriteLine(ConsoleColor.Red,   "Error: ");
+                Console.Error.WriteLine(ConsoleColor.White, "No input files.");
                 return false;
             }
         }
@@ -75,7 +104,8 @@ class Program
         // Check for input files
         if (Config.Inputs.Count == 0)
         {
-            Console.Error.WriteLine(ConsoleColor.Red, "Error: ", ConsoleColor.White, "No input files.");
+            Console.Error.WriteLine(ConsoleColor.Red,   "Error: ");
+            Console.Error.WriteLine(ConsoleColor.White, "No input files.");
             return false;
         }
 

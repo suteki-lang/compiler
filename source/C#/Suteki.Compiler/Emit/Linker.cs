@@ -38,13 +38,15 @@ public class Linker
         // Check for paths
         if (!Directory.Exists(Config.OutputPath))
         {
-            Console.Error.WriteLine(ConsoleColor.Red, "Linker Error: ", $"The output path '{Config.OutputPath}' does not exists.");
+            Console.Error.WriteLine(ConsoleColor.Red,    "Linker Error: ");
+            Console.Error.WriteLine(ConsoleColor.White, $"The output path '{Config.OutputPath}' does not exists.");
             return;
         }
 
         if (!Directory.Exists(Config.RuntimePath))
         {
-            Console.Error.WriteLine(ConsoleColor.Red, "Linker Error: ", $"The runtime path '{Config.RuntimePath}' does not exists.");
+            Console.Error.WriteLine(ConsoleColor.Red,    "Linker Error: ");
+            Console.Error.WriteLine(ConsoleColor.White, $"The runtime path '{Config.RuntimePath}' does not exists.");
             return;
         }
 

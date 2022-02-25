@@ -1,0 +1,1 @@
+suteki ../../suteki/compiler/ ../../suteki/library/ -r ../../../runtime/ -o ../../suteki/compiler/out/
