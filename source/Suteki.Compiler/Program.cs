@@ -51,7 +51,7 @@ class Program
             {
                 if (!AddInputs(argument))
                 {
-                    Console.Error.WriteLine(ConsoleColor.Red,    "Error: ");
+                    Console.Error.Write    (ConsoleColor.Red,    "Error: ");
                     Console.Error.WriteLine(ConsoleColor.White, $"{argument}: ", "No such file or directory.");
                     return false;
                 }
@@ -61,7 +61,7 @@ class Program
             {
                 if ((index + 1) >= arguments.Length)
                 {
-                    Console.Error.WriteLine(ConsoleColor.Red,   "Error: ");
+                    Console.Error.Write    (ConsoleColor.Red,   "Error: ");
                     Console.Error.WriteLine(ConsoleColor.White, "Expected output path.");
                     return false;
                 }
@@ -73,7 +73,7 @@ class Program
             {
                 if ((index + 1) >= arguments.Length)
                 {
-                    Console.Error.WriteLine(ConsoleColor.Red,   "Error: ");
+                    Console.Error.Write    (ConsoleColor.Red,   "Error: ");
                     Console.Error.WriteLine(ConsoleColor.White, "Expected runtime path.");
                     return false;
                 }
@@ -82,7 +82,7 @@ class Program
             }
             else
             {
-                Console.Error.WriteLine(ConsoleColor.Red,   "Error: ");
+                Console.Error.Write    (ConsoleColor.Red,   "Error: ");
                 Console.Error.WriteLine(ConsoleColor.White, "No input files.");
                 return false;
             }
@@ -99,12 +99,12 @@ class Program
 
         // Check for runtime path
         if (Config.RuntimePath == "")
-            Config.RuntimePath = "../../../runtime/";
+            Config.RuntimePath = "../../runtime/";
 
         // Check for input files
         if (Config.Inputs.Count == 0)
         {
-            Console.Error.WriteLine(ConsoleColor.Red,   "Error: ");
+            Console.Error.Write    (ConsoleColor.Red,   "Error: ");
             Console.Error.WriteLine(ConsoleColor.White, "No input files.");
             return false;
         }

@@ -1,5 +1,4 @@
 #include <modules/test.hpp>
-#include <modules/test.hpp>
 
 string su_test_get_name()
 {

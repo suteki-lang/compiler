@@ -1,4 +1,0 @@
-module std;
-
-public import std.c;
-public import std.io;
