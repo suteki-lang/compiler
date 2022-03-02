@@ -17,12 +17,18 @@ public class NodeParameter : Node
             input.Logger.Error("This symbol already exists.");
 
         // Add local symbol
-        input.Locals[Name.Content] = new Symbol(SymbolKind.Parameter, PropertyKind.None, input.Module, Name.Content, this);
+        input.Locals[Name.Content] = new Symbol(SymbolKind.Parameter, PropertyKind.None, input.Module, Name.Content);
+    }
+
+    // Resolve types
+    public override Type ResolveTypes(Input input)
+    {
+        return Type.TypeCheck(input);
     }
 
     // Type checking
     public override Type TypeCheck(Input input)
     {
-        return Type.TypeCheck(input);
+        return input.Locals[Name.Content].Type;
     }
 }

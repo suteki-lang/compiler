@@ -24,7 +24,7 @@ public class NodeFunction : Node
         }
 
         // Add symbol
-        input.Module.Symbols.Add(Name.Content, new Symbol(SymbolKind.Function, Property, input.Module, Name.Content, this));
+        input.Module.Symbols.Add(Name.Content, new Symbol(SymbolKind.Function, Property, input.Module, Name.Content));
     }
 
     // Resolve symbols
@@ -35,6 +35,27 @@ public class NodeFunction : Node
 
         if (Body != null)
             Body.ResolveSymbols(input);
+    }
+
+    // Resolve types
+    public override Type ResolveTypes(Input input)
+    {
+        Symbol symbol = input.Module.Symbols.GetValueOrDefault(Name.Content);
+
+        TypeFunction type = new TypeFunction()
+        {
+            Return = Type.TypeCheck(input)
+        };
+
+        foreach (Node parameter in Parameters)
+            type.Parameters.Add(parameter.ResolveTypes(input));
+
+        symbol.Type = type;
+
+        if (Body != null)
+            Body.ResolveTypes(input);
+
+        return null;
     }
 
     // Type checking

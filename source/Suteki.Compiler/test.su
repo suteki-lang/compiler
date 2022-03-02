@@ -2,5 +2,5 @@ extern int puts(const byte *a);
 
 int main()
 {
-    puts("hi");
+    puts(1);
 }

@@ -730,6 +730,10 @@ public class Parser
             if (Config.HadError)
                 return;
 
+            // Resolve types
+            foreach (Node node in input.Nodes)
+                node.ResolveTypes(input);
+
             // Type checking
             foreach (Node node in input.Nodes)
                 node.TypeCheck(input);

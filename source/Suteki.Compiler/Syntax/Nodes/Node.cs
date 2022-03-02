@@ -14,6 +14,12 @@ public class Node
         
     }
 
+    // Resolve types
+    public virtual Type ResolveTypes(Input input)
+    {
+        return null;
+    }
+
     // Type checking
     public virtual Type TypeCheck(Input input)
     {

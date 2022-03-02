@@ -31,7 +31,7 @@ public class NodeQualifiedName : Node
         if (symbol == null)
             symbol = input.Locals[GetString];
 
-        return symbol.Node.TypeCheck(input);
+        return symbol.Type;
     }
 
     // Emit C++ code

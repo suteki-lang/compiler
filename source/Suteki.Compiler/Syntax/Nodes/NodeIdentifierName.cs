@@ -25,8 +25,7 @@ public class NodeIdentifierName : Node
     public override Type TypeCheck(Input input)
     {
         Symbol symbol = input.GetSymbol(GetString, GetToken);
-
-        return symbol.Node.TypeCheck(input);
+        return symbol.Type;
     }
 
     // Emit C++ code

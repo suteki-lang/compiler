@@ -12,16 +12,16 @@ public class Symbol
     public SymbolKind   Kind;
     public PropertyKind Property;
     public Module       Module;
+    public Type         Type;
     public string       Name;
-    public Node         Node;
 
     // Constructor
-    public Symbol(SymbolKind kind, PropertyKind property, Module module, string name, Node node)
+    public Symbol(SymbolKind kind, PropertyKind property, Module module, string name)
     {
         Kind     = kind;
         Property = property;
         Module   = module;
+        Type     = null;
         Name     = name;
-        Node     = node;
     }
 }

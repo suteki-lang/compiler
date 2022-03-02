@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class TypeFunction : Type
 {
-    public List<Type> Parameters;
+    public List<Type> Parameters = new List<Type>();
     public Type       Return;
 
     public override bool IsFunction() => true;

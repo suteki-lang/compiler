@@ -44,34 +44,34 @@ public class NodeCall : Node
     // Type checking
     public override Type TypeCheck(Input input)
     {
-        NodeFunction node = (NodeFunction)input.GetSymbol(Name.GetString).Node;
+        // TODO: Update this to use TypeFunction.IsIdentical
+        TypeFunction type = (TypeFunction)input.GetSymbol(Name.GetString).Type;
 
         // Check for parameter count
-        if (Parameters.Count != node.Parameters.Count)
+        if (Parameters.Count != type.Parameters.Count)
         {
             input.Logger.Error(Name.GetToken, "Function call parameter(s) count does not match function parameter(s) count.");
             return null;
         }
 
         // Compare parameter types
-        for (int index = 0; index < node.Parameters.Count; ++index)
+        for (int index = 0; index < type.Parameters.Count; ++index)
         {
-            Type parameter  = node.Parameters[index].TypeCheck(input);
+            Type parameter  = type.Parameters[index];
             Type expression = Parameters     [index].TypeCheck(input);
 
             if (!parameter.IsIdentical(expression))
                 input.Logger.Error(Parameters[index].GetToken, $"Function call parameter ({index}) type does not match expression type.");
         }
 
-        return node.Type.TypeCheck(input);
+        return type;
     }
 
     // Emit C++ code
     public override void Emit(Input input)
     {
-        Symbol       symbol = input.GetSymbol(Name.GetString);
-        NodeFunction node   = ((NodeFunction)symbol.Node);
-        string       name   = Config.MangleName(Name.GetString, node.Property, symbol);
+        Symbol symbol = input.GetSymbol(Name.GetString);
+        string name   = Config.MangleName(Name.GetString, symbol.Property, symbol);
 
         input.Output.FunctionDefinitions += $"{name}(";
 
