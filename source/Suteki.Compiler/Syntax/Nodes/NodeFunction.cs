@@ -24,7 +24,7 @@ public class NodeFunction : Node
         }
 
         // Add symbol
-        input.Module.AddSymbol(Name.Content, new Symbol(SymbolKind.Function, Property, input.Module, Name.Content, this));
+        input.Module.Symbols.Add(Name.Content, new Symbol(SymbolKind.Function, Property, input.Module, Name.Content, this));
     }
 
     // Resolve symbols

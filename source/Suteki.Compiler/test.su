@@ -1,0 +1,6 @@
+extern int puts(const byte *a);
+
+int main()
+{
+    puts("hi");
+}

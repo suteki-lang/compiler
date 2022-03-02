@@ -50,9 +50,9 @@ public class Input
         }
 
         // Try finding symbol in current module
-        if (Module.HasSymbol(name))
+        if (Module.Symbols.ContainsKey(name))
         {
-            foundSymbol = Module.GetSymbol(name);
+            foundSymbol = Module.Symbols.GetValueOrDefault(name);
 
             if (!name.Contains('.'))
                 goto End;
@@ -61,13 +61,13 @@ public class Input
         // Try finding symbol in imported modules
         foreach (Module module in Imports)
         {
-            if (module.HasSymbol(name))
+            if (module.Symbols.ContainsKey(name))
             {
                 // Check for ambiguity
                 if (foundSymbol != null && token != null)
                     Logger.Error(token, $"Ambiguous reference between '{foundSymbol.Module.Name}.{foundSymbol.Name}' and '{module.Name}.{name}'.");
 
-                foundSymbol = module.GetSymbol(name);
+                foundSymbol = module.Symbols.GetValueOrDefault(name);
 
                 if (!name.Contains('.'))
                     goto End;
@@ -75,13 +75,13 @@ public class Input
 
             foreach (Module publicModule in module.Imports)
             {
-                if (publicModule.HasSymbol(name))
+                if (publicModule.Symbols.ContainsKey(name))
                 {
                     // Check for ambiguity
                     if (foundSymbol != null && token != null)
                         Logger.Error(token, $"Ambiguous reference between '{foundSymbol.Module.Name}.{foundSymbol.Name}' and '{publicModule.Name}.{name}'.");
 
-                    foundSymbol = publicModule.GetSymbol(name);
+                    foundSymbol = publicModule.Symbols.GetValueOrDefault(name);
                     
                     if (!name.Contains('.'))
                         goto End;
@@ -107,26 +107,26 @@ public class Input
                 moduleName += nameSplitted;
 
                 // Check if splitted name is a module
-                if (Config.HasModule(nameSplitted) && (index + 1) < names.Length)
+                if (Config.Modules.ContainsKey(nameSplitted) && (index + 1) < names.Length)
                 {
-                    Module module     = Config.GetModule(nameSplitted);
+                    Module module     = Config.Modules.GetValueOrDefault(nameSplitted);
                     string symbolName = names[index + 1];
 
-                    if (module.HasSymbol(symbolName))
-                        lastSymbol = module.GetSymbol(symbolName);
+                    if (module.Symbols.ContainsKey(symbolName))
+                        lastSymbol = module.Symbols.GetValueOrDefault(symbolName);
                 }
                 
                 // Check if module name is a module
-                else if (Config.HasModule(moduleName) && (index + 1) < names.Length)
+                else if (Config.Modules.ContainsKey(moduleName) && (index + 1) < names.Length)
                 {
-                    Module module = Config.GetModule(moduleName);
+                    Module module = Config.Modules.GetValueOrDefault(moduleName);
                     
                     if ((index + 1) < names.Length)
                     {
                         string symbolName = names[index + 1];
 
-                        if (module.HasSymbol(symbolName))
-                            lastSymbol = module.GetSymbol(symbolName);
+                        if (module.Symbols.ContainsKey(symbolName))
+                            lastSymbol = module.Symbols.GetValueOrDefault(symbolName);
                     }
                 }
             }

@@ -692,13 +692,13 @@ public class Parser
         // Make global module
         Module globalModule;
 
-        if (!Config.HasModule("global"))
+        if (!Config.Modules.ContainsKey("global"))
         {
             globalModule = new Module("global");
-            Config.AddModule("global", globalModule);
+            Config.Modules.Add("global", globalModule);
         }
         else
-            globalModule = Config.GetModule("global");
+            globalModule = Config.Modules.GetValueOrDefault("global");
 
         // Register all symbols from inputs
         foreach (Input input in Config.Inputs)
