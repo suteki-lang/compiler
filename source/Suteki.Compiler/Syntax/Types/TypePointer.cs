@@ -30,7 +30,7 @@ public class TypePointer : Type
         return other.IsPointer() && Base.IsIdentical(other.GetDerefedType());
     }
 
-    public override int GetSize() => 8;
+    public override int GetSize() => Config.PointerSize;
 
     public override Type GetDerefedType() => Base;
 }

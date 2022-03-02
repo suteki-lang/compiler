@@ -117,7 +117,7 @@ public class TypePrimitive : Type
             case PrimitiveKind.UWord:
             case PrimitiveKind.SWord:
             case PrimitiveKind.Null:
-                return 8;
+                return Config.PointerSize;
 
             default:
                 return 0;
