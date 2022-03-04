@@ -33,6 +33,12 @@ public class NodeIdentifierName : Node
     // Emit C++ code
     public override void Emit(Input input)
     {
-        input.Output.FunctionDefinitions += GetString;
+        Symbol symbol = input.GetSymbol(GetString);
+        string name   = GetString;
+        
+        if (symbol.Kind != SymbolKind.Parameter)
+            name = Config.MangleName(GetString, symbol.Property, symbol);
+
+        input.Output.FunctionDefinitions += name;
     }
 }

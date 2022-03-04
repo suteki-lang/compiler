@@ -71,9 +71,6 @@ public class NodeCall : Node
     // Emit C++ code
     public override void Emit(Input input)
     {
-        Symbol symbol = input.GetSymbol(Callee.GetIdentifier);
-        string name   = Config.MangleName(Callee.GetIdentifier, symbol.Property, symbol);;
-
         Callee.Emit(input);
         input.Output.FunctionDefinitions += $"(";
 
