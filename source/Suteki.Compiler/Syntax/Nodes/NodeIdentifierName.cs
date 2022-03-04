@@ -10,9 +10,11 @@ public class NodeIdentifierName : Node
         Value = value;
     }
 
-    public override string   GetString => Value.Content;
-    public override Token    GetToken  => Value;
-    public override NodeKind Kind      => NodeKind.IdentifierName;
+    public override bool     IsIdentifier  => true;
+    public override string   GetString     => Value.Content;
+    public override string   GetIdentifier => Value.Content;
+    public override Token    GetToken      => Value;
+    public override NodeKind Kind          => NodeKind.IdentifierName;
 
     // Resolve symbols
     public override void ResolveSymbols(Input input)

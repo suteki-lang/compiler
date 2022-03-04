@@ -14,16 +14,22 @@ public class NodeParameter : Node
     {
         // Check for local symbol
         if (input.GetSymbol(Name.Content) != null)
-            input.Logger.Error("This symbol already exists.");
+        {
+            input.Logger.Error(Name, "This symbol already exists.");
+            return;
+        }
 
         // Add local symbol
-        input.Locals[Name.Content] = new Symbol(SymbolKind.Parameter, PropertyKind.None, input.Module, Name.Content);
+        input.Locals.Add(Name.Content, new Symbol(SymbolKind.Parameter, PropertyKind.None, input.Module, Name.Content));
     }
 
     // Resolve types
     public override Type ResolveTypes(Input input)
     {
-        return Type.TypeCheck(input);
+        Symbol symbol      = input.Locals[Name.Content];
+               symbol.Type = Type.TypeCheck(input);
+
+        return symbol.Type;
     }
 
     // Type checking

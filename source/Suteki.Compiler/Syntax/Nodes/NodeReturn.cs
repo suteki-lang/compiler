@@ -17,15 +17,15 @@ public class NodeReturn : Node
     // Type checking
     public override Type TypeCheck(Input input)
     {
-        Type expression;
-        Type function = input.CurrentFunction.Type.TypeCheck(input);
+        Type         expression;
+        TypeFunction function = ((TypeFunction)input.CurrentFunction.Type);
 
         if (Expression == null)
             expression = new TypePrimitive() { Kind = PrimitiveKind.Void };
         else
             expression = Expression.TypeCheck(input);
 
-        if (!function.IsIdentical(expression))
+        if (!function.Return.IsIdentical(expression))
             input.Logger.Error(Expression.GetToken, "Return value type does not match function return type.");
 
         return null;

@@ -8,7 +8,7 @@ public class Input
     public string       Source;
     public Module       Module;
     public Output       Output;
-    public NodeFunction CurrentFunction;
+    public Symbol       CurrentFunction;
     public Logger       Logger;
     public Scanner      Scanner;
     public List<Node>   Nodes;
@@ -52,7 +52,7 @@ public class Input
         // Try finding symbol in current module
         if (Module.Symbols.ContainsKey(name))
         {
-            foundSymbol = Module.Symbols.GetValueOrDefault(name);
+            foundSymbol = Module.Symbols[name];
 
             if (!name.Contains('.'))
                 goto End;
@@ -67,7 +67,7 @@ public class Input
                 if (foundSymbol != null && token != null)
                     Logger.Error(token, $"Ambiguous reference between '{foundSymbol.Module.Name}.{foundSymbol.Name}' and '{module.Name}.{name}'.");
 
-                foundSymbol = module.Symbols.GetValueOrDefault(name);
+                foundSymbol = module.Symbols[name];
 
                 if (!name.Contains('.'))
                     goto End;
@@ -81,7 +81,7 @@ public class Input
                     if (foundSymbol != null && token != null)
                         Logger.Error(token, $"Ambiguous reference between '{foundSymbol.Module.Name}.{foundSymbol.Name}' and '{publicModule.Name}.{name}'.");
 
-                    foundSymbol = publicModule.Symbols.GetValueOrDefault(name);
+                    foundSymbol = publicModule.Symbols[name];
                     
                     if (!name.Contains('.'))
                         goto End;
@@ -109,24 +109,24 @@ public class Input
                 // Check if splitted name is a module
                 if (Config.Modules.ContainsKey(nameSplitted) && (index + 1) < names.Length)
                 {
-                    Module module     = Config.Modules.GetValueOrDefault(nameSplitted);
+                    Module module     = Config.Modules[nameSplitted];
                     string symbolName = names[index + 1];
 
                     if (module.Symbols.ContainsKey(symbolName))
-                        lastSymbol = module.Symbols.GetValueOrDefault(symbolName);
+                        lastSymbol = module.Symbols[symbolName];
                 }
                 
                 // Check if module name is a module
                 else if (Config.Modules.ContainsKey(moduleName) && (index + 1) < names.Length)
                 {
-                    Module module = Config.Modules.GetValueOrDefault(moduleName);
+                    Module module = Config.Modules[moduleName];
                     
                     if ((index + 1) < names.Length)
                     {
                         string symbolName = names[index + 1];
 
                         if (module.Symbols.ContainsKey(symbolName))
-                            lastSymbol = module.Symbols.GetValueOrDefault(symbolName);
+                            lastSymbol = module.Symbols[symbolName];
                     }
                 }
             }

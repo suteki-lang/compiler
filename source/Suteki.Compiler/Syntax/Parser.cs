@@ -269,12 +269,12 @@ public class Parser
     }
 
     // Parse call
-    public Node ParseCall(Node name, bool isExpression)
+    public Node ParseCall(Node callee, bool isExpression)
     {
         // Make node
         NodeCall node = new NodeCall()
         {
-            Name         = name,
+            Callee       = callee,
             IsExpression = isExpression
         };
 
@@ -325,7 +325,12 @@ public class Parser
             Node expression = ParseExpression();
 
             Consume(TokenKind.RightParenthesis, "Expected ')' after expression.");
-            return new NodeGrouping(expression);
+            Node node = new NodeGrouping(expression);
+
+            while (Match(TokenKind.LeftParenthesis))
+                node = ParseCall(node, true);
+
+            return node;
         }
 
         if (Match(TokenKind.Identifier))
@@ -439,9 +444,13 @@ public class Parser
         
         if (Match(TokenKind.LeftParenthesis))
         {
-            Node node = ParseCall(name, false);
+            Node node = ParseCall(name, true);
+
+            while (Match(TokenKind.LeftParenthesis))
+                node = ParseCall(node, true);
 
             // Expect semicolon
+            ((NodeCall)node).IsExpression = false;
             Consume(TokenKind.Semicolon, "Expected ';' after call.");
             return node;
         }
@@ -489,6 +498,24 @@ public class Parser
 
             case TokenKind.LeftBrace:
                 return ParseBlock();
+
+            case TokenKind.LeftParenthesis:
+            {
+                Node expression = ParseExpression();
+
+                Consume(TokenKind.RightParenthesis, "Expected ')' after expression.");
+                Node nodeG = new NodeGrouping(expression);
+                Node node  = nodeG;
+
+                while (Match(TokenKind.LeftParenthesis))
+                    node = ParseCall(node, true);
+
+                // Expect semicolon
+                if (node != nodeG)
+                    ((NodeCall)node).IsExpression = false;
+                Consume(TokenKind.Semicolon, "Expected ';' after call.");
+                return node;
+            }
 
             default:
             {
@@ -698,8 +725,8 @@ public class Parser
             Config.Modules.Add("global", globalModule);
         }
         else
-            globalModule = Config.Modules.GetValueOrDefault("global");
-
+            globalModule = Config.Modules["global"];
+            
         // Register all symbols from inputs
         foreach (Input input in Config.Inputs)
         {

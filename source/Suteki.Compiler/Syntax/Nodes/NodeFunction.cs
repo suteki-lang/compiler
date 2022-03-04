@@ -35,12 +35,15 @@ public class NodeFunction : Node
 
         if (Body != null)
             Body.ResolveSymbols(input);
+
+        // // Clear locals
+        // input.Locals.Clear();
     }
 
     // Resolve types
     public override Type ResolveTypes(Input input)
     {
-        Symbol symbol = input.Module.Symbols.GetValueOrDefault(Name.Content);
+        Symbol symbol = input.Module.Symbols[Name.Content];
 
         TypeFunction type = new TypeFunction()
         {
@@ -61,7 +64,7 @@ public class NodeFunction : Node
     // Type checking
     public override Type TypeCheck(Input input)
     {
-        input.CurrentFunction = this;
+        input.CurrentFunction = input.Module.Symbols[Name.Content];
 
         if (Body != null)
             Body.TypeCheck(input);

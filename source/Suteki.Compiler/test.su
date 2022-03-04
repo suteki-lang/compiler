@@ -1,6 +1,11 @@
 extern int puts(const byte *a);
 
-int main()
+string h(string hh)
 {
-    puts(1);
+    return hh;
+}
+
+int main(int a)
+{
+    a();
 }

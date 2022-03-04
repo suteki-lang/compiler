@@ -32,7 +32,9 @@ public class Node
 
     }
 
-    public virtual string   GetString => "";
-    public virtual Token    GetToken  => null;
-    public virtual NodeKind Kind      => NodeKind.Node;
+    public virtual bool     IsIdentifier  => false;
+    public virtual string   GetString     => "";
+    public virtual string   GetIdentifier => "";
+    public virtual Token    GetToken      => null;
+    public virtual NodeKind Kind          => NodeKind.Node;
 }

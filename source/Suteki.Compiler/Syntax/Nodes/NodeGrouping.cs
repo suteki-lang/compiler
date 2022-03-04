@@ -10,9 +10,10 @@ public class NodeGrouping : Node
         Expression = expression;
     }
 
-    public override string   GetString => $"({Expression.GetString})";
-    public override Token    GetToken  => Token.From(Expression.GetToken, GetString);
-    public override NodeKind Kind      => NodeKind.Grouping;
+    public override string   GetString     => $"({Expression.GetString})";
+    public override string   GetIdentifier => Expression.GetString;
+    public override Token    GetToken      => Token.From(Expression.GetToken, GetString);
+    public override NodeKind Kind          => NodeKind.Grouping;
 
     // Resolve symbols
     public override void ResolveSymbols(Input input)

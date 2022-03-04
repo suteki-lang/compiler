@@ -5,17 +5,18 @@ using System.Collections.Generic;
 public class NodeCall : Node
 {
     public bool       IsExpression;
-    public Node       Name;
+    public Node       Callee;
     public List<Node> Parameters = new List<Node>();
 
-    public override Token    GetToken => Name.GetToken;
-    public override NodeKind Kind     => NodeKind.Call;
+    public override string   GetIdentifier => Callee.GetIdentifier;
+    public override Token    GetToken      => Callee.GetToken;
+    public override NodeKind Kind          => NodeKind.Call;
 
     public override string GetString
     {
         get 
         {
-            string result = $"{Name.GetString}(";
+            string result = $"{Callee.GetString}(";
 
             for (int index = 0; index < Parameters.Count; ++index)
             {
@@ -37,7 +38,7 @@ public class NodeCall : Node
     // Resolve symbols
     public override void ResolveSymbols(Input input)
     {
-        if (input.GetSymbol(Name.GetString, GetToken) == null)
+        if (input.GetSymbol(Callee.GetIdentifier, GetToken) == null)
             input.Logger.Error(GetToken, "This symbol does not exists.");
     }
 
@@ -45,12 +46,12 @@ public class NodeCall : Node
     public override Type TypeCheck(Input input)
     {
         // TODO: Update this to use TypeFunction.IsIdentical
-        TypeFunction type = (TypeFunction)input.GetSymbol(Name.GetString).Type;
+        TypeFunction type = (TypeFunction)Callee.TypeCheck(input);
 
         // Check for parameter count
         if (Parameters.Count != type.Parameters.Count)
         {
-            input.Logger.Error(Name.GetToken, "Function call parameter(s) count does not match function parameter(s) count.");
+            input.Logger.Error(Callee.GetToken, "Function call parameter(s) count does not match function parameter(s) count.");
             return null;
         }
 
@@ -64,16 +65,17 @@ public class NodeCall : Node
                 input.Logger.Error(Parameters[index].GetToken, $"Function call parameter ({index}) type does not match expression type.");
         }
 
-        return type;
+        return type.Return;
     }
 
     // Emit C++ code
     public override void Emit(Input input)
     {
-        Symbol symbol = input.GetSymbol(Name.GetString);
-        string name   = Config.MangleName(Name.GetString, symbol.Property, symbol);
+        Symbol symbol = input.GetSymbol(Callee.GetIdentifier);
+        string name   = Config.MangleName(Callee.GetIdentifier, symbol.Property, symbol);;
 
-        input.Output.FunctionDefinitions += $"{name}(";
+        Callee.Emit(input);
+        input.Output.FunctionDefinitions += $"(";
 
         for (int index = 0; index < Parameters.Count; ++index)
         {
