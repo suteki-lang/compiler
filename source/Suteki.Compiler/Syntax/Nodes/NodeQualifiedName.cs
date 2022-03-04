@@ -29,10 +29,6 @@ public class NodeQualifiedName : Node
     public override Type TypeCheck(Input input)
     {
         Symbol symbol = input.GetSymbol(GetString, GetToken);
-
-        if (symbol == null)
-            symbol = input.Locals[GetString];
-
         return symbol.Type;
     }
 
