@@ -38,27 +38,30 @@ public sealed class Compiler
 
                 string newContent = content.Substring(index, (content.Length - index));
 
-                // Write line
+                // Get line information
                 string lineInformation = $"{location.Line} |";
                 
-
+                // Write "...|"
                 for (int i = 1; i < lineInformation.Length; ++i)
                     System.Console.Write(' ');
 
                 System.Console.WriteLine("|");
 
+                // Write "<line> | <content>"
                 System.Console.WriteLine($"{lineInformation} {newContent}");
 
-                // Write location
+                // Write "...| "
                 for (int i = 1; i < lineInformation.Length; ++i)
                     System.Console.Write(' ');
 
                 System.Console.Write("| ");
 
+                // Get start position
                 int startPosition = (location.Column > index)                       ?
                                     (location.Column - index - location.Length - 1) :
                                     0;
-
+                                    
+                // Write "^~~..."
                 for (int i = 0; i < startPosition; ++i)
                     System.Console.Write(' ');
 
