@@ -1,4 +1,0 @@
-int return_()
-{
-    return 111;
-}
