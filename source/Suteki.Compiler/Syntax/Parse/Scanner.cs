@@ -135,6 +135,21 @@ public sealed class Scanner
     }
 
     /// <summary>
+    /// Checks if character matches the current character.
+    /// </summary>
+    /// <param name="expected">The character to be checked.</param>
+    private bool Match(char expected)
+    {
+        if (Source[End] == expected)
+        {
+            Advance();
+            return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>
     /// Skips all whitespaces.
     /// </summary>
     private void SkipWhitespace()
@@ -158,6 +173,24 @@ public sealed class Scanner
                 case ' ':
                 {
                     Advance();
+                    break;
+                }
+
+                // Comment?
+                case '/':
+                {
+                    // Single line comment
+                    if (Source[End + 1] == '/')
+                    {
+                        while (Source[End] != '\n' && Source[End] != '\0')
+                            Advance();
+                    }
+                    else
+                    {
+                        // It's probably a token.
+                        return;
+                    }
+
                     break;
                 }
 
@@ -305,6 +338,15 @@ public sealed class Scanner
 
             case ';':
                 return MakeToken(TokenKind.Semicolon);
+
+            case '=':
+            {
+                // =>
+                if (Match('>'))
+                    return MakeToken(TokenKind.Arrow);
+
+                return MakeToken("Unexpected character.");
+            }
 
             default:
                 return MakeToken("Unexpected character.");
