@@ -27,10 +27,33 @@ public sealed class Compiler
             {
                 FileLocation location = diagnostic.Location;
                 string       content  = location.Content;
+                
+                // Get diagnostic color
+                ConsoleColor diagnosticColor = ConsoleColor.Red; // for error diagnostic
+
+                switch (diagnostic.Kind)
+                {
+                    // Warning
+                    case DiagnosticKind.Warning:
+                    {
+                        diagnosticColor = ConsoleColor.Yellow;
+                        break;
+                    }
+
+                    // Note
+                    case DiagnosticKind.Note:
+                    {
+                        diagnosticColor = ConsoleColor.Yellow;
+                        break;
+                    }
+                }
 
                 // Write location information
-                Console.Error.Write($"{input.Path}:{location.Line}:{location.Column}: ");
-                Console.Error.WriteLine($"{diagnostic.Kind.ToString().ToLower()}: {diagnostic.Content}");
+                Console.Error.Write(ConsoleColor.White, 
+                    $"{input.Path}:{location.Line}:{location.Column}: ");
+                Console.Error.Write(diagnosticColor, 
+                    $"{diagnostic.Kind.ToString().ToLower()}");
+                Console.Error.WriteLine(ConsoleColor.White, $": {diagnostic.Content}");
 
                 // Get location content without spacing at start
                 int index;
@@ -39,22 +62,23 @@ public sealed class Compiler
                 string newContent = content.Substring(index, (content.Length - index));
 
                 // Get line information
-                string lineInformation = $"{location.Line} |";
+                string lineInformation = $"{location.Line} ";
                 
                 // Write "...|"
-                for (int i = 1; i < lineInformation.Length; ++i)
-                    System.Console.Write(' ');
+                for (int i = 0; i < lineInformation.Length; ++i)
+                    Console.Error.Write(ConsoleColor.White, ' ');
 
-                System.Console.WriteLine("|");
+                Console.Error.WriteLine(ConsoleColor.White, "|");
 
                 // Write "<line> | <content>"
-                System.Console.WriteLine($"{lineInformation} {newContent}");
+                Console.Error.Write    (diagnosticColor,    $"{lineInformation}");
+                Console.Error.WriteLine(ConsoleColor.White, $"| {newContent}");
 
                 // Write "...| "
-                for (int i = 1; i < lineInformation.Length; ++i)
-                    System.Console.Write(' ');
+                for (int i = 0; i < lineInformation.Length; ++i)
+                    Console.Error.Write(ConsoleColor.White, ' ');
 
-                System.Console.Write("| ");
+                Console.Error.Write(ConsoleColor.White, "| ");
 
                 // Get start position
                 int startPosition = (location.Column > index)                       ?
@@ -63,26 +87,30 @@ public sealed class Compiler
                                     
                 // Write "^~~..."
                 for (int i = 0; i < startPosition; ++i)
-                    System.Console.Write(' ');
+                    Console.Error.Write(diagnosticColor, ' ');
 
-                System.Console.Write('^');
+                Console.Error.Write(diagnosticColor, '^');
 
                 for (int i = 1; i < location.Length; ++i)
-                    System.Console.Write('~');
+                    Console.Error.Write(diagnosticColor, '~');
 
-                System.Console.WriteLine();
+                Console.Error.WriteLine();
 
                 ++diagnoticCount;
             }
         }
+
+        // Get pass color
+        ConsoleColor passedColor = (Config.HasFatalErrors) ? ConsoleColor.Red
+                                                           : ConsoleColor.Green;
 
         // Write a little message to the console
         string passed = (Config.HasFatalErrors) ? "failure"
                                                 : "successful";
 
         if (diagnoticCount > 0)
-            Console.Error.WriteLine($"\nBuild {passed} with {diagnoticCount} diagnostic(s).");
+            Console.Error.WriteLine(passedColor, $"\nBuild {passed} with {diagnoticCount} diagnostic(s).");
         else
-            Console.Error.WriteLine($"Build {passed} with no diagnostics.");
+            Console.Error.WriteLine(passedColor, $"Build {passed} with no diagnostics.");
     }
 }

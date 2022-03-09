@@ -63,6 +63,7 @@ public sealed class Input
     /// <param name="message" >The message of the error. </param>
     public void Error(FileLocation location, string message)
     {
+        Config.HasFatalErrors = true;
         Diagnostics.Add(new Diagnostic(DiagnosticKind.Error, location, message));
     }
 
