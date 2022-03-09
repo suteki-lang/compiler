@@ -108,12 +108,11 @@ public static class Program
     public static void Main(string[] arguments)
     {
         ParseArguments(arguments);
-        Scanner s = Config.Inputs[0].Scanner;
 
-        s.Next(); 
+        Parser p = new Parser();
+        p.Start();
 
         Compiler c = new Compiler();
-        Config.Inputs[0].Error(s.Current.Location, "this is a test diagnostic.");
         c.WriteDiagnostics();
     }
 }

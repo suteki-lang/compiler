@@ -339,6 +339,9 @@ public sealed class Scanner
             case ';':
                 return MakeToken(TokenKind.Semicolon);
 
+            case '.':
+                return MakeToken(TokenKind.Dot);
+
             case '=':
             {
                 // =>

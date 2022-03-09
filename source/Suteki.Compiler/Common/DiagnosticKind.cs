@@ -7,5 +7,5 @@ public enum DiagnosticKind
 {
     Error,
     Warning,
-    Information,
+    Note,
 }

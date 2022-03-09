@@ -18,6 +18,16 @@ public sealed class Input
     public string Source;
 
     /// <summary>
+    /// The module of the file.
+    /// </summary>
+    public Module Module;
+
+    /// <summary>
+    /// The token of the module declaration.
+    /// </summary>
+    public Token ModuleDeclarationToken;
+
+    /// <summary>
     /// A list of all <see cref="Diagnotic"/>s the file have.
     /// </summary>
     public List<Diagnostic> Diagnostics;
@@ -26,6 +36,11 @@ public sealed class Input
     /// The <see cref="Scanner"/> of the file.
     /// </summary>
     public Scanner Scanner;
+
+    /// <summary>
+    /// All the input's AST nodes.
+    /// </summary>
+    public List<Node> Nodes;
 
     /// <summary>
     /// Constructs a <see cref="Input"/> class.
@@ -38,6 +53,7 @@ public sealed class Input
         Source      = source;
         Diagnostics = new List<Diagnostic>();
         Scanner     = new Scanner(source);
+        Nodes       = new List<Node>();
     }
 
     /// <summary>
@@ -65,8 +81,8 @@ public sealed class Input
     /// </summary>
     /// <param name="location">The location of the information.</param>
     /// <param name="message" >The message of the information. </param>
-    public void Information(FileLocation location, string message)
+    public void Note(FileLocation location, string message)
     {
-        Diagnostics.Add(new Diagnostic(DiagnosticKind.Information, location, message));
+        Diagnostics.Add(new Diagnostic(DiagnosticKind.Note, location, message));
     }
 }

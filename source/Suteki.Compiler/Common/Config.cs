@@ -8,6 +8,11 @@ using System.Collections.Generic;
 public sealed class Config
 {
     /// <summary>
+    /// All the modules.
+    /// </summary>
+    public static Dictionary<string, Module> Modules = new Dictionary<string, Module>();
+
+    /// <summary>
     /// All the user inputs.
     /// </summary>
     public static List<Input> Inputs = new List<Input>();
@@ -16,4 +21,9 @@ public sealed class Config
     /// Is <see langword="true"/> if the compiler had any fatal error.
     /// </summary>
     public static bool HasFatalErrors = false;
+
+    /// <summary>
+    /// The size of a pointer.
+    /// </summary>
+    public static int PointerSize = 8;
 }

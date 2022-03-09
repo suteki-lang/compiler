@@ -22,6 +22,7 @@ public enum TokenKind
     RightBrace,
     Comma,
     Semicolon,
+    Dot,
 
     // Multiple Characters
     Arrow,
