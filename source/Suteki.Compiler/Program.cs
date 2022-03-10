@@ -87,8 +87,8 @@ public static class Program
                 // This is probably an input.
                 if (!AddInputs(argument))
                 {
-                    Console.Error.Write    (ConsoleColor.Red, "error");
-                    Console.Error.WriteLine(ConsoleColor.White, 
+                    Console.Error.WriteColor    (ConsoleColor.Red, "error");
+                    Console.Error.WriteColorLine(ConsoleColor.White, 
                         $": {argument}: no such file or directory.");
                         
                     return false;
@@ -99,8 +99,8 @@ public static class Program
         // Check for inputs
         if (Config.Inputs.Count == 0)
         {
-            Console.Error.Write    (ConsoleColor.Red,   "error");
-            Console.Error.WriteLine(ConsoleColor.White, ": no input files.");
+            Console.Error.WriteColor    (ConsoleColor.Red,   "error");
+            Console.Error.WriteColorLine(ConsoleColor.White, ": no input files.");
             return false;
         }
 

@@ -49,11 +49,11 @@ public sealed class Compiler
                 }
 
                 // Write location information
-                Console.Error.Write(ConsoleColor.White, 
+                Console.Error.WriteColor(ConsoleColor.White, 
                     $"{input.Path}:{location.Line}:{location.Column}: ");
-                Console.Error.Write(diagnosticColor, 
+                Console.Error.WriteColor(diagnosticColor, 
                     $"{diagnostic.Kind.ToString().ToLower()}");
-                Console.Error.WriteLine(ConsoleColor.White, $": {diagnostic.Content}");
+                Console.Error.WriteColorLine(ConsoleColor.White, $": {diagnostic.Content}");
 
                 // Get location content without spacing at start
                 int index;
@@ -66,19 +66,19 @@ public sealed class Compiler
                 
                 // Write "...|"
                 for (int i = 0; i < lineInformation.Length; ++i)
-                    Console.Error.Write(ConsoleColor.White, ' ');
+                    Console.Error.WriteColor(ConsoleColor.White, ' ');
 
-                Console.Error.WriteLine(ConsoleColor.White, "|");
+                Console.Error.WriteColorLine(ConsoleColor.White, "|");
 
                 // Write "<line> | <content>"
-                Console.Error.Write    (diagnosticColor,    $"{lineInformation}");
-                Console.Error.WriteLine(ConsoleColor.White, $"| {newContent}");
+                Console.Error.WriteColor    (diagnosticColor,    $"{lineInformation}");
+                Console.Error.WriteColorLine(ConsoleColor.White, $"| {newContent}");
 
                 // Write "...| "
                 for (int i = 0; i < lineInformation.Length; ++i)
-                    Console.Error.Write(ConsoleColor.White, ' ');
+                    Console.Error.WriteColor(ConsoleColor.White, ' ');
 
-                Console.Error.Write(ConsoleColor.White, "| ");
+                Console.Error.WriteColor(ConsoleColor.White, "| ");
 
                 // Get start position
                 int startPosition = (location.Column > index)                       ?
@@ -87,14 +87,14 @@ public sealed class Compiler
                                     
                 // Write "^~~..."
                 for (int i = 0; i < startPosition; ++i)
-                    Console.Error.Write(diagnosticColor, ' ');
+                    Console.Error.WriteColor(diagnosticColor, ' ');
 
-                Console.Error.Write(diagnosticColor, '^');
+                Console.Error.WriteColor(diagnosticColor, '^');
 
                 for (int i = 1; i < location.Length; ++i)
-                    Console.Error.Write(diagnosticColor, '~');
+                    Console.Error.WriteColor(diagnosticColor, '~');
 
-                Console.Error.WriteLine();
+                Console.Error.WriteColorLine();
 
                 ++diagnoticCount;
             }
@@ -109,8 +109,8 @@ public sealed class Compiler
                                                 : "successful";
 
         if (diagnoticCount > 0)
-            Console.Error.WriteLine(passedColor, $"\nBuild {passed} with {diagnoticCount} diagnostic(s).");
+            Console.Error.WriteColorLine(passedColor, $"\nBuild {passed} with {diagnoticCount} diagnostic(s).");
         else
-            Console.Error.WriteLine(passedColor, $"Build {passed} with no diagnostics.");
+            Console.Error.WriteColorLine(passedColor, $"Build {passed} with no diagnostics.");
     }
 }

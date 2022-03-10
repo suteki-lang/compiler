@@ -12,12 +12,17 @@ public static class ConsoleExtension
     /// Write content with color to console.
     /// </summary>
     /// <param name="stream">The console stream to write.</param>
-    /// <param name="color">The color of the content.</param>
     /// <param name="content">The content to write to console.</param>
-    public static void Write(this TextWriter stream, ConsoleColor color, dynamic content)
+    public static void WriteColor(this TextWriter stream, params object[] content)
     {
-        Console.ForegroundColor = color;
-        stream.Write(content);
+        foreach (object value in content)
+        {
+            if (value.GetType() == typeof(ConsoleColor))
+                Console.ForegroundColor = ((ConsoleColor)value);
+            else
+                stream.Write(value);
+        }
+
         Console.ResetColor();
     }
 
@@ -25,12 +30,10 @@ public static class ConsoleExtension
     /// Write content with color with line at end to console.
     /// </summary>
     /// <param name="stream">The console stream to write.</param>
-    /// <param name="color">The color of the content.</param>
     /// <param name="content">The content to write to console.</param>
-    public static void WriteLine(this TextWriter stream, ConsoleColor color, dynamic content)
+    public static void WriteColorLine(this TextWriter stream, params object[] content)
     {
-        Console.ForegroundColor = color;
-        stream.WriteLine(content);
-        Console.ResetColor();
+        stream.WriteColor(content);
+        stream.WriteLine();
     }
 }
