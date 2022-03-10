@@ -348,11 +348,10 @@ public sealed class Scanner
                 if (Match('>'))
                     return MakeToken(TokenKind.Arrow);
 
-                return MakeToken("Unexpected character.");
+                break;
             }
-
-            default:
-                return MakeToken("Unexpected character.");
         }
+
+        return MakeToken("unexpected character.");
     }
 }

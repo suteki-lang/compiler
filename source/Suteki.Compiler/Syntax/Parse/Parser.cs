@@ -152,12 +152,12 @@ public sealed class Parser
                 // Check for module name
                 if (moduleName == "")
                 {
-                    Input.Error(Current.Location, "Expected module name.");
+                    Input.Error(Current.Location, "expected module name.");
                     break;
                 }
                 else
                 {
-                    Input.Error(Current.Location, "Unexpected token.");
+                    Input.Error(Current.Location, "unexpected token.");
                     break;
                 }
             }
@@ -170,7 +170,7 @@ public sealed class Parser
         }
 
         // Consume semicolon
-        Consume(TokenKind.Semicolon, "Expected ';' after module declaration.");
+        Consume(TokenKind.Semicolon, "expected ';' after module declaration.");
 
         // Set input's module
         if (Input.Module == null)
@@ -188,10 +188,10 @@ public sealed class Parser
         else
         {
             Input.Error(moduleToken.Location, 
-                $"This file was already exported as '{Input.Module.Name}' module.");
+                $"this file was already exported as '{Input.Module.Name}' module.");
 
             Input.Note(Input.ModuleDeclarationToken.Location,
-                "This file was exported here.");
+                $"the declaration of the module '{Input.Module.Name}' is here.");
         }
     }
 
@@ -215,7 +215,7 @@ public sealed class Parser
             // Unexpected token
             default:
             {
-                Input.Error(Previous.Location, "Unexpected token.");
+                Input.Error(Previous.Location, "unexpected token.");
                 break;
             }
         }
