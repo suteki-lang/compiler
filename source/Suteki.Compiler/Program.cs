@@ -1,6 +1,7 @@
 ﻿namespace Suteki.Compiler;
 
 using System.IO;
+using System;
 
 /// <summary>
 /// The class of the program.
@@ -86,7 +87,11 @@ public static class Program
                 // This is probably an input.
                 if (!AddInputs(argument))
                 {
-                    // TODO: handle error
+                    Console.Error.Write    (ConsoleColor.Red, "error");
+                    Console.Error.WriteLine(ConsoleColor.White, 
+                        $": {argument}: no such file or directory.");
+                        
+                    return false;
                 }
             }
         }
@@ -94,7 +99,8 @@ public static class Program
         // Check for inputs
         if (Config.Inputs.Count == 0)
         {
-            // TODO: handle error
+            Console.Error.Write    (ConsoleColor.Red,   "error");
+            Console.Error.WriteLine(ConsoleColor.White, ": no input files.");
             return false;
         }
 
@@ -107,7 +113,9 @@ public static class Program
     /// <param name="arguments">The command line arguments.</param>
     public static void Main(string[] arguments)
     {
-        ParseArguments(arguments);
+        // Parse command line arguments
+        if (!ParseArguments(arguments))
+            return;
 
         Parser p = new Parser();
         p.Start();
