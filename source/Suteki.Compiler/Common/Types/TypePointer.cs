@@ -69,4 +69,9 @@ public class TypePointer : Type
     /// Remove the pointer from type.
     /// </summary>
     public override Type GetDerefedType() => Base;
+
+    /// <summary>
+    /// Get name of the type.
+    /// </summary>
+    public override string GetName() => $"{Base.GetName()}*";
 }

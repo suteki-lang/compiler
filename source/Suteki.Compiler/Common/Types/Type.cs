@@ -95,4 +95,9 @@ public class Type
     /// Remove the constant from type.
     /// </summary>
     public virtual Type GetDeconstedType() => null;
+
+    /// <summary>
+    /// Get name of the type.
+    /// </summary>
+    public virtual string GetName() => "";
 }

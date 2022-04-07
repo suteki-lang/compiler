@@ -154,4 +154,35 @@ public class TypePrimitive : Type
                 return 0;
         }
     }
+
+    /// <summary>
+    /// Get name of the type.
+    /// </summary>
+    public override string GetName()
+    {
+        string[] cTypes =
+        {
+            "void *",
+            "void",
+            "bool",
+            "string",
+
+            "ubyte",
+            "ushort",
+            "uint",
+            "ulong",
+            "uword",
+
+            "byte",
+            "short",
+            "int",
+            "long",
+            "word",
+
+            "single",
+            "double",
+        };
+
+        return cTypes[((int)Kind)];
+    }
 }

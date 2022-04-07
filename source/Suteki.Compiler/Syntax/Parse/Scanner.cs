@@ -12,6 +12,10 @@ public sealed class Scanner
     /// </summary>
     public Dictionary<string, TokenKind> Keywords = new Dictionary<string, TokenKind>()
     {
+        { "true",    TokenKind.Bool    },
+        { "false",   TokenKind.Bool    },
+        { "null",    TokenKind.Null    },
+
         { "module",  TokenKind.Module  },
         { "import",  TokenKind.Import  },
 
@@ -342,11 +346,27 @@ public sealed class Scanner
             case '.':
                 return MakeToken(TokenKind.Dot);
 
+            case '+':
+                return MakeToken(TokenKind.Plus);
+                
+            case '-':
+                return MakeToken(TokenKind.Minus);
+                
+            case '/':
+                return MakeToken(TokenKind.Slash);
+                
+            case '*':
+                return MakeToken(TokenKind.Star);
+
             case '=':
             {
                 // =>
                 if (Match('>'))
                     return MakeToken(TokenKind.Arrow);
+
+                // ==
+                if (Match('='))
+                    return MakeToken(TokenKind.EqualEqual);
 
                 break;
             }

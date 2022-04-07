@@ -18,19 +18,19 @@ public sealed class Input
     public string Source;
 
     /// <summary>
+    /// The output of the input.
+    /// </summary>
+    public Output Output;
+
+    /// <summary>
     /// The module of the file.
     /// </summary>
     public Module Module;
 
     /// <summary>
-    /// The token of the module declaration.
+    /// The location of the module declaration.
     /// </summary>
-    public Token ModuleDeclarationToken;
-
-    /// <summary>
-    /// A list of all <see cref="Diagnotic"/>s the file have.
-    /// </summary>
-    public List<Diagnostic> Diagnostics;
+    public FileLocation ModuleDeclarationLocation;
 
     /// <summary>
     /// The <see cref="Scanner"/> of the file.
@@ -49,11 +49,26 @@ public sealed class Input
     /// <param name="source">The source of the file.</param>
     public Input(string path, string source)
     {
-        Path        = path;
-        Source      = source;
-        Diagnostics = new List<Diagnostic>();
-        Scanner     = new Scanner(source);
-        Nodes       = new List<Node>();
+        Path    = path;
+        Source  = source;
+        Output  = new Output();
+        Scanner = new Scanner(source);
+        Nodes   = new List<Node>();
+    }
+
+    /// <summary>
+    /// Try finding symbol in module, imports, etc.
+    /// </summary>
+    /// <param name="name">The symbol name to find.</param>
+    public Symbol FindSymbol(string name)
+    {
+        Symbol foundSymbol = null;
+
+        // Try finding symbol in input module
+        if (Module.Symbols.ContainsKey(name))
+            foundSymbol = Module.Symbols[name];
+
+        return foundSymbol;
     }
 
     /// <summary>
@@ -64,7 +79,7 @@ public sealed class Input
     public void Error(FileLocation location, string message)
     {
         Config.HasFatalErrors = true;
-        Diagnostics.Add(new Diagnostic(DiagnosticKind.Error, location, message));
+        Config.Diagnostics.Add(new Diagnostic(DiagnosticKind.Error, Path, location, message));
     }
 
     /// <summary>
@@ -74,7 +89,7 @@ public sealed class Input
     /// <param name="message" >The message of the warning. </param>
     public void Warning(FileLocation location, string message)
     {
-        Diagnostics.Add(new Diagnostic(DiagnosticKind.Warning, location, message));
+        Config.Diagnostics.Add(new Diagnostic(DiagnosticKind.Warning, Path, location, message));
     }
 
     /// <summary>
@@ -84,6 +99,6 @@ public sealed class Input
     /// <param name="message" >The message of the information. </param>
     public void Note(FileLocation location, string message)
     {
-        Diagnostics.Add(new Diagnostic(DiagnosticKind.Note, location, message));
+        Config.Diagnostics.Add(new Diagnostic(DiagnosticKind.Note, Path, location, message));
     }
 }

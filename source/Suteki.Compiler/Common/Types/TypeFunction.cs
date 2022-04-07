@@ -67,4 +67,10 @@ public class TypeFunction : Type
 
         return Return;
     }
+
+    /// <summary>
+    /// Get name of the type.
+    /// </summary>
+    /// TODO: Add function type GetName
+    public override string GetName() => $"<function type>";
 }

@@ -120,6 +120,12 @@ public static class Program
         Parser p = new Parser();
         p.Start();
 
+        if (!Config.HasFatalErrors)
+        {
+            Emitter e = new Emitter();
+            e.Start();
+        }
+
         Compiler c = new Compiler();
         c.WriteDiagnostics();
     }

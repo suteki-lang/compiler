@@ -14,6 +14,8 @@ public enum TokenKind
     String,
     Integer,
     Float,
+    Bool,
+    Null,
 
     // Single Character
     LeftParenthesis,
@@ -23,9 +25,14 @@ public enum TokenKind
     Comma,
     Semicolon,
     Dot,
+    Plus,
+    Minus,
+    Slash,
+    Star,
 
     // Multiple Characters
     Arrow,
+    EqualEqual,
 
     // Keywords
     Module,

@@ -18,6 +18,11 @@ public sealed class Config
     public static List<Input> Inputs = new List<Input>();
 
     /// <summary>
+    /// A list of all <see cref="Diagnotic"/>s we have.
+    /// </summary>
+    public static List<Diagnostic> Diagnostics = new List<Diagnostic>();
+
+    /// <summary>
     /// Is <see langword="true"/> if the compiler had any fatal error.
     /// </summary>
     public static bool HasFatalErrors = false;

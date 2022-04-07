@@ -97,4 +97,9 @@ public class TypeConst : Type
     /// Remove the constant from type.
     /// </summary>
     public override Type GetDeconstedType() => Type;
+
+    /// <summary>
+    /// Get name of the type.
+    /// </summary>
+    public override string GetName() => $"const {Type.GetName()}";
 }
