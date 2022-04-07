@@ -80,6 +80,12 @@ public interface ASTVisitor<T>
     public T Visit(NodeNull node) => throw new NotImplementedException();
 
     /// <summary>
+    /// Visits pointer type node.
+    /// </summary>
+    /// <param name="node">The node to be visited.</param>
+    public T Visit(NodePointerType node) => throw new NotImplementedException();
+
+    /// <summary>
     /// Visits primitive type node.
     /// </summary>
     /// <param name="node">The node to be visited.</param>

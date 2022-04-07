@@ -137,6 +137,15 @@ public class TypeCheckPass : ASTVisitor<Type>
     }
 
     /// <summary>
+    /// Visits pointer type node.
+    /// </summary>
+    /// <param name="node">The node to be visited.</param>
+    public Type Visit(NodePointerType node) 
+    {
+        return new TypePointer(Visit(node.Base));
+    }
+
+    /// <summary>
     /// Visits primitive type node.
     /// </summary>
     /// <param name="node">The node to be visited.</param>

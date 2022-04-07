@@ -239,6 +239,15 @@ public class Emitter : ASTVisitor<string>
     }
 
     /// <summary>
+    /// Visits pointer type node.
+    /// </summary>
+    /// <param name="node">The node to be visited.</param>
+    public string Visit(NodePointerType node) 
+    {
+        return (Visit(node.Base) + '*');
+    }
+
+    /// <summary>
     /// Visits primitive type node.
     /// </summary>
     /// <param name="node">The node to be visited.</param>

@@ -278,20 +278,33 @@ public sealed class Parser
     /// </summary>
     private Node ParseType()
     {
+        Node node = null;
+
         // Parse type name
         Node   name       = ParseIdentifierName(Previous);
         string nameString = name.GetName();
 
-        // Check for type name
+        // Check for primitive type
         if (PrimitiveTypes.ContainsKey(nameString))
-        {
-            // Primitive type node
-            return new NodePrimitiveType(name.Location, PrimitiveTypes[nameString].Kind);
-        }
+            node = new NodePrimitiveType(name.Location, PrimitiveTypes[nameString].Kind);
         
         // Failed to parse type
-        Input.Error(name.Location, "expected type.");
-        return null;
+        if (node == null)
+            Input.Error(name.Location, "expected type.");
+        else
+        {
+            // Check for pointer type
+            while (Match(TokenKind.Star))
+            {
+                // Make node location
+                FileLocation location        = node.Location;
+                             location.Length = (location.Column - Previous.Location.Column) + 1;
+
+                node = new NodePointerType(location, node);
+            }
+        }
+        
+        return node;
     }
 
     /// <summary>

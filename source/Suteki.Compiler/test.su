@@ -1,1 +1,1 @@
-int main() => null;
+void *malloc(uword size) => null;

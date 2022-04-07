@@ -11,6 +11,15 @@ public class TypePointer : Type
     public Type Base;
 
     /// <summary>
+    /// Constructs a <see cref="TypePointer"/> class.
+    /// </summary>
+    /// <param name="baseType">The base type.</param>
+    public TypePointer(Type baseType)
+    {
+        Base = baseType;
+    }
+
+    /// <summary>
     /// Is type null?
     /// </summary>
     public override bool IsNull() => Base.IsNull();
