@@ -32,6 +32,12 @@ public interface ASTVisitor<T>
     public T Visit(NodeBool node) => throw new NotImplementedException();
 
     /// <summary>
+    /// Visits constant type node.
+    /// </summary>
+    /// <param name="node">The node to be visited.</param>
+    public T Visit(NodeConstType node) => throw new NotImplementedException();
+
+    /// <summary>
     /// Visits float literal node.
     /// </summary>
     /// <param name="node">The node to be visited.</param>

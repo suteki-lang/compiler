@@ -11,6 +11,15 @@ public class TypeConst : Type
     public Type Type;
 
     /// <summary>
+    /// Constructs a <see cref="TypeConst"/> class.
+    /// </summary>
+    /// <param name="type">The constant type.</param>
+    public TypeConst(Type type)
+    {
+        Type = type;
+    }
+
+    /// <summary>
     /// Is type void?
     /// </summary>
     public override bool IsVoid() => Type.IsVoid();

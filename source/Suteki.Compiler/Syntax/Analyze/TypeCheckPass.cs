@@ -81,6 +81,15 @@ public class TypeCheckPass : ASTVisitor<Type>
     }
 
     /// <summary>
+    /// Visits constant type node.
+    /// </summary>
+    /// <param name="node">The node to be visited.</param>
+    public Type Visit(NodeConstType node) 
+    {
+        return new TypeConst(Visit(node.Type));
+    }
+
+    /// <summary>
     /// Visits float literal node.
     /// </summary>
     /// <param name="node">The node to be visited.</param>

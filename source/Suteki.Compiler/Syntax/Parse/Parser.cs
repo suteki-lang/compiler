@@ -280,13 +280,42 @@ public sealed class Parser
     {
         Node node = null;
 
+        // Try parsing const
+        if (Previous.Kind == TokenKind.Const)
+        {
+            node = new NodeConstType(Previous.Location, null);
+            Advance();
+        }
+
         // Parse type name
         Node   name       = ParseIdentifierName(Previous);
         string nameString = name.GetName();
 
         // Check for primitive type
         if (PrimitiveTypes.ContainsKey(nameString))
-            node = new NodePrimitiveType(name.Location, PrimitiveTypes[nameString].Kind);
+        {
+            Node primitive = new NodePrimitiveType(name.Location, PrimitiveTypes[nameString].Kind);
+            
+            // Check for constant type
+            if (node != null)
+            {
+                NodeConstType constNode = ((NodeConstType)node);
+                
+                // Make node location
+                FileLocation location        = primitive.Location;
+                             location.Length = (location.Column - constNode.Location.Column) + 3;
+
+                constNode.Location = location;
+
+                // Set constat node type
+                constNode.Type = primitive;
+            }
+            else
+            {
+                // Set node to be primitive nod
+                node = primitive;
+            }
+        }
         
         // Failed to parse type
         if (node == null)
@@ -653,6 +682,7 @@ public sealed class Parser
             }
             
             // Declaration
+            case TokenKind.Const:
             case TokenKind.Identifier:
             {
                 TryParsingDeclaration();

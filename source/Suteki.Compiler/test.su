@@ -1,1 +1,3 @@
 void *malloc(uword size) => null;
+
+const byte *cstring() => null;

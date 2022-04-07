@@ -150,6 +150,15 @@ public class Emitter : ASTVisitor<string>
     }
 
     /// <summary>
+    /// Visits constant type node.
+    /// </summary>
+    /// <param name="node">The node to be visited.</param>
+    public string Visit(NodeConstType node)
+    {
+        return ("const " + Visit(node.Type));
+    }
+
+    /// <summary>
     /// Visits float literal node.
     /// </summary>
     /// <param name="node">The node to be visited.</param>
