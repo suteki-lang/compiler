@@ -8,7 +8,7 @@ using System;
 public sealed class Compiler
 {
     /// <summary>
-    /// Write <see cref="Diagnotic"/>s to the console.
+    /// Write <see cref="Diagnostic"/>s to the console.
     /// </summary>
     public void WriteDiagnostics()
     {
